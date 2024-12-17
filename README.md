@@ -1,69 +1,175 @@
-# Welcome to your Lovable project
+# MAGBot Mini App
 
-## Project info
+MAGBot is an on-chain micro-lending platform designed to offer gas-free micro-loans to Worldcoin users. The app uses World ID verification to determine user eligibility and loan tiers.
 
-**URL**: https://lovable.dev/projects/aa4af5cd-c5e1-45de-bb22-f9023885480f
+## Features
 
-## How can I edit this code?
+- **World ID Verification**: Multiple verification tiers with different loan limits
+  - ORB Verified: Up to $10
+  - Passport Verified: Up to $3
+  - Non-verified: Up to $1 (starter loans)
+- **Gas-free Transactions**: Leveraging Worldchain for efficient operations
+- **Instant Loans**: Quick approval and disbursement process
+- **Simple Repayment Tracking**: Easy-to-use interface for managing loans
 
-There are several ways of editing your application.
+## Technical Setup
 
-**Use Lovable**
+### Prerequisites
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/aa4af5cd-c5e1-45de-bb22-f9023885480f) and start prompting.
+- Node.js & npm installed
+- World App Developer Account
+- MiniKit SDK credentials
 
-Changes made via Lovable will be committed automatically to this repo.
+### Installation
 
-**Use your preferred IDE**
+1. Clone the repository:
+```bash
+git clone <your-repo-url>
+cd magbot-mini-app
+```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+2. Install dependencies:
+```bash
+npm install
+```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+3. Install MiniKit dependencies:
+```bash
+npm install @worldcoin/minikit-js @worldcoin/minikit-react
+```
 
-Follow these steps:
+### World App Integration
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1. Create a MiniKit Provider (`src/providers/MiniKitProvider.tsx`):
+```tsx
+import { ReactNode, useEffect } from 'react';
+import { MiniKit } from '@worldcoin/minikit-js';
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+export const MiniKitProvider = ({ children }: { children: ReactNode }) => {
+  useEffect(() => {
+    MiniKit.install('magbot-mini-app');
+  }, []);
 
-# Step 3: Install the necessary dependencies.
-npm i
+  return <>{children}</>;
+};
+```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+2. Wrap your app with the provider in `App.tsx`:
+```tsx
+import { MiniKitProvider } from './providers/MiniKitProvider';
+
+const App = () => (
+  <MiniKitProvider>
+    {/* Your app components */}
+  </MiniKitProvider>
+);
+```
+
+3. Check if running in World App:
+```tsx
+const isInWorldApp = MiniKit.isInstalled();
+```
+
+### World ID Integration
+
+1. Configure World ID in your app:
+```tsx
+const worldIdConfig = {
+  app_id: "app_staging_d992d7e574c9870a57587c2b261e7a1f",
+  action: "verify",
+  verification_level: ["orb", "passport"]
+};
+```
+
+2. Handle verification:
+```tsx
+const handleVerify = async (proof) => {
+  if (proof.verification_level === "orb") {
+    // Handle ORB verification
+    // Max loan: $10
+  } else if (proof.verification_level === "passport") {
+    // Handle passport verification
+    // Max loan: $3
+  }
+};
+```
+
+## Development
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Testing
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+npm test
+```
 
-**Use GitHub Codespaces**
+## Building for Production
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```bash
+npm run build
+```
 
-## What technologies are used for this project?
+## Deployment
 
-This project is built with .
+1. Build your app:
+```bash
+npm run build
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+2. Submit to World App Store:
+- Package your build
+- Submit through the World App Developer Portal
+- Await approval
 
-## How can I deploy this project?
+## Architecture
 
-Simply open [Lovable](https://lovable.dev/projects/aa4af5cd-c5e1-45de-bb22-f9023885480f) and click on Share -> Publish.
+### Components
 
-## I want to use a custom domain - is that possible?
+1. **Verification Module**
+   - Handles World ID integration
+   - Manages verification states
+   - Determines loan eligibility
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+2. **Loan Management**
+   - Loan application processing
+   - Repayment tracking
+   - Transaction history
+
+3. **Wallet Integration**
+   - Balance checking
+   - Transaction processing
+   - WUSDC handling
+
+### Data Flow
+
+1. User verification → Eligibility determination
+2. Loan application → Smart contract interaction
+3. Loan approval → Fund disbursement
+4. Repayment tracking → Transaction updates
+
+## Security Considerations
+
+- World ID verification for identity proof
+- Smart contract auditing
+- Secure fund handling
+- Rate limiting
+- Error handling
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+[Your License]
+
+## Support
+
+For support, email [your-email] or join our Discord channel.
