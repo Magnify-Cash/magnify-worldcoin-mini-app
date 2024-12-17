@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CredentialType, IDKitWidget } from "@worldcoin/idkit";
+import { IDKitWidget } from "@worldcoin/idkit";
 import { Card } from "@/components/ui/card";
 import VerificationStatus from "@/components/VerificationStatus";
 import UserProfile from "@/components/UserProfile";
@@ -37,11 +37,10 @@ const Index = () => {
             <div className="flex flex-col items-center space-y-6">
               {!verificationResult && (
                 <IDKitWidget
-                  app_id="app_staging_d992d7e574c9870a57587c2b261e7a1f" // Replace with your app ID
+                  app_id="app_staging_d992d7e574c9870a57587c2b261e7a1f"
                   action="verify"
                   onSuccess={handleVerify}
                   handleVerify={handleVerify}
-                  credential_types={[CredentialType.Orb]}
                 >
                   {({ open }) => (
                     <button
