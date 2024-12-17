@@ -17,6 +17,17 @@ const Index = () => {
     setCurrentStep("onboarding");
   };
 
+  // Add mock verification function
+  const handleMockVerify = () => {
+    const mockProof = {
+      merkle_root: "mock_merkle_root_123",
+      nullifier_hash: "mock_nullifier_hash_456",
+      proof: "mock_proof_789",
+      verification_level: "orb"
+    };
+    handleVerify(mockProof);
+  };
+
   const handleFinishOnboarding = () => {
     setCurrentStep("dashboard");
   };
@@ -59,7 +70,7 @@ const Index = () => {
               <div
                 key={idx}
                 className={`h-2 w-2 rounded-full ${
-                  idx + 1 === onboardingPage ? "bg-worldcoin-primary" : "bg-gray-200"
+                  idx + 1 === onboardingPage ? "bg-blue-600" : "bg-gray-200"
                 }`}
               />
             ))}
@@ -78,7 +89,7 @@ const Index = () => {
 
   const renderDashboard = () => (
     <div className="space-y-8 animate-fade-up">
-      <div className="bg-gradient-to-r from-worldcoin-primary to-worldcoin-secondary p-6 rounded-lg text-white">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-400 p-6 rounded-lg text-white">
         <h3 className="text-xl font-semibold mb-2">Status: ORB Verified ✅</h3>
         <p className="text-lg">Eligible Loan: $10</p>
       </div>
@@ -98,10 +109,10 @@ const Index = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-worldcoin-background to-white">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div className="container max-w-4xl mx-auto px-4 py-16">
         <div className="space-y-8">
-          <h1 className="text-4xl md:text-6xl font-bold text-center bg-gradient-to-r from-worldcoin-primary to-worldcoin-secondary text-transparent bg-clip-text">
+          <h1 className="text-4xl md:text-6xl font-bold text-center bg-gradient-to-r from-blue-600 to-blue-400 text-transparent bg-clip-text">
             MAGBot Mini App
           </h1>
           
@@ -111,21 +122,34 @@ const Index = () => {
                 <p className="text-center text-gray-600 text-lg max-w-2xl">
                   Verify your identity with World ID to access micro-loans
                 </p>
-                <IDKitWidget
-                  app_id="app_staging_d992d7e574c9870a57587c2b261e7a1f"
-                  action="verify"
-                  onSuccess={handleVerify}
-                  handleVerify={handleVerify}
-                >
-                  {({ open }) => (
+                <div className="space-y-4">
+                  <IDKitWidget
+                    app_id="app_staging_d992d7e574c9870a57587c2b261e7a1f"
+                    action="verify"
+                    onSuccess={handleVerify}
+                    handleVerify={handleVerify}
+                  >
+                    {({ open }) => (
+                      <Button
+                        onClick={open}
+                        className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-lg font-semibold shadow-lg hover:opacity-90 transition-opacity"
+                      >
+                        Verify with World ID
+                      </Button>
+                    )}
+                  </IDKitWidget>
+                  
+                  {/* Add mock verification button */}
+                  <div className="mt-4">
                     <Button
-                      onClick={open}
-                      className="px-8 py-4 bg-gradient-to-r from-worldcoin-primary to-worldcoin-secondary text-white rounded-lg font-semibold shadow-lg hover:opacity-90 transition-opacity"
+                      onClick={handleMockVerify}
+                      variant="outline"
+                      className="w-full"
                     >
-                      Verify with World ID
+                      Mock Verify (Development Only)
                     </Button>
-                  )}
-                </IDKitWidget>
+                  </div>
+                </div>
               </div>
             )}
             
