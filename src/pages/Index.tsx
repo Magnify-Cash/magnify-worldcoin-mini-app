@@ -1,17 +1,15 @@
 import { useState } from "react";
 import SignInModal from "@/components/SignInModal";
 import { HelpGuide } from "@/components/HelpGuide";
-import UserProfile from "@/components/UserProfile";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { FundingOptions } from "@/components/FundingOptions";
 import { MascotIllustration } from "@/components/MascotIllustration";
 import WalletDashboard from "@/components/WalletDashboard";
+import LoanDashboard from "@/components/LoanDashboard";
 import { VerificationLevel } from "@/types/verification";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
 
 const Index = () => {
-  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<
     "verify" | "onboarding" | "dashboard"
   >("verify");
@@ -19,7 +17,9 @@ const Index = () => {
   const [showFundingOptions, setShowFundingOptions] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0);
   const [verificationLevel, setVerificationLevel] = useState<VerificationLevel>('NONE');
-  const [verificationResult, setVerificationResult] = useState<any>(null);
+  const [creditScore, setCreditScore] = useState(300);
+  const [totalLoansRepaid, setTotalLoansRepaid] = useState(0);
+  const [onTimeRepayments, setOnTimeRepayments] = useState(0);
 
   const handleSignIn = () => {
     console.log("User signed in successfully");
@@ -29,7 +29,6 @@ const Index = () => {
 
   const handleVerificationComplete = (result: any) => {
     console.log("Verification completed:", result);
-    setVerificationResult(result);
     if (result.proof) {
       setVerificationLevel('ORB');
       setCurrentStep("dashboard");
@@ -71,8 +70,13 @@ const Index = () => {
 
       case "dashboard":
         return (
-          <div className="container mx-auto p-6">
-            <UserProfile verificationResult={verificationResult} />
+          <div className="container mx-auto p-6 space-y-6">
+            <LoanDashboard
+              verificationLevel={verificationLevel}
+              creditScore={creditScore}
+              totalLoansRepaid={totalLoansRepaid}
+              onTimeRepayments={onTimeRepayments}
+            />
             <WalletDashboard
               balance={walletBalance}
               verificationLevel={verificationLevel}
