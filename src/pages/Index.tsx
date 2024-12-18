@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { IDKitWidget } from "@worldcoin/idkit";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, DollarSign } from "lucide-react";
+import { ChevronRight, DollarSign, Clock, Wallet, HelpCircle, X, Settings } from "lucide-react";
 import { toast } from "sonner";
 import { MascotIllustration } from "@/components/MascotIllustration";
 import { HelpGuide } from "@/components/HelpGuide";
@@ -21,164 +21,91 @@ const Index = () => {
   const [showSignInModal, setShowSignInModal] = useState(true);
   const [walletBalance, setWalletBalance] = useState(0);
 
-  useEffect(() => {
-    setShowSignInModal(currentStep === "dashboard");
-  }, [currentStep]);
-
-  const handleVerify = async (proof: any) => {
-    console.log("Proof received:", proof);
-    setVerificationResult(proof);
-    toast.success("Verification successful!");
-    setCurrentStep("onboarding");
-  };
-
-  const handleMockVerify = () => {
-    const mockProof = {
-      merkle_root: "mock_merkle_root_123",
-      nullifier_hash: "mock_nullifier_hash_456",
-      proof: "mock_proof_789",
-      verification_level: "orb"
-    };
-    handleVerify(mockProof);
-  };
-
-  const handleFinishOnboarding = () => {
-    setCurrentStep("dashboard");
-  };
-
   return (
-    <div className="min-h-screen bg-modern-background">
-      <div className="absolute inset-0 bg-gradient-radial from-modern-purple/20 via-modern-blue/10 to-transparent pointer-events-none" />
-      
-      <div className="container max-w-7xl mx-auto px-4 py-8 relative">
-        <div className="space-y-8">
-          <Header />
+    <div className="min-h-screen bg-white">
+      <div className="max-w-md mx-auto relative">
+        {/* Top Navigation Bar */}
+        <div className="flex justify-between items-center p-4 border-b">
+          <button className="p-2 hover:bg-gray-100 rounded-full">
+            <X className="h-6 w-6" />
+          </button>
+          <h1 className="text-xl font-semibold">MemeWallet</h1>
+          <button className="p-2 hover:bg-gray-100 rounded-full">
+            <Settings className="h-6 w-6" />
+          </button>
+        </div>
 
+        {/* Main Content */}
+        <div className="p-6">
           {currentStep === "verify" && (
-            <Card className="p-8 bg-modern-card backdrop-blur-sm shadow-glass border border-white/20">
-              <div className="flex flex-col items-center space-y-6">
-                <p className="text-center text-gray-600 text-lg max-w-2xl">
-                  Verify your identity with World ID to access micro-loans
-                </p>
-                <div className="space-y-4">
-                  <IDKitWidget
-                    app_id="app_staging_d992d7e574c9870a57587c2b261e7a1f"
-                    action="verify"
-                    onSuccess={handleVerify}
-                    handleVerify={handleVerify}
-                  >
-                    {({ open }) => (
-                      <Button
-                        onClick={open}
-                        className="px-8 py-4 bg-purple-gradient text-white rounded-lg font-semibold shadow-lg hover:opacity-90 transition-opacity"
-                      >
-                        Verify with World ID
-                      </Button>
-                    )}
-                  </IDKitWidget>
-                  
-                  <div className="mt-4">
-                    <Button
-                      onClick={handleMockVerify}
-                      variant="outline"
-                      className="w-full border-modern-purple/20"
-                    >
-                      Mock Verify (Development Only)
-                    </Button>
-                  </div>
-                </div>
+            <div className="space-y-8 text-center">
+              <div className="w-24 h-24 mx-auto bg-black rounded-xl flex items-center justify-center">
+                <img src="/placeholder.svg" alt="Logo" className="w-16 h-16" />
               </div>
-            </Card>
-          )}
-
-          {currentStep === "onboarding" && (
-            <Card className="p-8 bg-modern-card backdrop-blur-sm shadow-glass border border-white/20">
-              <div className="space-y-8 animate-fade-up">
-                <MascotIllustration step={onboardingPage as 1 | 2 | 3} />
-                <div className="space-y-4">
-                  <h2 className="text-2xl font-bold text-gray-800">
-                    {onboardingPage === 1 && "Welcome to MAGBot!"}
-                    {onboardingPage === 2 && "Bigger Loans for Verified Users!"}
-                    {onboardingPage === 3 && "How It Works"}
-                  </h2>
-                  <p className="text-gray-600">
-                    {onboardingPage === 1 && "Access gas-free, instant micro-loans with your World ID."}
-                    {onboardingPage === 2 && "ORB Verified: $10 | Passport Verified: $3 | Non-Verified: $1"}
-                    {onboardingPage === 3 && "1. Verify your World ID\n2. Apply for a loan instantly\n3. Track repayments easily"}
-                  </p>
-                </div>
-                <div className="flex justify-between items-center">
-                  <div className="flex gap-2">
-                    {[1, 2, 3].map((step) => (
-                      <div
-                        key={step}
-                        className={`h-2 w-2 rounded-full transition-colors ${
-                          step === onboardingPage ? "bg-modern-purple" : "bg-gray-200"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  {onboardingPage < 3 ? (
-                    <Button 
-                      onClick={() => setOnboardingPage(p => p + 1)}
-                      className="bg-purple-gradient hover:opacity-90"
-                    >
-                      Next <ChevronRight className="ml-2" />
-                    </Button>
-                  ) : (
-                    <Button 
-                      onClick={handleFinishOnboarding}
-                      className="bg-purple-gradient hover:opacity-90"
-                    >
-                      Get Started
-                    </Button>
-                  )}
-                </div>
+              <div>
+                <h2 className="text-3xl font-bold mb-2">Connect your wallet!</h2>
+                <p className="text-gray-600">To start exploring meme world</p>
               </div>
-            </Card>
+              <Button 
+                className="w-full bg-purple-500 hover:bg-purple-600 text-white rounded-full py-6"
+                onClick={() => setCurrentStep("onboarding")}
+              >
+                Connect
+              </Button>
+              <p className="text-sm text-gray-500">
+                By clicking, you agree with <span className="text-black">Terms</span>
+              </p>
+            </div>
           )}
 
           {currentStep === "dashboard" && (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card className="p-6 bg-modern-card backdrop-blur-sm shadow-glass border border-white/20">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-500">Total Balance</p>
-                      <h3 className="text-2xl font-bold text-gray-800">${walletBalance.toFixed(2)}</h3>
-                    </div>
-                    <div className="h-12 w-12 rounded-full bg-modern-purple/10 flex items-center justify-center">
-                      <DollarSign className="h-6 w-6 text-modern-purple" />
-                    </div>
-                  </div>
-                </Card>
+              <div className="text-center mb-8">
+                <h2 className="text-4xl font-bold mb-2">$43.04</h2>
+                <div className="flex justify-center gap-4 mt-6">
+                  <Button className="rounded-full bg-black text-white px-8">
+                    Buy
+                  </Button>
+                  <Button className="rounded-full bg-blue-500 text-white px-8">
+                    Send
+                  </Button>
+                </div>
               </div>
 
-              <WalletDashboard
-                balance={walletBalance}
-                onShowFundingOptions={() => setShowFundingOptions(true)}
-                onShowHelpGuide={() => setShowHelpGuide(true)}
-              />
-              
-              <Sheet open={showFundingOptions} onOpenChange={setShowFundingOptions}>
-                <SheetContent side="bottom" className="h-[300px]">
-                  <FundingOptions onClose={() => setShowFundingOptions(false)} />
-                </SheetContent>
-              </Sheet>
-              
-              {showHelpGuide && <HelpGuide onClose={() => setShowHelpGuide(false)} />}
-              
-              <SignInModal
-                isOpen={showSignInModal}
-                onClose={() => setShowSignInModal(false)}
-                onSignIn={() => {
-                  setShowSignInModal(false);
-                  setWalletBalance(0);
-                }}
-              />
+              <div className="space-y-4">
+                {[
+                  { name: "Worldcoin", symbol: "WLD", balance: "16.24", change: "-5.65%" },
+                  { name: "Dollars", symbol: "USDC.E", balance: "0.00", change: "+0.01%" },
+                  { name: "Bitcoin", symbol: "WBTC", balance: "0.00", change: "-3.03%" },
+                  { name: "Ethereum", symbol: "WETH", balance: "0.00", change: "-3.46%" },
+                ].map((token) => (
+                  <div key={token.symbol} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gray-200" />
+                      <div>
+                        <h3 className="font-semibold">{token.name}</h3>
+                        <p className="text-sm text-gray-500">{token.symbol}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold">${token.balance}</p>
+                      <p className={`text-sm ${token.change.startsWith("+") ? "text-green-500" : "text-red-500"}`}>
+                        {token.change}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </>
           )}
         </div>
+
+        {/* Bottom Sheet for Funding Options */}
+        <Sheet open={showFundingOptions} onOpenChange={setShowFundingOptions}>
+          <SheetContent side="bottom" className="h-[300px]">
+            <FundingOptions onClose={() => setShowFundingOptions(false)} />
+          </SheetContent>
+        </Sheet>
       </div>
     </div>
   );
