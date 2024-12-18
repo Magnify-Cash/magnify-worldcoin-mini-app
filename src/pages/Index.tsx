@@ -131,7 +131,7 @@ const Index = () => {
 
         {/* Bottom Sheet for Funding Options */}
         <Sheet open={showFundingOptions} onOpenChange={setShowFundingOptions}>
-          <SheetContent side="bottom" className="h-[300px]">
+          <SheetContent side="bottom" className="h-[400px]">
             <FundingOptions onClose={() => setShowFundingOptions(false)} />
           </SheetContent>
         </Sheet>
