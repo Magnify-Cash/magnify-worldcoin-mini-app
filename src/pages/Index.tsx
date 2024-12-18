@@ -26,6 +26,17 @@ const Index = () => {
     setCurrentStep("dashboard");
   };
 
+  const handleBuy = () => {
+    console.log("Buy button clicked");
+    toast.info("Buy feature coming soon!");
+    setShowFundingOptions(true);
+  };
+
+  const handleSend = () => {
+    console.log("Send button clicked");
+    toast.info("Send feature coming soon!");
+  };
+
   return (
     <div className="min-h-screen bg-white font-['Bai_Jamjuree']">
       <div className="max-w-md mx-auto relative">
@@ -68,10 +79,16 @@ const Index = () => {
               <div className="text-center mb-8">
                 <h2 className="text-4xl font-bold mb-2">$43.04</h2>
                 <div className="flex justify-center gap-4 mt-6">
-                  <Button className="rounded-full bg-black text-white px-8">
+                  <Button 
+                    className="rounded-full bg-black text-white px-8"
+                    onClick={handleBuy}
+                  >
                     Buy
                   </Button>
-                  <Button className="rounded-full bg-blue-500 text-white px-8">
+                  <Button 
+                    className="rounded-full bg-blue-500 text-white px-8"
+                    onClick={handleSend}
+                  >
                     Send
                   </Button>
                 </div>
