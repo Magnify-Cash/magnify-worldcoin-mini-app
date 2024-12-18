@@ -37,6 +37,11 @@ const Index = () => {
     toast.info("Send feature coming soon!");
   };
 
+  const handleLoan = () => {
+    console.log("Loan button clicked");
+    toast.info("Loan feature coming soon!");
+  };
+
   return (
     <div className="min-h-screen bg-white font-['Bai_Jamjuree']">
       <div className="max-w-md mx-auto relative">
@@ -78,18 +83,26 @@ const Index = () => {
             <>
               <div className="text-center mb-8">
                 <h2 className="text-4xl font-bold mb-2">$43.04</h2>
-                <div className="flex justify-center gap-4 mt-6">
-                  <Button 
-                    className="rounded-full bg-black text-white px-8"
-                    onClick={handleBuy}
+                <div className="flex flex-col gap-4 mt-6">
+                  <div className="flex justify-center gap-4">
+                    <Button 
+                      className="rounded-full bg-black text-white px-8"
+                      onClick={handleBuy}
+                    >
+                      Buy
+                    </Button>
+                    <Button 
+                      className="rounded-full bg-blue-500 text-white px-8"
+                      onClick={handleSend}
+                    >
+                      Send
+                    </Button>
+                  </div>
+                  <Button
+                    className="rounded-full bg-green-500 text-white px-8 mx-auto w-fit"
+                    onClick={handleLoan}
                   >
-                    Buy
-                  </Button>
-                  <Button 
-                    className="rounded-full bg-blue-500 text-white px-8"
-                    onClick={handleSend}
-                  >
-                    Send
+                    Get a Loan
                   </Button>
                 </div>
               </div>
