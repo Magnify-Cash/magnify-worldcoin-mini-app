@@ -11,18 +11,31 @@ export const HelpGuide = ({ onClose }: HelpGuideProps) => {
   const steps = [
     {
       title: "1. Verify Your Identity",
-      description: "Use World ID to verify your identity and unlock higher loan limits.",
-      tip: "ORB verification gives you access to loans up to $10!"
+      description: "Use World ID to verify your identity and access loans tailored to your verification level:",
+      details: [
+        "ORB Verified: Unlock loans up to $10.",
+        "Passport Verified: Eligible for loans up to $3.",
+        "Basic Verification: Start with $1 to build trust."
+      ],
+      tip: "Verifying with ORB unlocks the highest loan limits and exclusive perks!"
     },
     {
       title: "2. Apply for a Loan",
-      description: "Choose your loan amount and duration based on your verification level.",
-      tip: "Start small with a $1 loan to build trust."
+      description: "Choose your loan amount and duration based on your verification level:",
+      details: [
+        "Select the loan size available to you: $1, $3, or $10.",
+        "Pick a repayment duration (e.g., 7 days or 14 days)."
+      ],
+      tip: "Start small with a $1 loan if you're new to MAGBot, and increase your limits as you verify further."
     },
     {
       title: "3. Track & Repay",
-      description: "Monitor your active loans and make repayments easily through your wallet.",
-      tip: "Early repayments are available after 1 hour."
+      description: "Easily monitor your active loans and make repayments directly through your wallet:",
+      details: [
+        "View your loan details, repayment schedule, and status.",
+        "Make early repayments anytime after 1 hour to close your loan faster."
+      ],
+      tip: "Repaying early helps build trust and unlocks access to larger loans over time!"
     }
   ];
 
@@ -39,9 +52,14 @@ export const HelpGuide = ({ onClose }: HelpGuideProps) => {
           
           <div className="space-y-8">
             {steps.map((step, index) => (
-              <div key={index} className="space-y-2">
+              <div key={index} className="space-y-3">
                 <h3 className="text-lg font-semibold">{step.title}</h3>
                 <p className="text-muted-foreground">{step.description}</p>
+                <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
+                  {step.details.map((detail, detailIndex) => (
+                    <li key={detailIndex}>{detail}</li>
+                  ))}
+                </ul>
                 <div className="bg-accent/50 p-4 rounded-lg">
                   <p className="text-sm font-medium">💡 Tip: {step.tip}</p>
                 </div>
