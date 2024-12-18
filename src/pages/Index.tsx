@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import { IDKitWidget } from "@worldcoin/idkit";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, TrendingUp, TrendingDown, Users, DollarSign } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { MascotIllustration } from "@/components/MascotIllustration";
 import { HelpGuide } from "@/components/HelpGuide";
 import SignInModal from "@/components/SignInModal";
 import WalletDashboard from "@/components/WalletDashboard";
 import { FundingOptions } from "@/components/FundingOptions";
+import { Header } from "@/components/Header";
 
 const Index = () => {
   const [verificationResult, setVerificationResult] = useState<any>(null);
@@ -20,7 +21,6 @@ const Index = () => {
   const [walletBalance, setWalletBalance] = useState(0);
 
   useEffect(() => {
-    // Only show sign-in modal if we're in the dashboard
     setShowSignInModal(currentStep === "dashboard");
   }, [currentStep]);
 
@@ -45,74 +45,13 @@ const Index = () => {
     setCurrentStep("dashboard");
   };
 
-  const renderOnboarding = () => {
-    const pages = [
-      {
-        title: "Welcome to MAGBot!",
-        description: "Access gas-free, instant micro-loans with your World ID.",
-      },
-      {
-        title: "Bigger Loans for Verified Users!",
-        description: "ORB Verified: $10 | Passport Verified: $3 | Non-Verified: $1.",
-      },
-      {
-        title: "How It Works",
-        description: "1. Verify your World ID\n2. Apply for a loan instantly\n3. Track repayments easily",
-      }
-    ];
-
-    const currentPage = pages[onboardingPage - 1];
-
-    return (
-      <div className="space-y-8 animate-fade-up">
-        <MascotIllustration step={onboardingPage as 1 | 2 | 3} />
-        <div className="space-y-4">
-          <h2 className="text-2xl font-bold">{currentPage.title}</h2>
-          <p className="text-gray-600 whitespace-pre-line">{currentPage.description}</p>
-        </div>
-        <div className="flex justify-between items-center">
-          <div className="flex gap-2">
-            {pages.map((_, idx) => (
-              <div
-                key={idx}
-                className={`h-2 w-2 rounded-full ${
-                  idx + 1 === onboardingPage ? "bg-worldcoin-primary" : "bg-gray-200"
-                }`}
-              />
-            ))}
-          </div>
-          {onboardingPage < 3 ? (
-            <Button onClick={() => setOnboardingPage(p => p + 1)}>
-              Next <ChevronRight className="ml-2" />
-            </Button>
-          ) : (
-            <Button onClick={handleFinishOnboarding}>Get Started</Button>
-          )}
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="min-h-screen bg-modern-background">
       <div className="absolute inset-0 bg-gradient-radial from-modern-purple/20 via-modern-blue/10 to-transparent pointer-events-none" />
       
       <div className="container max-w-7xl mx-auto px-4 py-8 relative">
         <div className="space-y-8">
-          <div className="flex justify-between items-center">
-            <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-purple-gradient">
-              MAGBot Mini App
-            </h1>
-            
-            <div className="flex gap-4">
-              <Button variant="outline" className="border-modern-purple/20">
-                Select Dates
-              </Button>
-              <Button className="bg-purple-gradient hover:opacity-90">
-                Connect Wallet
-              </Button>
-            </div>
-          </div>
+          <Header />
 
           {currentStep === "verify" && (
             <Card className="p-8 bg-modern-card backdrop-blur-sm shadow-glass border border-white/20">
