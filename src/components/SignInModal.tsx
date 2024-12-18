@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { MiniKit } from "@worldcoin/minikit-js";
-import { SignInButton } from "./auth/SignInButton";
-import { MockSignInButton } from "./auth/MockSignInButton";
-import { RememberMeOption } from "./auth/RememberMeOption";
 import { useWalletAuth } from "@/hooks/useWalletAuth";
+import { Button } from "@/components/ui/button";
+import { Wallet } from "lucide-react";
+import { TestTube } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 export interface SignInModalProps {
   isOpen: boolean;
@@ -27,7 +29,7 @@ export const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => 
       console.log("Initiating wallet authentication...");
       const nonce = crypto.randomUUID().replace(/-/g, "");
 
-      await MiniKit.commands.walletAuth({
+      MiniKit.commands.walletAuth({
         nonce,
         statement: "Sign in to MAGBot to manage your loans.",
         expirationTime: rememberMe
@@ -60,10 +62,46 @@ export const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => 
           <p className="text-center text-gray-600">
             This app will see your wallet and allow you to manage loans.
           </p>
-          <RememberMeOption value={rememberMe} onChange={setRememberMe} />
+
+          {/* Remember me */}
+          <RadioGroup
+            defaultValue={rememberMe ? "remember" : "forget"}
+            onValueChange={(value) => setRememberMe(value === "remember")}
+            className="flex flex-col space-y-2"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="remember" id="remember" />
+              <Label htmlFor="remember">Keep me signed in for future sessions</Label>
+            </div>
+          </RadioGroup>
+          {/* End remember me */}
+
           <div className="flex flex-col gap-2">
-            <SignInButton onClick={handleSignIn} isGlowing={isGlowing} />
-            <MockSignInButton onClick={handleMockSignIn} isGlowing={isGlowing} />
+            {/* Sign In button */}
+            <Button
+              onClick={handleSignIn}
+              variant="outline"
+              className={`flex-1 font-semibold shadow-sm transition-all duration-300 ${
+                isGlowing ? "animate-button-glow" : "hover:animate-button-glow"
+              }`}
+            >
+              <Wallet className="mr-2 h-4 w-4" />
+              Sign In with Wallet
+            </Button>
+            {/* End Sign In button */}
+
+            {/* Mock Sign In button */}
+            <Button
+              onClick={handleMockSignIn}
+              variant="outline"
+              className={`flex-1 font-semibold shadow-sm transition-all duration-300 ${
+                isGlowing ? "animate-button-glow" : "hover:animate-button-glow"
+              }`}
+            >
+              <TestTube className="mr-2 h-4 w-4" />
+              Mock Sign In
+            </Button>
+            {/* End Mock Sign In button */}
           </div>
         </div>
       </DialogContent>
