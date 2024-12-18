@@ -31,11 +31,10 @@ const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
       }
 
       try {
-        // In a real app, you would verify this on your backend
         console.log("Authentication successful:", payload);
         toast.success("Successfully signed in!");
         onSignIn();
-        onClose(); // Close the modal after successful sign-in
+        onClose();
       } catch (error) {
         console.error("Error processing auth response:", error);
         toast.error("Failed to complete authentication. Please try again.");
@@ -47,7 +46,7 @@ const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
     return () => {
       MiniKit.unsubscribe(ResponseEvent.MiniAppWalletAuth);
     };
-  }, [onSignIn, onClose]); // Added onClose to dependency array
+  }, [onSignIn, onClose]);
 
   const handleSignIn = async () => {
     try {
@@ -65,6 +64,7 @@ const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
     } catch (error) {
       console.error("Authentication failed:", error);
       toast.error("Failed to sign in. Please try again.");
+      onClose();
     }
   };
 
@@ -92,7 +92,7 @@ const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
           </RadioGroup>
           <Button
             onClick={handleSignIn}
-            className="w-full bg-gradient-to-r from-worldcoin-primary to-worldcoin-secondary"
+            className="w-full bg-gradient-to-r from-highlight-blue to-highlight-coral"
           >
             <Wallet className="mr-2 h-4 w-4" />
             Sign In with Wallet
