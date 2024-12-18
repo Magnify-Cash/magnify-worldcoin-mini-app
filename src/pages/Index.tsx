@@ -10,6 +10,24 @@ import { MascotIllustration } from "@/components/MascotIllustration";
 import LoanApplicationForm from "@/components/loan/LoanApplicationForm";
 import LoanConfirmation from "@/components/loan/LoanConfirmation";
 
+const ONBOARDING_SLIDES = [
+  {
+    title: "Welcome to MAGBot!",
+    description: "Access gas-free, instant micro-loans with your World ID.",
+    buttonText: "Next",
+  },
+  {
+    title: "Bigger Loans for Verified Users!",
+    description: "ORB Verified: $10 | Passport Verified: $3 | Non-Verified: $1.",
+    buttonText: "Continue",
+  },
+  {
+    title: "How It Works",
+    description: "1. Verify your World ID\n2. Apply for a loan instantly\n3. Track repayments easily",
+    buttonText: "Get Started",
+  },
+];
+
 const Index = () => {
   const [currentStep, setCurrentStep] = useState<
     "verify" | "onboarding" | "dashboard" | "loan-application" | "loan-confirmation"
@@ -84,6 +102,7 @@ const Index = () => {
         );
 
       case "onboarding":
+        const currentSlideContent = ONBOARDING_SLIDES[onboardingSlide - 1];
         return (
           <div className="space-y-8 animate-fade-up p-6">
             <div className="relative">
@@ -102,16 +121,16 @@ const Index = () => {
             
             <div className="space-y-4 text-center">
               <h2 className="text-2xl font-semibold text-brand-text-primary">
-                {currentSlide.title}
+                {currentSlideContent.title}
               </h2>
               <p className="text-brand-text-secondary">
-                {currentSlide.description}
+                {currentSlideContent.description}
               </p>
               <Button
                 className="w-full bg-main-gradient hover:scale-105 transition-all duration-300 text-white rounded-full py-6 shadow-lg"
                 onClick={handleNextSlide}
               >
-                {currentSlide.buttonText}
+                {currentSlideContent.buttonText}
                 <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
