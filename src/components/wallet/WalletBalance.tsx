@@ -9,7 +9,7 @@ interface WalletBalanceProps {
 export const WalletBalance = ({ balance, verificationLevel }: WalletBalanceProps) => {
   return (
     <div className="space-y-8">
-      <div className="space-y-4">
+      <div className="space-y-4 text-left">
         <h2 className="text-3xl font-bold tracking-tight">Wallet</h2>
         <VerificationStatus level={verificationLevel} />
       </div>
