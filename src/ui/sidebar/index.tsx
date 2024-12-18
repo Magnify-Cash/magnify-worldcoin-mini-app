@@ -3,7 +3,7 @@ import { PanelLeft } from "lucide-react";
 import { Button } from "@/ui/button";
 import { Sheet, SheetContent } from "@/ui/sheet";
 import { TooltipProvider } from "@/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/tailwind";
 import { SidebarProvider, useSidebar } from "./SidebarContext";
 import {
   SidebarContent,

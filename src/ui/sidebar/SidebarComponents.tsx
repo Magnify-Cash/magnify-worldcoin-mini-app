@@ -2,7 +2,7 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { Input } from "@/ui/input";
 import { Separator } from "@/ui/separator";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/tailwind";
 
 export const SidebarInput = React.forwardRef<
   React.ElementRef<typeof Input>,
