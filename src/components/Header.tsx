@@ -1,11 +1,33 @@
-import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 
-export const Header = () => {
+const Header = () => {
   return (
-    <div className="flex justify-between items-center">
-      <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-purple-gradient">
-        MAGBot Mini App
-      </h1>
-    </div>
+    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 items-center">
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <Link to="/" className={navigationMenuTriggerStyle()}>
+                Home
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link to="/loan" className={navigationMenuTriggerStyle()}>
+                Get a Loan
+              </Link>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
+      </div>
+    </header>
   );
 };
+
+export default Header;
