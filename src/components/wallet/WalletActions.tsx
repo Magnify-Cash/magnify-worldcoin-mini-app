@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Plus, Send, MoreHorizontal } from "lucide-react";
+import { Plus, Coins, MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
@@ -30,9 +30,10 @@ export const WalletActions = ({ onShowFundingOptions, onShowHelpGuide }: WalletA
       <Button 
         variant="outline"
         className="flex flex-col items-center justify-center gap-2 p-4 w-24 h-24 glass-card"
+        onClick={() => navigate("/loan")}
       >
-        <Send className="h-8 w-8" />
-        <span>Send</span>
+        <Coins className="h-8 w-8" />
+        <span>Borrow</span>
       </Button>
       
       <DropdownMenu>
