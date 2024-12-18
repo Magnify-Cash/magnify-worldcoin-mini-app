@@ -76,7 +76,7 @@ const WalletDashboard = ({
                   <span>More</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-white/90 backdrop-blur-md border border-white/20">
+              <DropdownMenuContent align="end" className="w-48 bg-white/90 backdrop-blur-md">
                 <DropdownMenuItem onClick={() => navigate("/")}>
                   Home
                 </DropdownMenuItem>
