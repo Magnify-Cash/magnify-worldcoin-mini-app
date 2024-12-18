@@ -6,6 +6,7 @@ import { CircularProgressbar } from 'react-circular-progressbar';
 import { Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { LoanEligibility } from "./verification/LoanEligibility";
+import RepayLoanCard from "./loan/RepayLoanCard";
 import 'react-circular-progressbar/dist/styles.css';
 
 interface LoanDashboardProps {
@@ -22,6 +23,15 @@ const LoanDashboard = ({
   onTimeRepayments = 0,
 }: LoanDashboardProps) => {
   const creditScorePercentage = ((creditScore - 300) / (850 - 300)) * 100;
+  
+  // Mock active loan data - this would come from your backend in a real app
+  const hasActiveLoan = true;
+  const activeLoan = {
+    loanAmount: 5,
+    dueDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toLocaleDateString(),
+    interestRate: 1.5,
+    totalDue: 5.08,
+  };
 
   return (
     <Card className="w-full p-6 bg-white/50 backdrop-blur-sm space-y-6">
@@ -31,6 +41,10 @@ const LoanDashboard = ({
           <VerificationBadge level={verificationLevel} className="mb-4" />
         </div>
       </div>
+
+      {hasActiveLoan && (
+        <RepayLoanCard {...activeLoan} />
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <Card className="p-4 glass-card">
