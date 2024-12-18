@@ -4,7 +4,7 @@ import { VerificationBadge } from "./verification/VerificationBadge";
 import { VerificationLevel } from "@/types/verification";
 import { CircularProgressbar } from 'react-circular-progressbar';
 import { Info } from 'lucide-react';
-import { Tooltip } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import 'react-circular-progressbar/dist/styles.css';
 
 interface LoanDashboardProps {
@@ -71,9 +71,16 @@ const LoanDashboard = ({
               />
             </div>
           </div>
-          <Tooltip content="Your credit score is calculated based on your loan repayment history. Scores range from 300 to 850, with higher scores unlocking better loan terms.">
-            <Info className="w-4 h-4 text-brand-text-secondary mt-2" />
-          </Tooltip>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <Info className="w-4 h-4 text-brand-text-secondary mt-2" />
+              </TooltipTrigger>
+              <TooltipContent>
+                Your credit score is calculated based on your loan repayment history. Scores range from 300 to 850, with higher scores unlocking better loan terms.
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </Card>
       </div>
 
