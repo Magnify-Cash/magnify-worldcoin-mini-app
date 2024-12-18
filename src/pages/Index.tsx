@@ -5,7 +5,6 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { FundingOptions } from "@/components/FundingOptions";
 import { MascotIllustration } from "@/components/MascotIllustration";
 import WalletDashboard from "@/components/WalletDashboard";
-import LoanDashboard from "@/components/LoanDashboard";
 import { VerificationLevel } from "@/types/verification";
 import { toast } from "sonner";
 
@@ -17,9 +16,6 @@ const Index = () => {
   const [showFundingOptions, setShowFundingOptions] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0);
   const [verificationLevel, setVerificationLevel] = useState<VerificationLevel>('NONE');
-  const [creditScore, setCreditScore] = useState(300);
-  const [totalLoansRepaid, setTotalLoansRepaid] = useState(0);
-  const [onTimeRepayments, setOnTimeRepayments] = useState(0);
 
   const handleSignIn = () => {
     console.log("User signed in successfully");
@@ -70,13 +66,7 @@ const Index = () => {
 
       case "dashboard":
         return (
-          <div className="container mx-auto p-6 space-y-6">
-            <LoanDashboard
-              verificationLevel={verificationLevel}
-              creditScore={creditScore}
-              totalLoansRepaid={totalLoansRepaid}
-              onTimeRepayments={onTimeRepayments}
-            />
+          <div className="container mx-auto p-6">
             <WalletDashboard
               balance={walletBalance}
               verificationLevel={verificationLevel}
