@@ -19,14 +19,14 @@ export const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => 
 
   const handleSignIn = async () => {
     if (!isMinikitAvailable) {
-      toast.error('Please open this app in World App to use wallet features');
+      toast.error("Please open this app in World App to use wallet features");
       return;
     }
 
     try {
       console.log("Initiating wallet authentication...");
       const nonce = crypto.randomUUID().replace(/-/g, "");
-      
+
       await MiniKit.commands.walletAuth({
         nonce,
         statement: "Sign in to MAGBot to manage your loans.",
@@ -45,21 +45,16 @@ export const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => 
   const handleMockSignIn = async () => {
     console.log("Initiating mock wallet authentication...");
     setIsGlowing(true);
-    
-    setTimeout(() => {
-      toast.success("Mock sign-in successful!");
-      onSignIn();
-      onClose();
-    }, 1000);
+    toast.success("Mock sign-in successful!");
+    onSignIn();
+    onClose();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center">
-            MAGBot 3.0
-          </DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-center">MAGBot 3.0</DialogTitle>
         </DialogHeader>
         <div className="space-y-6 py-4">
           <p className="text-center text-gray-600">

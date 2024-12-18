@@ -7,7 +7,7 @@ import { VerificationLevel } from "@/types/verification";
 const WalletPage = () => {
   const [showFundingOptions, setShowFundingOptions] = useState(false);
   const [walletBalance] = useState(16.24);
-  const [verificationLevel] = useState<VerificationLevel>('ORB');
+  const [verificationLevel] = useState<VerificationLevel>("ORB");
 
   return (
     <div className="container mx-auto p-6">
@@ -15,7 +15,6 @@ const WalletPage = () => {
         balance={walletBalance}
         verificationLevel={verificationLevel}
         onShowFundingOptions={() => setShowFundingOptions(true)}
-        onShowHelpGuide={() => console.log('Help guide clicked')}
       />
 
       <Sheet open={showFundingOptions} onOpenChange={setShowFundingOptions}>

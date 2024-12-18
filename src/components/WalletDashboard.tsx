@@ -23,15 +23,9 @@ interface WalletDashboardProps {
   balance: number;
   verificationLevel: VerificationLevel;
   onShowFundingOptions: () => void;
-  onShowHelpGuide: () => void;
 }
 
-const WalletDashboard = ({
-  balance,
-  verificationLevel,
-  onShowFundingOptions,
-  onShowHelpGuide,
-}: WalletDashboardProps) => {
+const WalletDashboard = ({ balance, verificationLevel, onShowFundingOptions }: WalletDashboardProps) => {
   const navigate = useNavigate();
 
   return (
@@ -83,7 +77,7 @@ const WalletDashboard = ({
             <DropdownMenuItem onClick={() => navigate("/")}>Home</DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate("/loan")}>Get a Loan</DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate("/dashboard")}>Loan Dashboard</DropdownMenuItem>
-            <DropdownMenuItem onClick={onShowHelpGuide}>Help Guide</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/onboarding")}>Help Guide</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
