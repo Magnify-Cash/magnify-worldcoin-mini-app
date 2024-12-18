@@ -53,11 +53,11 @@
   }
   
   .primary-button {
-    @apply bg-black text-white font-semibold shadow-sm hover:bg-main-gradient hover:scale-105 transition-all duration-300 hover:shadow-[0_0_15px_rgba(45,255,249,0.5)];
+    @apply bg-black text-white font-semibold shadow-sm hover:bg-main-gradient hover:scale-105 transition-all duration-300 hover:shadow-[0_0_15px_rgba(45,255,249,0.5)] !important;
   }
   
   .secondary-button {
-    @apply bg-black text-white font-medium shadow-sm hover:bg-brand-coral/10 hover:text-brand-coral transition-all border border-transparent hover:border-brand-coral;
+    @apply bg-black text-white font-medium shadow-sm hover:bg-brand-coral/10 hover:text-brand-coral transition-all border border-transparent hover:border-brand-coral !important;
   }
   
   .input-field {
