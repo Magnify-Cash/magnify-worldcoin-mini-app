@@ -45,6 +45,14 @@ const Header = () => {
                   Dashboard
                 </Link>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link
+                  to="/onboarding"
+                  className={cn("w-full", location.pathname === "/dashboard" && "text-primary")}
+                >
+                  Get Help
+                </Link>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )}

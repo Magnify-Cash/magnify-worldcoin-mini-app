@@ -2,7 +2,7 @@ import { VerificationLevel } from "@/types/verification";
 import { Card } from "@/ui/card";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { Button } from "@/ui/button";
-import { Plus, Send, MoreHorizontal } from "lucide-react";
+import { Plus, Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/ui/dropdown-menu";
 import { VerificationStatus } from "@/components/verification/VerificationStatus";
@@ -45,10 +45,10 @@ const WalletDashboard = ({ balance, verificationLevel, onShowFundingOptions }: W
         <Button
           variant="outline"
           className="flex flex-col items-center justify-center gap-2 p-4 w-24 h-24 glass-card"
-          onClick={onShowFundingOptions}
+          onClick={() => navigate("/loan")}
         >
           <Plus className="h-8 w-8" />
-          <span>Buy</span>
+          <span>Get a loan</span>
         </Button>
 
         <Button
@@ -56,25 +56,8 @@ const WalletDashboard = ({ balance, verificationLevel, onShowFundingOptions }: W
           className="flex flex-col items-center justify-center gap-2 p-4 w-24 h-24 glass-card"
         >
           <Send className="h-8 w-8" />
-          <span>Send</span>
+          <span>Dashboard</span>
         </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="flex flex-col items-center justify-center gap-2 p-4 w-24 h-24 glass-card"
-            >
-              <MoreHorizontal className="h-8 w-8" />
-              <span>More</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48 bg-white/90 backdrop-blur-md">
-            <DropdownMenuItem onClick={() => navigate("/")}>Home</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/loan")}>Get a Loan</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/dashboard")}>Loan Dashboard</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/onboarding")}>Help Guide</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
       {/* Wallet Actions */}
 
