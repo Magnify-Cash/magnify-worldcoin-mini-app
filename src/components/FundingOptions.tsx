@@ -1,4 +1,4 @@
-import { PayPal, CreditCard, Apple } from "lucide-react";
+import { CreditCard, Wallet, SmartphoneNfc } from "lucide-react";
 import { toast } from "sonner";
 
 interface FundingOptionsProps {
@@ -15,7 +15,7 @@ export const FundingOptions = ({ onClose }: FundingOptionsProps) => {
   const paymentMethods = [
     {
       name: "PayPal",
-      icon: PayPal,
+      icon: Wallet,
       description: "Variable fees • Instant",
       bgColor: "bg-[#0070BA]",
     },
@@ -27,7 +27,7 @@ export const FundingOptions = ({ onClose }: FundingOptionsProps) => {
     },
     {
       name: "Apple Pay",
-      icon: Apple,
+      icon: SmartphoneNfc,
       description: "Variable fees • Takes minutes",
       bgColor: "bg-black",
     },
