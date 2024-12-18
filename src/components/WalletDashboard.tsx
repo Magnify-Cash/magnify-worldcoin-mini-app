@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { VerificationStatus } from "./verification/VerificationStatus";
 import { VerificationLevel } from "@/types/verification";
 import { useNavigate } from "react-router-dom";
+import { Wallet, Send, Plus } from "lucide-react";
 
 interface WalletDashboardProps {
   balance: number;
@@ -29,57 +30,57 @@ const WalletDashboard = ({
   return (
     <div className="space-y-8 animate-fade-up">
       <div className="text-center space-y-8">
-        <VerificationStatus level={verificationLevel} />
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold">Your Wallet</h2>
+          <VerificationStatus level={verificationLevel} />
+        </div>
         
-        <h2 className="text-6xl font-bold text-brand-text-primary">
-          ${balance.toFixed(2)}
-        </h2>
+        <div className="overflow-x-auto pb-4">
+          <div className="flex space-x-4 min-w-max">
+            <Card className="glass-card p-6 w-48">
+              <Wallet className="w-8 h-8 mb-2 text-brand-turquoise" />
+              <p className="text-sm text-brand-text-secondary">Total Balance</p>
+              <h3 className="text-2xl font-bold">${balance.toFixed(2)}</h3>
+            </Card>
+            
+            {TOKENS.map((token) => (
+              <Card 
+                key={token.symbol} 
+                className="glass-card p-6 w-48"
+              >
+                <div className="w-8 h-8 rounded-full bg-brand-skyBlue/50 mb-2" />
+                <p className="text-sm text-brand-text-secondary">{token.name}</p>
+                <h3 className="text-2xl font-bold">${token.balance.toFixed(2)}</h3>
+                <p className={`text-sm ${token.change >= 0 ? 'text-brand-success' : 'text-brand-error'}`}>
+                  {token.change >= 0 ? '+' : ''}{token.change}%
+                </p>
+              </Card>
+            ))}
+          </div>
+        </div>
         
-        <div className="grid grid-cols-2 gap-4 mb-8">
+        <div className="grid grid-cols-2 gap-4">
           <Button 
             className="glass-card primary-button"
             onClick={onShowFundingOptions}
           >
+            <Plus className="w-4 h-4" />
             Buy
           </Button>
           <Button 
             className="glass-card primary-button"
           >
+            <Send className="w-4 h-4" />
             Send
           </Button>
         </div>
         
         <Button 
-          className="w-full glass-card primary-button py-6 mb-8"
+          className="w-full glass-card primary-button py-6"
           onClick={() => navigate('/loan')}
         >
           Get a Loan
         </Button>
-
-        <div className="space-y-4">
-          {TOKENS.map((token) => (
-            <Card 
-              key={token.symbol} 
-              className="glass-card p-4 hover:shadow-glass-hover transition-all duration-300"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-brand-skyBlue/50" />
-                  <div className="text-left">
-                    <h3 className="font-medium text-brand-text-primary">{token.name}</h3>
-                    <p className="text-sm text-brand-text-secondary">{token.symbol}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-medium text-brand-text-primary">${token.balance.toFixed(2)}</p>
-                  <p className={`text-sm ${token.change >= 0 ? 'text-brand-success' : 'text-brand-error'}`}>
-                    {token.change >= 0 ? '+' : ''}{token.change}%
-                  </p>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
       </div>
     </div>
   );
