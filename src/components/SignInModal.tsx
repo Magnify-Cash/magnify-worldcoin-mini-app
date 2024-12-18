@@ -66,7 +66,7 @@ const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
             This app will see your wallet and allow you to manage loans.
           </p>
           <RememberMeOption value={rememberMe} onChange={setRememberMe} />
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2">
             <SignInButton onClick={handleSignIn} isGlowing={isGlowing} />
             <MockSignInButton onClick={handleMockSignIn} isGlowing={isGlowing} />
           </div>

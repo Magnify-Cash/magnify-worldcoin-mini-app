@@ -9,7 +9,8 @@ interface SignInButtonProps {
 export const SignInButton = ({ onClick, isGlowing }: SignInButtonProps) => (
   <Button
     onClick={onClick}
-    className={`flex-1 bg-gradient-to-r from-highlight-blue to-highlight-coral font-semibold text-black shadow-sm transition-all duration-300 ${
+    variant="outline"
+    className={`flex-1 font-semibold shadow-sm transition-all duration-300 ${
       isGlowing ? "animate-button-glow" : "hover:animate-button-glow"
     }`}
   >
