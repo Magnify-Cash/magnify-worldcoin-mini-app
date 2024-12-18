@@ -39,6 +39,7 @@ const LoanPage = () => {
       {currentStep === "application" ? (
         <LoanApplicationForm
           maxLoanAmount={10}
+          verificationLevel={verificationLevel}
           onSubmit={handleLoanApplication}
         />
       ) : loanDetails ? (

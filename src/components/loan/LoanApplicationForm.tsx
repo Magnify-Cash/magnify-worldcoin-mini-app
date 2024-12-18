@@ -4,61 +4,89 @@ import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { VerificationLevel } from "@/types/verification";
 
 interface LoanApplicationFormProps {
   maxLoanAmount: number;
+  verificationLevel: VerificationLevel;
   onSubmit: (amount: number, duration: number) => void;
 }
 
-const LoanApplicationForm = ({ maxLoanAmount, onSubmit }: LoanApplicationFormProps) => {
-  const [amount, setAmount] = useState<number>(1);
-  const [duration, setDuration] = useState<"7" | "14">("7");
+const LoanApplicationForm = ({ maxLoanAmount, verificationLevel, onSubmit }: LoanApplicationFormProps) => {
+  const [amount, setAmount] = useState<string>("1");
+  const [duration, setDuration] = useState<string>("30");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (amount > maxLoanAmount) {
+    const numAmount = Number(amount);
+    if (numAmount > maxLoanAmount) {
       toast.error(`Maximum loan amount is $${maxLoanAmount}`);
       return;
     }
-    if (amount < 1) {
-      toast.error("Minimum loan amount is $1");
-      return;
+    onSubmit(numAmount, parseInt(duration));
+  };
+
+  const getVerificationMessage = () => {
+    switch (verificationLevel) {
+      case 'NONE':
+        return "Get World ID verified to unlock higher loan amounts! Verify with Passport for $5 loans or get ORB verified for $10 loans.";
+      case 'PASSPORT':
+        return "Get ORB verified to unlock $10 loans!";
+      case 'ORB':
+        return "You're fully verified and eligible for maximum loan amounts!";
     }
-    onSubmit(amount, parseInt(duration));
+  };
+
+  const availableAmounts = () => {
+    switch (verificationLevel) {
+      case 'ORB':
+        return ['1', '5', '10'];
+      case 'PASSPORT':
+        return ['1', '5'];
+      default:
+        return ['1'];
+    }
   };
 
   return (
-    <Card className="p-6 space-y-6">
+    <Card className="p-6 space-y-6 bg-white/50 backdrop-blur-sm">
       <div className="space-y-2">
         <h3 className="text-xl font-semibold">Apply for a Loan</h3>
-        <p className="text-sm text-gray-500">Maximum loan amount: ${maxLoanAmount}</p>
+        <p className="text-sm text-gray-500">{getVerificationMessage()}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="amount">Loan Amount ($)</Label>
-          <Input
-            id="amount"
-            type="number"
-            min="1"
-            max={maxLoanAmount}
-            step="1"
-            value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}
-          />
+          <Select value={amount} onValueChange={setAmount}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select amount" />
+            </SelectTrigger>
+            <SelectContent>
+              {availableAmounts().map((value) => (
+                <SelectItem key={value} value={value}>
+                  ${value}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="space-y-2">
           <Label>Loan Duration</Label>
-          <RadioGroup value={duration} onValueChange={(value) => setDuration(value as "7" | "14")}>
+          <RadioGroup value={duration} onValueChange={setDuration}>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="7" id="7days" />
-              <Label htmlFor="7days">7 Days (1.5% APR)</Label>
+              <RadioGroupItem value="30" id="30days" />
+              <Label htmlFor="30days">30 Days (1.5% APR)</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="14" id="14days" />
-              <Label htmlFor="14days">14 Days (2% APR)</Label>
+              <RadioGroupItem value="60" id="60days" />
+              <Label htmlFor="60days">60 Days (2% APR)</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="90" id="90days" />
+              <Label htmlFor="90days">90 Days (2.5% APR)</Label>
             </div>
           </RadioGroup>
         </div>
