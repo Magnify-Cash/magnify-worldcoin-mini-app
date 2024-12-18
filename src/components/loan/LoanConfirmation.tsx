@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface LoanConfirmationProps {
   amount: number;
@@ -10,6 +11,36 @@ interface LoanConfirmationProps {
 }
 
 const LoanConfirmation = ({ amount, duration, transactionId, onClose }: LoanConfirmationProps) => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate blockchain transaction confirmation time
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000); // 3 seconds delay
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <Card className="p-6 text-center space-y-6">
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <div className="relative">
+            <div className="w-16 h-16 rounded-full border-4 border-black animate-spin border-t-transparent" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Loader2 className="w-8 h-8 animate-pulse text-black" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-xl font-semibold">Processing Loan</h3>
+            <p className="text-gray-600">Confirming transaction on WorldChain...</p>
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <Card className="p-6 text-center space-y-6">
       <div className="flex justify-center">
