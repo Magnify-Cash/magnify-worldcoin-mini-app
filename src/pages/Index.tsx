@@ -40,7 +40,7 @@ const Index = () => {
     switch (currentStep) {
       case "verify":
         return (
-          <div className="flex flex-col items-center justify-center min-h-screen p-6 space-y-6">
+          <div className="h-full flex flex-col items-center justify-center p-6">
             <MascotIllustration step={1} />
             <div className="text-center space-y-4">
               <h1 className="text-4xl font-bold">Welcome to MAGBot</h1>
@@ -61,7 +61,7 @@ const Index = () => {
 
       case "onboarding":
         return (
-          <div className="flex flex-col items-center justify-center min-h-screen p-6">
+          <div className="h-full flex flex-col items-center justify-center p-6">
             <div className="w-full max-w-lg">
               <HelpGuide onClose={() => setCurrentStep("dashboard")} />
             </div>
@@ -70,19 +70,21 @@ const Index = () => {
 
       case "dashboard":
         return (
-          <div className="container mx-auto p-6 space-y-6">
-            <LoanDashboard
-              verificationLevel={verificationLevel}
-              creditScore={creditScore}
-              totalLoansRepaid={totalLoansRepaid}
-              onTimeRepayments={onTimeRepayments}
-            />
-            <WalletDashboard
-              balance={walletBalance}
-              verificationLevel={verificationLevel}
-              onShowFundingOptions={() => setShowFundingOptions(true)}
-              onShowHelpGuide={() => setCurrentStep("onboarding")}
-            />
+          <div className="h-full overflow-auto">
+            <div className="container mx-auto p-6 space-y-6">
+              <LoanDashboard
+                verificationLevel={verificationLevel}
+                creditScore={creditScore}
+                totalLoansRepaid={totalLoansRepaid}
+                onTimeRepayments={onTimeRepayments}
+              />
+              <WalletDashboard
+                balance={walletBalance}
+                verificationLevel={verificationLevel}
+                onShowFundingOptions={() => setShowFundingOptions(true)}
+                onShowHelpGuide={() => setCurrentStep("onboarding")}
+              />
+            </div>
           </div>
         );
 
@@ -92,7 +94,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-brand-background to-brand-background-end">
+    <div className="h-full">
       {renderContent()}
 
       <SignInModal
