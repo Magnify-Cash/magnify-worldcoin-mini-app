@@ -1,3 +1,4 @@
+import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,31 +10,44 @@ import Index from "./pages/Index";
 import LoanPage from "./pages/LoanPage";
 import LoanDashboardPage from "./pages/LoanDashboardPage";
 import WalletPage from "./pages/WalletPage";
+import { ErrorBoundary } from "./utils/monitoring";
 
-const queryClient = new QueryClient();
+// Initialize QueryClient outside of component
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 5 * 60 * 1000,
+    },
+  },
+});
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <MiniKitProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <div className="min-h-screen flex flex-col">
-            <Header />
-            <main className="flex-1">
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/loan" element={<LoanPage />} />
-                <Route path="/dashboard" element={<LoanDashboardPage />} />
-                <Route path="/wallet" element={<WalletPage />} />
-              </Routes>
-            </main>
-          </div>
-        </BrowserRouter>
-      </TooltipProvider>
-    </MiniKitProvider>
-  </QueryClientProvider>
+  <ErrorBoundary fallback={<div>An error has occurred</div>}>
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <MiniKitProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <div className="min-h-screen flex flex-col">
+                <Header />
+                <main className="flex-1">
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/loan" element={<LoanPage />} />
+                    <Route path="/dashboard" element={<LoanDashboardPage />} />
+                    <Route path="/wallet" element={<WalletPage />} />
+                  </Routes>
+                </main>
+              </div>
+            </BrowserRouter>
+          </TooltipProvider>
+        </MiniKitProvider>
+      </QueryClientProvider>
+    </React.StrictMode>
+  </ErrorBoundary>
 );
 
 export default App;
