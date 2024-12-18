@@ -41,7 +41,7 @@ const Index = () => {
             <div className="text-center space-y-4">
               <h1 className="text-4xl font-bold">Welcome to MAGBot</h1>
               <p className="text-xl text-gray-600">
-                Your AI-powered lending companion
+                Borrow against your identity today
               </p>
             </div>
             <div className="w-full max-w-md space-y-4">
