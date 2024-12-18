@@ -1,18 +1,11 @@
+import { useEffect, useState } from "react";
 import { VerificationLevel } from "@/types/verification";
 import { Card } from "@/ui/card";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { Button } from "@/ui/button";
 import { Plus, Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/ui/dropdown-menu";
 import { VerificationStatus } from "@/components/verification/VerificationStatus";
-
-const TOKENS = [
-  { name: "Worldcoin", symbol: "WLD", balance: 16.24, change: -5.65, color: "bg-gray-800" },
-  { name: "Dollars", symbol: "USDC.E", balance: 0.0, change: 0.01, color: "bg-green-500" },
-  { name: "Bitcoin", symbol: "WBTC", balance: 0.0, change: -3.03, color: "bg-orange-500" },
-  { name: "Ethereum", symbol: "WETH", balance: 0.0, change: -3.46, color: "bg-blue-500" },
-];
 
 interface WalletDashboardProps {
   balance: number;
@@ -20,8 +13,107 @@ interface WalletDashboardProps {
   onShowFundingOptions: () => void;
 }
 
-const WalletDashboard = ({ balance, verificationLevel, onShowFundingOptions }: WalletDashboardProps) => {
+const WalletDashboard = ({
+  balance,
+  verificationLevel,
+  onShowFundingOptions,
+}: WalletDashboardProps) => {
   const navigate = useNavigate();
+
+  const [tokens, setBalances] = useState([]);
+  useEffect(() => {
+    const url = `https://worldchain-mainnet.g.alchemy.com/v2/j-_GFK85PRHN59YaKb8lmVbV0LHmFGBL`;
+    const address = "";
+    const fetchBalances = async () => {
+      try {
+        const ethBalanceResponse = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            jsonrpc: "2.0",
+            method: "eth_getBalance",
+            params: [address, "latest"], // "latest" for the latest block
+            id: 1,
+          }),
+        });
+
+        const ethBalanceResult = await ethBalanceResponse.json();
+        const ethBalance = parseInt(ethBalanceResult.result, 16) / 1e18; // Convert from wei to ether
+
+        const tokenBalancesResponse = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            jsonrpc: "2.0",
+            method: "alchemy_getTokenBalances",
+            params: [address],
+            id: 2,
+          }),
+        });
+
+        const tokenBalancesResult = await tokenBalancesResponse.json();
+        const tokenBalances = tokenBalancesResult.result.tokenBalances;
+        console.log("ETH Balance:", ethBalance);
+        console.log("Token Balances:", tokenBalancesResult);
+
+        // Fetch metadata for each token
+        const detailedBalances = await Promise.all(
+          tokenBalances.map(async (token) => {
+            const metadataResponse = await fetch(url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                jsonrpc: "2.0",
+                method: "alchemy_getTokenMetadata",
+                params: [token.contractAddress],
+                id: 1,
+              }),
+            });
+            const metadata = await metadataResponse.json();
+
+            return {
+              contractAddress: token.contractAddress,
+              balance: token.tokenBalance,
+              symbol: metadata.result.symbol,
+              decimals: metadata.result.decimals,
+              name: metadata.result.name,
+            };
+          }),
+        );
+
+        // Combine native token balance with ERC-20 token tokens
+        setBalances([
+          {
+            symbol: "ETH",
+            name: "Ether",
+            balance: ethBalance,
+            decimals: 18,
+            contractAddress: "0x0000000000000000000000000000000000000000", // Native token's pseudo address
+          },
+          ...detailedBalances,
+        ]);
+      } catch (error) {
+        console.error("Failed to fetch tokens:", error);
+        setBalances([]); // Set to empty array on error
+      }
+    };
+
+    if (address) {
+      fetchBalances();
+    }
+  }, []);
+  const randomTailwindColor = (char) => {
+    const colors = ["red", "green", "blue", "indigo", "purple", "pink"];
+    const colorIndex = char.charCodeAt(0) % colors.length;
+    const color = colors[colorIndex];
+    return `bg-${color}-300`;
+  };
 
   return (
     <div className="max-w-md mx-auto space-y-8 animate-fade-up">
@@ -34,7 +126,9 @@ const WalletDashboard = ({ balance, verificationLevel, onShowFundingOptions }: W
 
         <div className="text-center space-y-6">
           <div className="space-y-2">
-            <h1 className="text-5xl font-bold tracking-tight">${balance.toFixed(2)}</h1>
+            <h1 className="text-5xl font-bold tracking-tight">
+              ${balance.toFixed(2)}
+            </h1>
           </div>
         </div>
       </div>
@@ -54,6 +148,7 @@ const WalletDashboard = ({ balance, verificationLevel, onShowFundingOptions }: W
         <Button
           variant="outline"
           className="flex flex-col items-center justify-center gap-2 p-4 w-24 h-24 glass-card"
+          onClick={() => navigate("/dashboard")}
         >
           <Send className="h-8 w-8" />
           <span>Dashboard</span>
@@ -63,25 +158,26 @@ const WalletDashboard = ({ balance, verificationLevel, onShowFundingOptions }: W
 
       {/* Token List */}
       <div className="space-y-4">
-        {TOKENS.map((token) => (
-          <Card key={token.symbol} className="flex items-center justify-between p-4 glass-card">
+        {tokens.map((token) => (
+          <Card
+            key={token.symbol}
+            className="flex items-center justify-between p-4 glass-card"
+          >
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-full ${token.color} flex items-center justify-center`}>
+              <div
+                className={`w-10 h-10 rounded-full ${randomTailwindColor(token.symbol[0])} flex items-center justify-center`}
+              >
                 <span className="text-white text-lg">{token.symbol[0]}</span>
               </div>
               <div className="text-left">
                 <h3 className="font-semibold">{token.name}</h3>
-                <p className="text-sm text-brand-text-secondary">{token.symbol}</p>
+                <p className="text-sm text-brand-text-secondary">
+                  {token.symbol}
+                </p>
               </div>
             </div>
             <div className="text-right">
-              <p className="font-semibold">${token.balance.toFixed(2)}</p>
-              <p
-                className={`text-sm flex items-center gap-1 ${token.change >= 0 ? "text-brand-success" : "text-brand-error"}`}
-              >
-                {token.change >= 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
-                {Math.abs(token.change)}%
-              </p>
+              <p className="font-semibold">{token.balance}</p>
             </div>
           </Card>
         ))}
