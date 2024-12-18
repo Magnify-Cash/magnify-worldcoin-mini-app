@@ -92,7 +92,7 @@ const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
           </RadioGroup>
           <Button
             onClick={handleSignIn}
-            className="w-full bg-gradient-to-r from-highlight-blue to-highlight-coral"
+            className="w-full bg-gradient-to-r from-highlight-blue to-highlight-coral text-black"
           >
             <Wallet className="mr-2 h-4 w-4" />
             Sign In with Wallet
