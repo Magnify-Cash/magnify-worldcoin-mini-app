@@ -76,7 +76,7 @@ const Index = () => {
           {currentStep === "dashboard" && (
             <div className="animate-fade-up">
               <div className="text-center mb-8">
-                <h2 className="text-4xl font-bold mb-2 bg-main-gradient bg-clip-text text-transparent">$43.04</h2>
+                <h2 className="text-4xl font-bold mb-2 text-brand-text-primary">$43.04</h2>
                 <div className="flex flex-col gap-4 mt-6">
                   <div className="flex justify-center gap-4">
                     <Button 
