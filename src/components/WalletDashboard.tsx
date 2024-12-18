@@ -42,30 +42,30 @@ const WalletDashboard = ({
             </h1>
           </div>
           
-          <div className="grid grid-cols-3 gap-4">
+          <div className="flex justify-center gap-4">
             <Button 
               variant="outline"
-              className="flex flex-col items-center gap-2 py-4 glass-card"
+              className="flex flex-col items-center justify-center gap-2 p-4 w-24 h-24 glass-card"
               onClick={onShowFundingOptions}
             >
-              <Plus className="h-6 w-6" />
+              <Plus className="h-8 w-8" />
               <span>Buy</span>
             </Button>
             
             <Button 
               variant="outline"
-              className="flex flex-col items-center gap-2 py-4 glass-card"
+              className="flex flex-col items-center justify-center gap-2 p-4 w-24 h-24 glass-card"
             >
-              <Send className="h-6 w-6" />
+              <Send className="h-8 w-8" />
               <span>Send</span>
             </Button>
             
             <Button 
               variant="outline"
-              className="flex flex-col items-center gap-2 py-4 glass-card"
+              className="flex flex-col items-center justify-center gap-2 p-4 w-24 h-24 glass-card"
               onClick={onShowHelpGuide}
             >
-              <MoreHorizontal className="h-6 w-6" />
+              <MoreHorizontal className="h-8 w-8" />
               <span>More</span>
             </Button>
           </div>
