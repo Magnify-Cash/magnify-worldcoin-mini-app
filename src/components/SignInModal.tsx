@@ -7,13 +7,13 @@ import { MockSignInButton } from "./auth/MockSignInButton";
 import { RememberMeOption } from "./auth/RememberMeOption";
 import { useWalletAuth } from "@/hooks/useWalletAuth";
 
-interface SignInModalProps {
+export interface SignInModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSignIn: () => void;
 }
 
-const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
+export const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
   const [rememberMe, setRememberMe] = useState(false);
   const { isGlowing, setIsGlowing, isMinikitAvailable } = useWalletAuth({ onSignIn, onClose });
 

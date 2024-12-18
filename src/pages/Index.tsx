@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SignInModal } from "@/components/SignInModal";
+import SignInModal from "@/components/SignInModal";
 import { HelpGuide } from "@/components/HelpGuide";
 import { UserProfile } from "@/components/UserProfile";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -15,11 +15,11 @@ const Index = () => {
   const [currentStep, setCurrentStep] = useState<
     "verify" | "onboarding" | "dashboard"
   >("verify");
-  const [onboardingSlide, setOnboardingSlide] = useState(1);
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [showFundingOptions, setShowFundingOptions] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0);
   const [verificationLevel, setVerificationLevel] = useState<VerificationLevel>('NONE');
+  const [verificationResult, setVerificationResult] = useState<any>(null);
 
   const handleSignIn = () => {
     console.log("User signed in successfully");
@@ -29,6 +29,7 @@ const Index = () => {
 
   const handleVerificationComplete = (result: any) => {
     console.log("Verification completed:", result);
+    setVerificationResult(result);
     if (result.proof) {
       setVerificationLevel('ORB');
       setCurrentStep("dashboard");
@@ -36,16 +37,12 @@ const Index = () => {
     }
   };
 
-  const handleGetLoan = () => {
-    navigate('/loan');
-  };
-
   const renderContent = () => {
     switch (currentStep) {
       case "verify":
         return (
           <div className="flex flex-col items-center justify-center min-h-screen p-6 space-y-6">
-            <MascotIllustration />
+            <MascotIllustration step={1} />
             <div className="text-center space-y-4">
               <h1 className="text-4xl font-bold">Welcome to MAGBot</h1>
               <p className="text-xl text-gray-600">
@@ -67,29 +64,22 @@ const Index = () => {
         return (
           <div className="flex flex-col items-center justify-center min-h-screen p-6">
             <div className="w-full max-w-lg">
-              <HelpGuide
-                currentSlide={onboardingSlide}
-                onNext={() => {
-                  if (onboardingSlide < 3) {
-                    setOnboardingSlide(onboardingSlide + 1);
-                  } else {
-                    setCurrentStep("dashboard");
-                  }
-                }}
-                onSkip={() => setCurrentStep("dashboard")}
-              />
+              <HelpGuide onClose={() => setCurrentStep("dashboard")} />
             </div>
           </div>
         );
 
       case "dashboard":
         return (
-          <WalletDashboard
-            balance={walletBalance}
-            verificationLevel={verificationLevel}
-            onGetLoan={handleGetLoan}
-            onAddFunds={() => setShowFundingOptions(true)}
-          />
+          <div className="container mx-auto p-6">
+            <UserProfile verificationResult={verificationResult} />
+            <WalletDashboard
+              balance={walletBalance}
+              verificationLevel={verificationLevel}
+              onShowFundingOptions={() => setShowFundingOptions(true)}
+              onShowHelpGuide={() => setCurrentStep("onboarding")}
+            />
+          </div>
         );
 
       default:
@@ -99,14 +89,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-brand-background to-brand-background-end">
-      <UserProfile />
       {renderContent()}
 
       <SignInModal
-        open={showSignInModal}
-        onOpenChange={setShowSignInModal}
+        isOpen={showSignInModal}
+        onClose={() => setShowSignInModal(false)}
         onSignIn={handleSignIn}
-        onVerificationComplete={handleVerificationComplete}
       />
 
       <Sheet open={showFundingOptions} onOpenChange={setShowFundingOptions}>

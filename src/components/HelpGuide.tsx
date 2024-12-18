@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ChevronLeft } from 'lucide-react';
 
-type HelpGuideProps = {
+export type HelpGuideProps = {
   onClose: () => void;
 };
 
@@ -57,3 +57,5 @@ export const HelpGuide = ({ onClose }: HelpGuideProps) => {
     </div>
   );
 };
+
+export default HelpGuide;
