@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { IDKitWidget } from "@worldcoin/idkit";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, TrendingUp, TrendingDown, Users, DollarSign } from "lucide-react";
 import { toast } from "sonner";
 import { MascotIllustration } from "@/components/MascotIllustration";
 import { HelpGuide } from "@/components/HelpGuide";
@@ -94,15 +94,28 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="container max-w-4xl mx-auto px-4 py-16">
+    <div className="min-h-screen bg-modern-background">
+      <div className="absolute inset-0 bg-gradient-radial from-modern-purple/20 via-modern-blue/10 to-transparent pointer-events-none" />
+      
+      <div className="container max-w-7xl mx-auto px-4 py-8 relative">
         <div className="space-y-8">
-          <h1 className="text-4xl md:text-6xl font-bold text-center bg-gradient-to-r from-worldcoin-primary to-worldcoin-secondary text-transparent bg-clip-text">
-            MAGBot Mini App
-          </h1>
-          
-          <Card className="p-8">
-            {currentStep === "verify" && (
+          <div className="flex justify-between items-center">
+            <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-purple-gradient">
+              MAGBot Mini App
+            </h1>
+            
+            <div className="flex gap-4">
+              <Button variant="outline" className="border-modern-purple/20">
+                Select Dates
+              </Button>
+              <Button className="bg-purple-gradient hover:opacity-90">
+                Connect Wallet
+              </Button>
+            </div>
+          </div>
+
+          {currentStep === "verify" && (
+            <Card className="p-8 bg-modern-card backdrop-blur-sm shadow-glass border border-white/20">
               <div className="flex flex-col items-center space-y-6">
                 <p className="text-center text-gray-600 text-lg max-w-2xl">
                   Verify your identity with World ID to access micro-loans
@@ -117,7 +130,7 @@ const Index = () => {
                     {({ open }) => (
                       <Button
                         onClick={open}
-                        className="px-8 py-4 bg-gradient-to-r from-worldcoin-primary to-worldcoin-secondary text-white rounded-lg font-semibold shadow-lg hover:opacity-90 transition-opacity"
+                        className="px-8 py-4 bg-purple-gradient text-white rounded-lg font-semibold shadow-lg hover:opacity-90 transition-opacity"
                       >
                         Verify with World ID
                       </Button>
@@ -128,40 +141,103 @@ const Index = () => {
                     <Button
                       onClick={handleMockVerify}
                       variant="outline"
-                      className="w-full"
+                      className="w-full border-modern-purple/20"
                     >
                       Mock Verify (Development Only)
                     </Button>
                   </div>
                 </div>
               </div>
-            )}
-            
-            {currentStep === "onboarding" && renderOnboarding()}
-            {currentStep === "dashboard" && (
-              <>
-                <WalletDashboard
-                  balance={walletBalance}
-                  onShowFundingOptions={() => setShowFundingOptions(true)}
-                  onShowHelpGuide={() => setShowHelpGuide(true)}
-                />
-                {showFundingOptions && (
-                  <Card className="p-6 mt-4">
-                    <FundingOptions onClose={() => setShowFundingOptions(false)} />
-                  </Card>
-                )}
-                {showHelpGuide && <HelpGuide onClose={() => setShowHelpGuide(false)} />}
-                <SignInModal
-                  isOpen={showSignInModal}
-                  onClose={() => setShowSignInModal(false)}
-                  onSignIn={() => {
-                    setShowSignInModal(false);
-                    setWalletBalance(0);
-                  }}
-                />
-              </>
-            )}
-          </Card>
+            </Card>
+          )}
+
+          {currentStep === "onboarding" && (
+            <Card className="p-8 bg-modern-card backdrop-blur-sm shadow-glass border border-white/20">
+              <div className="space-y-8 animate-fade-up">
+                <MascotIllustration step={onboardingPage as 1 | 2 | 3} />
+                <div className="space-y-4">
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    {onboardingPage === 1 && "Welcome to MAGBot!"}
+                    {onboardingPage === 2 && "Bigger Loans for Verified Users!"}
+                    {onboardingPage === 3 && "How It Works"}
+                  </h2>
+                  <p className="text-gray-600">
+                    {onboardingPage === 1 && "Access gas-free, instant micro-loans with your World ID."}
+                    {onboardingPage === 2 && "ORB Verified: $10 | Passport Verified: $3 | Non-Verified: $1"}
+                    {onboardingPage === 3 && "1. Verify your World ID\n2. Apply for a loan instantly\n3. Track repayments easily"}
+                  </p>
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-2">
+                    {[1, 2, 3].map((step) => (
+                      <div
+                        key={step}
+                        className={`h-2 w-2 rounded-full transition-colors ${
+                          step === onboardingPage ? "bg-modern-purple" : "bg-gray-200"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  {onboardingPage < 3 ? (
+                    <Button 
+                      onClick={() => setOnboardingPage(p => p + 1)}
+                      className="bg-purple-gradient hover:opacity-90"
+                    >
+                      Next <ChevronRight className="ml-2" />
+                    </Button>
+                  ) : (
+                    <Button 
+                      onClick={handleFinishOnboarding}
+                      className="bg-purple-gradient hover:opacity-90"
+                    >
+                      Get Started
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {currentStep === "dashboard" && (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <Card className="p-6 bg-modern-card backdrop-blur-sm shadow-glass border border-white/20">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-500">Total Balance</p>
+                      <h3 className="text-2xl font-bold text-gray-800">${walletBalance.toFixed(2)}</h3>
+                    </div>
+                    <div className="h-12 w-12 rounded-full bg-modern-purple/10 flex items-center justify-center">
+                      <DollarSign className="h-6 w-6 text-modern-purple" />
+                    </div>
+                  </div>
+                </Card>
+              </div>
+
+              <WalletDashboard
+                balance={walletBalance}
+                onShowFundingOptions={() => setShowFundingOptions(true)}
+                onShowHelpGuide={() => setShowHelpGuide(true)}
+              />
+              
+              {showFundingOptions && (
+                <Card className="p-6 mt-4 bg-modern-card backdrop-blur-sm shadow-glass border border-white/20">
+                  <FundingOptions onClose={() => setShowFundingOptions(false)} />
+                </Card>
+              )}
+              
+              {showHelpGuide && <HelpGuide onClose={() => setShowHelpGuide(false)} />}
+              
+              <SignInModal
+                isOpen={showSignInModal}
+                onClose={() => setShowSignInModal(false)}
+                onSignIn={() => {
+                  setShowSignInModal(false);
+                  setWalletBalance(0);
+                }}
+              />
+            </>
+          )}
         </div>
       </div>
     </div>
