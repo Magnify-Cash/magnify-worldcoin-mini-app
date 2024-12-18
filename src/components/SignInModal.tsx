@@ -16,10 +16,25 @@ interface SignInModalProps {
 const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isGlowing, setIsGlowing] = useState(false);
+  const [isMinikitAvailable, setIsMinikitAvailable] = useState(false);
 
   useEffect(() => {
-    if (!MiniKit.isInstalled()) {
-      console.error("MiniKit is not installed");
+    const checkMiniKit = () => {
+      const isAvailable = MiniKit.isInstalled();
+      console.log('MiniKit available:', isAvailable);
+      setIsMinikitAvailable(isAvailable);
+      
+      if (!isAvailable) {
+        toast.error('Please open this app in World App to use wallet features');
+      }
+    };
+
+    checkMiniKit();
+  }, []);
+
+  useEffect(() => {
+    if (!isMinikitAvailable) {
+      console.log('MiniKit not available, skipping auth response setup');
       return;
     }
 
@@ -45,14 +60,21 @@ const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
       }
     };
 
+    console.log('Setting up MiniKit auth response listener');
     MiniKit.subscribe(ResponseEvent.MiniAppWalletAuth, handleAuthResponse);
 
     return () => {
+      console.log('Cleaning up MiniKit auth response listener');
       MiniKit.unsubscribe(ResponseEvent.MiniAppWalletAuth);
     };
-  }, [onSignIn, onClose]);
+  }, [onSignIn, onClose, isMinikitAvailable]);
 
   const handleSignIn = async () => {
+    if (!isMinikitAvailable) {
+      toast.error('Please open this app in World App to use wallet features');
+      return;
+    }
+
     try {
       console.log("Initiating wallet authentication...");
       const nonce = crypto.randomUUID().replace(/-/g, "");
