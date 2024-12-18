@@ -18,8 +18,13 @@ const Index = () => {
   const [onboardingPage, setOnboardingPage] = useState(1);
   const [showHelpGuide, setShowHelpGuide] = useState(false);
   const [showFundingOptions, setShowFundingOptions] = useState(false);
-  const [showSignInModal, setShowSignInModal] = useState(true);
+  const [showSignInModal, setShowSignInModal] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0);
+
+  const handleSignIn = () => {
+    console.log("User signed in successfully");
+    setCurrentStep("dashboard");
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -48,7 +53,7 @@ const Index = () => {
               </div>
               <Button 
                 className="w-full bg-purple-500 hover:bg-purple-600 text-white rounded-full py-6"
-                onClick={() => setCurrentStep("onboarding")}
+                onClick={() => setShowSignInModal(true)}
               >
                 Connect
               </Button>
@@ -99,6 +104,13 @@ const Index = () => {
             </>
           )}
         </div>
+
+        {/* Sign In Modal */}
+        <SignInModal
+          isOpen={showSignInModal}
+          onClose={() => setShowSignInModal(false)}
+          onSignIn={handleSignIn}
+        />
 
         {/* Bottom Sheet for Funding Options */}
         <Sheet open={showFundingOptions} onOpenChange={setShowFundingOptions}>
