@@ -1,12 +1,19 @@
-import { Button } from "@/components/ui/button";
 import { 
   CreditCard, 
   DollarSign, 
   Euro, 
   PoundSterling,
-  AppleIcon
+  AppleIcon,
+  ChevronDown
 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 interface FundingOptionsProps {
   onClose: () => void;
@@ -19,42 +26,40 @@ export const FundingOptions = ({ onClose }: FundingOptionsProps) => {
     onClose();
   };
 
+  const fundingMethods = [
+    { name: 'Apple Pay', icon: AppleIcon },
+    { name: 'Credit Card', icon: CreditCard },
+    { name: 'Bank Transfer', icon: DollarSign },
+    { name: 'International', icon: Euro },
+  ];
+
   return (
     <div className="space-y-4 animate-fade-up">
       <h3 className="text-xl font-semibold mb-4">Select Funding Method</h3>
-      <div className="grid grid-cols-2 gap-4">
-        <Button
-          variant="outline"
-          className="flex items-center justify-start space-x-2 p-4"
-          onClick={() => handleAddFunds('Apple Pay')}
-        >
-          <AppleIcon className="h-5 w-5" />
-          <span>Apple Pay</span>
-        </Button>
-        <Button
-          variant="outline"
-          className="flex items-center justify-start space-x-2 p-4"
-          onClick={() => handleAddFunds('Credit Card')}
-        >
-          <CreditCard className="h-5 w-5" />
-          <span>Credit Card</span>
-        </Button>
-        <Button
-          variant="outline"
-          className="flex items-center justify-start space-x-2 p-4"
-          onClick={() => handleAddFunds('Bank Transfer')}
-        >
-          <DollarSign className="h-5 w-5" />
-          <span>Bank Transfer</span>
-        </Button>
-        <Button
-          variant="outline"
-          className="flex items-center justify-start space-x-2 p-4"
-          onClick={() => handleAddFunds('International')}
-        >
-          <Euro className="h-5 w-5" />
-          <span>International</span>
-        </Button>
+      <div className="w-full">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button 
+              variant="outline" 
+              className="w-full bg-highlight-blue hover:bg-highlight-blue/90 border-highlight-coral"
+            >
+              Select Method
+              <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-full min-w-[200px]">
+            {fundingMethods.map((method) => (
+              <DropdownMenuItem
+                key={method.name}
+                onClick={() => handleAddFunds(method.name)}
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                <method.icon className="h-4 w-4" />
+                <span>{method.name}</span>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
