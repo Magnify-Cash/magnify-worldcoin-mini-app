@@ -38,7 +38,7 @@ const Index = () => {
     <div className="min-h-screen bg-[#F8F7FC] font-['Bai_Jamjuree'] bg-radial-gradient">
       <div className="max-w-md mx-auto relative">
         {/* Top Navigation Bar */}
-        <div className="flex justify-between items-center p-4 border-b border-white/20 backdrop-blur-sm bg-white/50">
+        <div className="flex justify-between items-center p-4 border-b border-white/20 backdrop-blur-sm bg-white/50 sticky top-0 z-10">
           <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
             <X className="h-6 w-6 text-brand-text-primary" />
           </button>
@@ -54,26 +54,28 @@ const Index = () => {
         <div className="p-6">
           {currentStep === "verify" && (
             <div className="space-y-8 text-center animate-fade-up">
-              <div className="w-24 h-24 mx-auto bg-main-gradient rounded-xl flex items-center justify-center p-1">
+              <div className="w-24 h-24 mx-auto bg-main-gradient rounded-xl flex items-center justify-center p-1 shadow-lg hover:scale-105 transition-transform duration-300">
                 <div className="w-full h-full bg-white rounded-lg flex items-center justify-center">
                   <img src="/lovable-uploads/b46231ff-456c-4295-be5d-1c49f557cea5.png" alt="World ID Logo" className="w-16 h-16" />
                 </div>
               </div>
-              <div>
+              <div className="space-y-4">
                 <h2 className="text-2xl font-medium mb-2 text-brand-text-secondary p-1 rounded bg-gradient-to-r from-brand-turquoise to-brand-coral bg-[length:100%_2px] bg-no-repeat bg-bottom">
                   Sign in with World ID to secure a loan against your identity
                 </h2>
-                <p className="text-brand-text-secondary">To start exploring MAGBot</p>
+                <p className="text-brand-text-secondary text-sm">To start exploring MAGBot</p>
               </div>
-              <Button 
-                className="w-full bg-main-gradient hover:scale-105 transition-all duration-300 text-white rounded-full py-6"
-                onClick={() => setShowSignInModal(true)}
-              >
-                Sign in with World ID
-              </Button>
-              <p className="text-sm text-brand-text-secondary">
-                By clicking, you agree with <span className="text-brand-coral">Terms</span>
-              </p>
+              <div className="space-y-4">
+                <Button 
+                  className="w-full bg-main-gradient hover:scale-105 transition-all duration-300 text-white rounded-full py-6 shadow-lg"
+                  onClick={() => setShowSignInModal(true)}
+                >
+                  Sign in with World ID
+                </Button>
+                <p className="text-xs text-brand-text-secondary">
+                  By clicking, you agree with <button className="text-brand-coral hover:underline">Terms</button>
+                </p>
+              </div>
             </div>
           )}
 
