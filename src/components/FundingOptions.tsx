@@ -34,20 +34,20 @@ export const FundingOptions = ({ onClose }: FundingOptionsProps) => {
   ];
 
   return (
-    <div className="space-y-4 animate-fade-up">
+    <div className="space-y-4 animate-fade-up pt-6">
       <h3 className="text-xl font-semibold mb-4">Select Funding Method</h3>
       <div className="w-full">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button 
               variant="outline" 
-              className="w-full bg-highlight-blue hover:bg-highlight-blue/90 border-highlight-coral"
+              className="w-full bg-modern-background border-modern-border"
             >
               Select Method
               <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-full min-w-[200px]">
+          <DropdownMenuContent className="w-[calc(100vw-2rem)] sm:w-[350px]">
             {fundingMethods.map((method) => (
               <DropdownMenuItem
                 key={method.name}

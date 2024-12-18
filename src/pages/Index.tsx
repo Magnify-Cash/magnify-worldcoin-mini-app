@@ -10,6 +10,7 @@ import SignInModal from "@/components/SignInModal";
 import WalletDashboard from "@/components/WalletDashboard";
 import { FundingOptions } from "@/components/FundingOptions";
 import { Header } from "@/components/Header";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const Index = () => {
   const [verificationResult, setVerificationResult] = useState<any>(null);
@@ -159,11 +160,11 @@ const Index = () => {
                 onShowHelpGuide={() => setShowHelpGuide(true)}
               />
               
-              {showFundingOptions && (
-                <Card className="p-6 mt-4 bg-modern-card backdrop-blur-sm shadow-glass border border-white/20">
+              <Sheet open={showFundingOptions} onOpenChange={setShowFundingOptions}>
+                <SheetContent side="bottom" className="h-[400px]">
                   <FundingOptions onClose={() => setShowFundingOptions(false)} />
-                </Card>
-              )}
+                </SheetContent>
+              </Sheet>
               
               {showHelpGuide && <HelpGuide onClose={() => setShowHelpGuide(false)} />}
               
