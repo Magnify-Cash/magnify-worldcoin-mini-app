@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { VerificationStatus } from "./verification/VerificationStatus";
 import { VerificationLevel } from "@/types/verification";
+import { useNavigate } from "react-router-dom";
 
 interface WalletDashboardProps {
   balance: number;
@@ -23,6 +24,8 @@ const WalletDashboard = ({
   onShowFundingOptions,
   onShowHelpGuide,
 }: WalletDashboardProps) => {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-8 animate-fade-up">
       <div className="text-center space-y-8">
@@ -48,6 +51,7 @@ const WalletDashboard = ({
         
         <Button 
           className="w-full glass-card primary-button py-6 mb-8"
+          onClick={() => navigate('/loan')}
         >
           Get a Loan
         </Button>
