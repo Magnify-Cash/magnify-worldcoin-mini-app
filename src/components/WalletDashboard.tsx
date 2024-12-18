@@ -1,12 +1,19 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DollarSign, Clock, Wallet, HelpCircle } from "lucide-react";
+import { Settings, ArrowUpRight } from "lucide-react";
 
 interface WalletDashboardProps {
   balance: number;
   onShowFundingOptions: () => void;
   onShowHelpGuide: () => void;
 }
+
+const TOKENS = [
+  { name: 'Worldcoin', symbol: 'WLD', balance: 16.24, change: -5.65 },
+  { name: 'Dollars', symbol: 'USDC.E', balance: 0.00, change: 0.01 },
+  { name: 'Bitcoin', symbol: 'WBTC', balance: 0.00, change: -3.03 },
+  { name: 'Ethereum', symbol: 'WETH', balance: 0.00, change: -3.46 },
+];
 
 const WalletDashboard = ({
   balance,
@@ -15,44 +22,56 @@ const WalletDashboard = ({
 }: WalletDashboardProps) => {
   return (
     <div className="space-y-8 animate-fade-up">
-      <Card className="p-8 bg-modern-card backdrop-blur-sm shadow-glass border border-white/20">
-        <div className="space-y-6">
-          <div className="bg-purple-gradient p-6 rounded-lg">
-            <h3 className="text-xl font-semibold text-white mb-2">Wallet Balance</h3>
-            <p className="text-3xl font-bold text-white">{balance.toFixed(2)} WUSDC</p>
-          </div>
-          
-          <div className="grid gap-4">
-            <Button 
-              className="w-full bg-modern-purple hover:bg-modern-purple/90 text-white" 
-              size="lg"
-              onClick={onShowFundingOptions}
-            >
-              <Wallet className="mr-2" /> Add Funds
-            </Button>
-            <Button 
-              className="w-full bg-modern-blue hover:bg-modern-blue/90 text-white" 
-              size="lg"
-            >
-              <DollarSign className="mr-2" /> Take Out a Loan
-            </Button>
-            <Button 
-              className="w-full bg-modern-purple/10 hover:bg-modern-purple/20 text-modern-purple" 
-              size="lg"
-            >
-              <Clock className="mr-2" /> Track Repayments
-            </Button>
-            <Button 
-              className="w-full border-2 border-modern-purple/20 hover:bg-modern-purple/5" 
-              variant="outline" 
-              size="lg"
-              onClick={onShowHelpGuide}
-            >
-              <HelpCircle className="mr-2" /> Need Help?
-            </Button>
-          </div>
+      <div className="text-center space-y-8">
+        <h2 className="text-6xl font-bold text-brand-text-primary">
+          ${balance.toFixed(2)}
+        </h2>
+        
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          <Button 
+            variant="secondary"
+            className="bg-white/50 hover:bg-white/60 text-brand-text-primary font-medium py-6"
+            onClick={onShowFundingOptions}
+          >
+            Buy
+          </Button>
+          <Button 
+            variant="secondary"
+            className="bg-white/50 hover:bg-white/60 text-brand-text-primary font-medium py-6"
+          >
+            Send
+          </Button>
         </div>
-      </Card>
+        
+        <Button 
+          className="w-full bg-white/50 hover:bg-white/60 text-brand-text-primary font-medium py-6 mb-8"
+          variant="secondary"
+        >
+          Get a Loan
+        </Button>
+
+        <div className="space-y-4">
+          {TOKENS.map((token) => (
+            <Card key={token.symbol} className="p-4 bg-white/50 hover:bg-white/60 transition-colors">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gray-200" />
+                  <div className="text-left">
+                    <h3 className="font-medium text-brand-text-primary">{token.name}</h3>
+                    <p className="text-sm text-brand-text-secondary">{token.symbol}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-medium text-brand-text-primary">${token.balance.toFixed(2)}</p>
+                  <p className={`text-sm ${token.change >= 0 ? 'text-brand-success' : 'text-brand-error'}`}>
+                    {token.change >= 0 ? '+' : ''}{token.change}%
+                  </p>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
