@@ -23,39 +23,39 @@ const WalletDashboard = ({
   return (
     <div className="space-y-8 animate-fade-up">
       <div className="text-center space-y-8">
-        <h2 className="text-6xl font-bold text-brand-text-primary">
+        <h2 className="text-6xl font-bold bg-clip-text text-transparent bg-main-gradient">
           ${balance.toFixed(2)}
         </h2>
         
         <div className="grid grid-cols-2 gap-4 mb-8">
           <Button 
-            variant="secondary"
-            className="bg-white/50 hover:bg-white/60 text-brand-text-primary font-medium py-6"
+            className="glass-card primary-button"
             onClick={onShowFundingOptions}
           >
             Buy
           </Button>
           <Button 
-            variant="secondary"
-            className="bg-white/50 hover:bg-white/60 text-brand-text-primary font-medium py-6"
+            className="glass-card secondary-button"
           >
             Send
           </Button>
         </div>
         
         <Button 
-          className="w-full bg-white/50 hover:bg-white/60 text-brand-text-primary font-medium py-6 mb-8"
-          variant="secondary"
+          className="w-full glass-card primary-button py-6 mb-8"
         >
           Get a Loan
         </Button>
 
         <div className="space-y-4">
           {TOKENS.map((token) => (
-            <Card key={token.symbol} className="p-4 bg-white/50 hover:bg-white/60 transition-colors">
+            <Card 
+              key={token.symbol} 
+              className="glass-card p-4 hover:shadow-glass-hover transition-all duration-300"
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gray-200" />
+                  <div className="w-10 h-10 rounded-full bg-brand-skyBlue/50" />
                   <div className="text-left">
                     <h3 className="font-medium text-brand-text-primary">{token.name}</h3>
                     <p className="text-sm text-brand-text-secondary">{token.symbol}</p>
