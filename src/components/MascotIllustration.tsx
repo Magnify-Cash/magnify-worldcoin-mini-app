@@ -23,7 +23,7 @@ export const MascotIllustration = ({ step }: MascotIllustrationProps) => {
         <img
           src={illustrations[step]}
           alt={altTexts[step]}
-          className="max-h-full w-auto object-contain animate-fade-up rounded-2xl shadow-xl animate-pulse-glow transition-all duration-300 drop-shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+          className="max-h-full w-auto object-contain animate-fade-up rounded-2xl shadow-xl animate-pulse-glow transition-all duration-300 drop-shadow-[0_0_15px_rgba(0,0,0,0.3)]"
         />
       </div>
     </div>
