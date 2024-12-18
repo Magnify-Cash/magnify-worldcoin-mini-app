@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Wallet } from "lucide-react";
+import { Wallet, TestTube } from "lucide-react";
 import { toast } from "sonner";
 import { MiniKit, ResponseEvent } from "@worldcoin/minikit-js";
 
@@ -94,6 +94,18 @@ const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
     }
   };
 
+  const handleMockSignIn = async () => {
+    console.log("Initiating mock wallet authentication...");
+    setIsGlowing(true);
+    
+    // Simulate a successful authentication response
+    setTimeout(() => {
+      toast.success("Mock sign-in successful!");
+      onSignIn();
+      onClose();
+    }, 1000);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
@@ -116,15 +128,27 @@ const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
               <Label htmlFor="remember">Keep me signed in for future sessions</Label>
             </div>
           </RadioGroup>
-          <Button
-            onClick={handleSignIn}
-            className={`w-full bg-gradient-to-r from-highlight-blue to-highlight-coral font-semibold text-black shadow-sm transition-all duration-300 ${
-              isGlowing ? "animate-button-glow" : "hover:animate-button-glow"
-            }`}
-          >
-            <Wallet className="mr-2 h-4 w-4" />
-            Sign In with Wallet
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={handleSignIn}
+              className={`flex-1 bg-gradient-to-r from-highlight-blue to-highlight-coral font-semibold text-black shadow-sm transition-all duration-300 ${
+                isGlowing ? "animate-button-glow" : "hover:animate-button-glow"
+              }`}
+            >
+              <Wallet className="mr-2 h-4 w-4" />
+              Sign In with Wallet
+            </Button>
+            <Button
+              onClick={handleMockSignIn}
+              variant="outline"
+              className={`flex-1 font-semibold shadow-sm transition-all duration-300 ${
+                isGlowing ? "animate-button-glow" : "hover:animate-button-glow"
+              }`}
+            >
+              <TestTube className="mr-2 h-4 w-4" />
+              Mock Sign In
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
