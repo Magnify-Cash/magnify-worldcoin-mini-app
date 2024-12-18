@@ -9,6 +9,7 @@ import { FundingOptions } from "@/components/FundingOptions";
 import { MascotIllustration } from "@/components/MascotIllustration";
 import LoanApplicationForm from "@/components/loan/LoanApplicationForm";
 import LoanConfirmation from "@/components/loan/LoanConfirmation";
+import WalletDashboard from "@/components/WalletDashboard";
 
 const ONBOARDING_SLIDES = [
   {
@@ -157,27 +158,11 @@ const Index = () => {
 
       case "dashboard":
         return (
-          <div className="animate-fade-up">
-            <div className="text-center mb-8">
-              <h2 className="text-4xl font-bold mb-2 text-brand-text-primary">${walletBalance.toFixed(2)}</h2>
-              <div className="flex flex-col gap-4 mt-6">
-                <div className="flex justify-center gap-4">
-                  <Button 
-                    className="rounded-full bg-brand-skyBlue text-brand-text-primary px-8 hover:bg-main-gradient hover:text-white hover:scale-105 transition-all duration-300"
-                    onClick={() => setShowFundingOptions(true)}
-                  >
-                    Add Funds
-                  </Button>
-                  <Button 
-                    className="rounded-full bg-brand-skyBlue text-brand-text-primary px-8 hover:bg-main-gradient hover:text-white hover:scale-105 transition-all duration-300"
-                    onClick={() => setCurrentStep("loan-application")}
-                  >
-                    Get a Loan
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <WalletDashboard
+            balance={walletBalance}
+            onShowFundingOptions={() => setShowFundingOptions(true)}
+            onShowHelpGuide={() => {}} // TODO: Implement help guide
+          />
         );
     }
   };
