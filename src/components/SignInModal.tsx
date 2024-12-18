@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/ui/dialog";
 import { toast } from "sonner";
 import { MiniKit } from "@worldcoin/minikit-js";
 import { useWalletAuth } from "@/hooks/useWalletAuth";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/ui/button";
 import { Wallet } from "lucide-react";
 import { TestTube } from "lucide-react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/ui/radio-group";
+import { Label } from "@/ui/label";
 
 export interface SignInModalProps {
   isOpen: boolean;

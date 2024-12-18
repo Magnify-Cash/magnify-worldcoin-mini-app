@@ -1,15 +1,10 @@
 import { VerificationLevel } from "@/types/verification";
-import { Card } from "@/components/ui/card";
+import { Card } from "@/ui/card";
 import { ArrowDown, ArrowUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/ui/button";
 import { Plus, Send, MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/ui/dropdown-menu";
 import { VerificationStatus } from "@/components/verification/VerificationStatus";
 
 const TOKENS = [

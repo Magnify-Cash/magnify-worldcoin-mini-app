@@ -1,7 +1,7 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card } from "@/ui/card";
+import { Button } from "@/ui/button";
 import { toast } from "sonner";
-import { CircularProgressbar } from 'react-circular-progressbar';
+import { CircularProgressbar } from "react-circular-progressbar";
 import { Coins } from "lucide-react";
 
 interface RepayLoanCardProps {
@@ -17,7 +17,9 @@ const RepayLoanCard = ({ loanAmount, dueDate, interestRate, totalDue }: RepayLoa
     toast.success("Loan repayment initiated");
   };
 
-  const daysRemaining = Math.ceil((new Date(dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+  const daysRemaining = Math.ceil(
+    (new Date(dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24),
+  );
   const progressPercentage = Math.max(0, Math.min(100, (daysRemaining / 30) * 100));
 
   return (
@@ -39,25 +41,22 @@ const RepayLoanCard = ({ loanAmount, dueDate, interestRate, totalDue }: RepayLoa
             styles={{
               path: {
                 stroke: `rgba(34, 197, 94, ${progressPercentage / 100})`,
-                strokeLinecap: 'round',
+                strokeLinecap: "round",
               },
               trail: {
-                stroke: '#d6d6d6',
-                strokeLinecap: 'round',
+                stroke: "#d6d6d6",
+                strokeLinecap: "round",
               },
               text: {
-                fill: '#374151',
-                fontSize: '24px',
-                fontWeight: 'bold',
+                fill: "#374151",
+                fontSize: "24px",
+                fontWeight: "bold",
               },
             }}
           />
         </div>
       </div>
-      <Button 
-        onClick={handleRepay} 
-        className="w-full primary-button"
-      >
+      <Button onClick={handleRepay} className="w-full primary-button">
         <Coins className="mr-2 h-4 w-4" />
         Repay Loan
       </Button>

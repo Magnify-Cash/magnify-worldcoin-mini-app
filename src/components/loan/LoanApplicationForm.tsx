@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/ui/button";
+import { Card } from "@/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/ui/radio-group";
+import { Label } from "@/ui/label";
 import { toast } from "sonner";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/select";
 import { VerificationLevel } from "@/types/verification";
 
 interface LoanApplicationFormProps {
@@ -29,23 +29,23 @@ const LoanApplicationForm = ({ maxLoanAmount, verificationLevel, onSubmit }: Loa
 
   const getVerificationMessage = () => {
     switch (verificationLevel) {
-      case 'NONE':
+      case "NONE":
         return "Get World ID verified to unlock higher loan amounts! Verify with Passport for $5 loans or get ORB verified for $10 loans.";
-      case 'PASSPORT':
+      case "PASSPORT":
         return "Get ORB verified to unlock $10 loans!";
-      case 'ORB':
+      case "ORB":
         return "You're fully verified and eligible for maximum loan amounts!";
     }
   };
 
   const availableAmounts = () => {
     switch (verificationLevel) {
-      case 'ORB':
-        return ['1', '5', '10'];
-      case 'PASSPORT':
-        return ['1', '5'];
+      case "ORB":
+        return ["1", "5", "10"];
+      case "PASSPORT":
+        return ["1", "5"];
       default:
-        return ['1'];
+        return ["1"];
     }
   };
 

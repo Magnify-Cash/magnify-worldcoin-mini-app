@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import SignInModal from "@/components/SignInModal";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/ui/sheet";
 import { FundingOptions } from "@/components/FundingOptions";
 import { MascotIllustration } from "@/components/MascotIllustration";
 

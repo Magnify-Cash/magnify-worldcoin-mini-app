@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "@/ui/button";
+import { Card } from "@/ui/card";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -46,7 +46,7 @@ const LoanConfirmation = ({ amount, duration, transactionId, onClose }: LoanConf
       <div className="flex justify-center">
         <CheckCircle2 className="h-16 w-16 text-green-500" />
       </div>
-      
+
       <div className="space-y-2">
         <h3 className="text-xl font-semibold">Loan Approved!</h3>
         <div className="space-y-1 text-gray-600">

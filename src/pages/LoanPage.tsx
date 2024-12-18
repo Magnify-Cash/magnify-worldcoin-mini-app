@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
+import { Card } from "@/ui/card";
 import { toast } from "sonner";
 import LoanApplicationForm from "@/components/loan/LoanApplicationForm";
 import LoanConfirmation from "@/components/loan/LoanConfirmation";
@@ -15,7 +15,7 @@ const LoanPage = () => {
   } | null>(null);
 
   // This would come from your auth context in a real app
-  const verificationLevel: VerificationLevel = 'NONE';
+  const verificationLevel: VerificationLevel = "NONE";
 
   const handleLoanApplication = (amount: number, duration: number) => {
     console.log("Processing loan application:", { amount, duration });
@@ -24,7 +24,7 @@ const LoanPage = () => {
     setLoanDetails({
       amount,
       duration,
-      transactionId: mockTransactionId
+      transactionId: mockTransactionId,
     });
     setCurrentStep("confirmation");
     toast.success("Loan application successful!");
@@ -33,9 +33,9 @@ const LoanPage = () => {
   return (
     <div className="p-6 space-y-6 animate-fade-up">
       <h1 className="text-2xl font-bold text-center mb-6">Get a Loan</h1>
-      
+
       <LoanEligibility level={verificationLevel} />
-      
+
       {currentStep === "application" ? (
         <LoanApplicationForm
           maxLoanAmount={10}

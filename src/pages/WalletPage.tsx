@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/ui/sheet";
 import { FundingOptions } from "@/components/FundingOptions";
 import WalletDashboard from "@/components/WalletDashboard";
 import { VerificationLevel } from "@/types/verification";

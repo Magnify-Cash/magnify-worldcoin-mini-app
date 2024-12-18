@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/card";
+import { Card } from "@/ui/card";
 import { VerificationLevel, VERIFICATION_TIERS } from "@/types/verification";
 
 interface LoanEligibilityProps {
@@ -7,20 +7,16 @@ interface LoanEligibilityProps {
 
 export const LoanEligibility = ({ level }: LoanEligibilityProps) => {
   const tier = VERIFICATION_TIERS[level];
-  
+
   return (
     <Card className="p-3 space-y-2 glass-card bg-opacity-50">
       <h3 className="font-medium text-sm text-brand-text-secondary">Loan Eligibility</h3>
       <div className="space-y-1">
         <p className="text-sm text-brand-text-secondary">
           Maximum loan amount:
-          <span className={`ml-2 font-medium ${tier.color}`}>
-            ${tier.maxLoanAmount.toFixed(2)}
-          </span>
+          <span className={`ml-2 font-medium ${tier.color}`}>${tier.maxLoanAmount.toFixed(2)}</span>
         </p>
-        <p className="text-xs text-brand-text-secondary/80">
-          Based on your {tier.description} status
-        </p>
+        <p className="text-xs text-brand-text-secondary/80">Based on your {tier.description} status</p>
       </div>
     </Card>
   );
