@@ -6,16 +6,27 @@ import { toast } from "sonner";
 import SignInModal from "@/components/SignInModal";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { FundingOptions } from "@/components/FundingOptions";
+import { MascotIllustration } from "@/components/MascotIllustration";
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState<"verify" | "onboarding" | "dashboard">("verify");
+  const [onboardingSlide, setOnboardingSlide] = useState(1);
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [showFundingOptions, setShowFundingOptions] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0);
 
   const handleSignIn = () => {
     console.log("User signed in successfully");
-    setCurrentStep("dashboard");
+    setCurrentStep("onboarding");
+  };
+
+  const handleNextSlide = () => {
+    if (onboardingSlide < 3) {
+      setOnboardingSlide(prev => prev + 1);
+    } else {
+      setCurrentStep("dashboard");
+      toast.success("Welcome to MAGBot! You're all set to start.");
+    }
   };
 
   const handleBuy = () => {
@@ -32,6 +43,62 @@ const Index = () => {
   const handleLoan = () => {
     console.log("Loan button clicked");
     toast.info("Loan feature coming soon!");
+  };
+
+  const renderOnboardingSlide = () => {
+    const slides = [
+      {
+        title: "Welcome to MAGBot",
+        description: "Your gateway to gas-free loans on Base. Let's get you started with a quick tour!",
+        buttonText: "Next"
+      },
+      {
+        title: "Verify & Borrow",
+        description: "Use World ID to verify your identity and unlock higher loan limits. Start with small amounts to build trust.",
+        buttonText: "Continue"
+      },
+      {
+        title: "Ready to Begin",
+        description: "You're all set! Start by checking your wallet and exploring available loan options.",
+        buttonText: "Get Started"
+      }
+    ];
+
+    const currentSlide = slides[onboardingSlide - 1];
+
+    return (
+      <div className="space-y-8 animate-fade-up p-6">
+        <div className="relative">
+          <MascotIllustration step={onboardingSlide as 1 | 2 | 3} />
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+            {[1, 2, 3].map((step) => (
+              <div
+                key={step}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  step === onboardingSlide ? "bg-brand-turquoise w-4" : "bg-brand-skyBlue"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+        
+        <div className="space-y-4 text-center">
+          <h2 className="text-2xl font-semibold text-brand-text-primary">
+            {currentSlide.title}
+          </h2>
+          <p className="text-brand-text-secondary">
+            {currentSlide.description}
+          </p>
+          <Button
+            className="w-full bg-main-gradient hover:scale-105 transition-all duration-300 text-white rounded-full py-6 shadow-lg"
+            onClick={handleNextSlide}
+          >
+            {currentSlide.buttonText}
+            <ChevronRight className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -78,6 +145,8 @@ const Index = () => {
               </div>
             </div>
           )}
+
+          {currentStep === "onboarding" && renderOnboardingSlide()}
 
           {currentStep === "dashboard" && (
             <div className="animate-fade-up">
