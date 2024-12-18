@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { IDKitWidget } from "@worldcoin/idkit";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, DollarSign } from "lucide-react";
 import { toast } from "sonner";
 import { MascotIllustration } from "@/components/MascotIllustration";
 import { HelpGuide } from "@/components/HelpGuide";
