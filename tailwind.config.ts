@@ -58,7 +58,6 @@ export default {
           background: "#F8FAFC",
         },
         highlight: {
-          cyan: "#2DFFF9",
           blue: "#DAEFFF",
           coral: "#FF7777",
         },

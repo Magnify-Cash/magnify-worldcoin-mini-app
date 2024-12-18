@@ -15,14 +15,14 @@ const WalletDashboard = ({
 }: WalletDashboardProps) => {
   return (
     <div className="space-y-8 animate-fade-up">
-      <div className="bg-gradient-to-r from-highlight-cyan to-highlight-blue p-6 rounded-lg text-gray-800">
+      <div className="bg-gradient-to-r from-highlight-blue to-highlight-blue/50 p-6 rounded-lg text-gray-800">
         <h3 className="text-xl font-semibold mb-2">Wallet Balance</h3>
         <p className="text-2xl font-bold">{balance.toFixed(2)} WUSDC</p>
       </div>
       
       <div className="grid gap-4">
         <Button 
-          className="w-full bg-highlight-cyan hover:bg-highlight-cyan/90 text-gray-800" 
+          className="w-full bg-highlight-blue hover:bg-highlight-blue/90 text-gray-800" 
           size="lg"
           onClick={onShowFundingOptions}
         >
