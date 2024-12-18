@@ -80,20 +80,20 @@ const Index = () => {
                 <div className="flex flex-col gap-4 mt-6">
                   <div className="flex justify-center gap-4">
                     <Button 
-                      className="rounded-full bg-main-gradient text-white px-8 hover:scale-105 transition-all duration-300"
+                      className="rounded-full bg-brand-skyBlue text-brand-text-primary px-8 hover:bg-main-gradient hover:text-white hover:scale-105 transition-all duration-300"
                       onClick={handleBuy}
                     >
                       Buy
                     </Button>
                     <Button 
-                      className="rounded-full bg-brand-skyBlue text-brand-text-primary px-8 hover:scale-105 transition-all duration-300"
+                      className="rounded-full bg-brand-skyBlue text-brand-text-primary px-8 hover:bg-main-gradient hover:text-white hover:scale-105 transition-all duration-300"
                       onClick={handleSend}
                     >
                       Send
                     </Button>
                   </div>
                   <Button
-                    className="rounded-full bg-brand-success text-white px-8 mx-auto w-fit hover:scale-105 transition-all duration-300"
+                    className="rounded-full bg-brand-skyBlue text-brand-text-primary px-8 mx-auto w-fit hover:bg-main-gradient hover:text-white hover:scale-105 transition-all duration-300"
                     onClick={handleLoan}
                   >
                     Get a Loan
