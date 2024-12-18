@@ -35,7 +35,7 @@ const WalletDashboard = ({
             Buy
           </Button>
           <Button 
-            className="glass-card secondary-button"
+            className="glass-card primary-button"
           >
             Send
           </Button>
