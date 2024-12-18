@@ -29,7 +29,7 @@ const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
           : new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
       });
 
-      if (authPayload.status === "success") {
+      if (authPayload) {
         console.log("Authentication successful:", authPayload);
         toast.success("Successfully signed in!");
         onSignIn();
