@@ -15,6 +15,7 @@ interface SignInModalProps {
 
 const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
   const [rememberMe, setRememberMe] = useState(false);
+  const [isGlowing, setIsGlowing] = useState(false);
 
   useEffect(() => {
     if (!MiniKit.isInstalled()) {
@@ -32,9 +33,12 @@ const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
 
       try {
         console.log("Authentication successful:", payload);
-        toast.success("Successfully signed in!");
-        onSignIn();
-        onClose();
+        setIsGlowing(true);
+        setTimeout(() => {
+          toast.success("Successfully signed in!");
+          onSignIn();
+          onClose();
+        }, 1000);
       } catch (error) {
         console.error("Error processing auth response:", error);
         toast.error("Failed to complete authentication. Please try again.");
@@ -92,7 +96,9 @@ const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
           </RadioGroup>
           <Button
             onClick={handleSignIn}
-            className="w-full bg-gradient-to-r from-highlight-blue to-highlight-coral font-semibold text-black shadow-sm"
+            className={`w-full bg-gradient-to-r from-highlight-blue to-highlight-coral font-semibold text-black shadow-sm transition-all duration-300 ${
+              isGlowing ? "animate-button-glow" : "hover:animate-button-glow"
+            }`}
           >
             <Wallet className="mr-2 h-4 w-4" />
             Sign In with Wallet

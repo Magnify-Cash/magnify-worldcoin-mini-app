@@ -65,6 +65,7 @@ export default {
       animation: {
         "fade-up": "fadeUp 0.5s ease-out forwards",
         "scale-in": "scaleIn 0.3s ease-out forwards",
+        "button-glow": "buttonGlow 1s ease-out forwards",
       },
       keyframes: {
         fadeUp: {
@@ -74,6 +75,11 @@ export default {
         scaleIn: {
           "0%": { opacity: "0", transform: "scale(0.95)" },
           "100%": { opacity: "1", transform: "scale(1)" },
+        },
+        buttonGlow: {
+          "0%": { boxShadow: "0 0 0 0 rgba(139, 92, 246, 0)" },
+          "50%": { boxShadow: "0 0 20px 10px rgba(139, 92, 246, 0.3)" },
+          "100%": { boxShadow: "0 0 0 0 rgba(139, 92, 246, 0)" },
         },
       },
       borderRadius: {
