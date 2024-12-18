@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Wallet, TestTube } from "lucide-react";
 import { toast } from "sonner";
-import { MiniKit, ResponseEvent } from "@worldcoin/minikit-js";
+import { MiniKit } from "@worldcoin/minikit-js";
+import { SignInButton } from "./auth/SignInButton";
+import { MockSignInButton } from "./auth/MockSignInButton";
+import { RememberMeOption } from "./auth/RememberMeOption";
+import { useWalletAuth } from "@/hooks/useWalletAuth";
 
 interface SignInModalProps {
   isOpen: boolean;
@@ -15,59 +15,7 @@ interface SignInModalProps {
 
 const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
   const [rememberMe, setRememberMe] = useState(false);
-  const [isGlowing, setIsGlowing] = useState(false);
-  const [isMinikitAvailable, setIsMinikitAvailable] = useState(false);
-
-  useEffect(() => {
-    const checkMiniKit = () => {
-      const isAvailable = MiniKit.isInstalled();
-      console.log('MiniKit available:', isAvailable);
-      setIsMinikitAvailable(isAvailable);
-      
-      if (!isAvailable) {
-        toast.error('Please open this app in World App to use wallet features');
-      }
-    };
-
-    checkMiniKit();
-  }, []);
-
-  useEffect(() => {
-    if (!isMinikitAvailable) {
-      console.log('MiniKit not available, skipping auth response setup');
-      return;
-    }
-
-    const handleAuthResponse = async (payload: any) => {
-      console.log("Auth response received:", payload);
-      if (payload.status === "error") {
-        console.error("Authentication failed:", payload);
-        toast.error("Failed to sign in. Please try again.");
-        return;
-      }
-
-      try {
-        console.log("Authentication successful:", payload);
-        setIsGlowing(true);
-        setTimeout(() => {
-          toast.success("Successfully signed in!");
-          onSignIn();
-          onClose();
-        }, 1000);
-      } catch (error) {
-        console.error("Error processing auth response:", error);
-        toast.error("Failed to complete authentication. Please try again.");
-      }
-    };
-
-    console.log('Setting up MiniKit auth response listener');
-    MiniKit.subscribe(ResponseEvent.MiniAppWalletAuth, handleAuthResponse);
-
-    return () => {
-      console.log('Cleaning up MiniKit auth response listener');
-      MiniKit.unsubscribe(ResponseEvent.MiniAppWalletAuth);
-    };
-  }, [onSignIn, onClose, isMinikitAvailable]);
+  const { isGlowing, setIsGlowing, isMinikitAvailable } = useWalletAuth({ onSignIn, onClose });
 
   const handleSignIn = async () => {
     if (!isMinikitAvailable) {
@@ -98,7 +46,6 @@ const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
     console.log("Initiating mock wallet authentication...");
     setIsGlowing(true);
     
-    // Simulate a successful authentication response
     setTimeout(() => {
       toast.success("Mock sign-in successful!");
       onSignIn();
@@ -118,36 +65,10 @@ const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
           <p className="text-center text-gray-600">
             This app will see your wallet and allow you to manage loans.
           </p>
-          <RadioGroup
-            defaultValue={rememberMe ? "remember" : "forget"}
-            onValueChange={(value) => setRememberMe(value === "remember")}
-            className="flex flex-col space-y-2"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="remember" id="remember" />
-              <Label htmlFor="remember">Keep me signed in for future sessions</Label>
-            </div>
-          </RadioGroup>
+          <RememberMeOption value={rememberMe} onChange={setRememberMe} />
           <div className="flex gap-2">
-            <Button
-              onClick={handleSignIn}
-              className={`flex-1 bg-gradient-to-r from-highlight-blue to-highlight-coral font-semibold text-black shadow-sm transition-all duration-300 ${
-                isGlowing ? "animate-button-glow" : "hover:animate-button-glow"
-              }`}
-            >
-              <Wallet className="mr-2 h-4 w-4" />
-              Sign In with Wallet
-            </Button>
-            <Button
-              onClick={handleMockSignIn}
-              variant="outline"
-              className={`flex-1 font-semibold shadow-sm transition-all duration-300 ${
-                isGlowing ? "animate-button-glow" : "hover:animate-button-glow"
-              }`}
-            >
-              <TestTube className="mr-2 h-4 w-4" />
-              Mock Sign In
-            </Button>
+            <SignInButton onClick={handleSignIn} isGlowing={isGlowing} />
+            <MockSignInButton onClick={handleMockSignIn} isGlowing={isGlowing} />
           </div>
         </div>
       </DialogContent>
