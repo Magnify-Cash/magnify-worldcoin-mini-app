@@ -19,11 +19,13 @@ export const MascotIllustration = ({ step }: MascotIllustrationProps) => {
 
   return (
     <div className="relative w-full h-64 overflow-hidden rounded-xl bg-gradient-to-r from-worldcoin-primary/10 to-worldcoin-secondary/10">
-      <img
-        src={illustrations[step]}
-        alt={altTexts[step]}
-        className="w-full h-full object-contain animate-fade-up rounded-2xl shadow-xl animate-pulse-glow transition-all duration-300 drop-shadow-[0_0_15px_rgba(6,182,212,0.3)]"
-      />
+      <div className="w-full h-full p-4 flex items-center justify-center">
+        <img
+          src={illustrations[step]}
+          alt={altTexts[step]}
+          className="max-h-full w-auto object-contain animate-fade-up rounded-2xl shadow-xl animate-pulse-glow transition-all duration-300 drop-shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+        />
+      </div>
     </div>
   );
 };
