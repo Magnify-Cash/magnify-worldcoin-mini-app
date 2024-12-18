@@ -71,7 +71,7 @@ const Index = () => {
                 className="w-full bg-purple-500 hover:bg-purple-600 text-white rounded-full py-6"
                 onClick={() => setShowSignInModal(true)}
               >
-                Connect
+                Sign in with World ID
               </Button>
               <p className="text-sm text-gray-500">
                 By clicking, you agree with <span className="text-black">Terms</span>
