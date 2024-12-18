@@ -1,9 +1,11 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Settings, ArrowUpRight } from "lucide-react";
+import { VerificationStatus } from "./verification/VerificationStatus";
+import { VerificationLevel } from "@/types/verification";
 
 interface WalletDashboardProps {
   balance: number;
+  verificationLevel: VerificationLevel;
   onShowFundingOptions: () => void;
   onShowHelpGuide: () => void;
 }
@@ -17,12 +19,15 @@ const TOKENS = [
 
 const WalletDashboard = ({
   balance,
+  verificationLevel,
   onShowFundingOptions,
   onShowHelpGuide,
 }: WalletDashboardProps) => {
   return (
     <div className="space-y-8 animate-fade-up">
       <div className="text-center space-y-8">
+        <VerificationStatus level={verificationLevel} />
+        
         <h2 className="text-6xl font-bold text-brand-text-primary">
           ${balance.toFixed(2)}
         </h2>

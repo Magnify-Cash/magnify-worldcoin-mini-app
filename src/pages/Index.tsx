@@ -10,6 +10,7 @@ import { MascotIllustration } from "@/components/MascotIllustration";
 import LoanApplicationForm from "@/components/loan/LoanApplicationForm";
 import LoanConfirmation from "@/components/loan/LoanConfirmation";
 import WalletDashboard from "@/components/WalletDashboard";
+import { VerificationLevel } from "@/types/verification";
 
 const ONBOARDING_SLIDES = [
   {
@@ -37,6 +38,7 @@ const Index = () => {
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [showFundingOptions, setShowFundingOptions] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0);
+  const [verificationLevel, setVerificationLevel] = useState<VerificationLevel>('NONE');
   const [loanDetails, setLoanDetails] = useState<{
     amount: number;
     duration: number;
@@ -141,7 +143,7 @@ const Index = () => {
       case "loan-application":
         return (
           <LoanApplicationForm
-            maxLoanAmount={maxLoanAmount}
+            maxLoanAmount={10}
             onSubmit={handleLoanApplication}
           />
         );
@@ -160,8 +162,9 @@ const Index = () => {
         return (
           <WalletDashboard
             balance={walletBalance}
+            verificationLevel={verificationLevel}
             onShowFundingOptions={() => setShowFundingOptions(true)}
-            onShowHelpGuide={() => {}} // TODO: Implement help guide
+            onShowHelpGuide={() => {}}
           />
         );
     }
