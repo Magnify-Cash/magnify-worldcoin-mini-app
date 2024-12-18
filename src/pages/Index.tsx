@@ -54,7 +54,7 @@ const Index = () => {
             <div className="space-y-8 text-center animate-fade-up">
               <div className="w-24 h-24 mx-auto bg-main-gradient rounded-xl flex items-center justify-center p-1">
                 <div className="w-full h-full bg-white rounded-lg flex items-center justify-center">
-                  <img src="/placeholder.svg" alt="MAGBot Logo" className="w-16 h-16" />
+                  <img src="/lovable-uploads/b46231ff-456c-4295-be5d-1c49f557cea5.png" alt="World ID Logo" className="w-16 h-16" />
                 </div>
               </div>
               <div>
