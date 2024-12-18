@@ -22,8 +22,24 @@ export const MascotIllustration = ({ step }: MascotIllustrationProps) => {
       <img
         src={illustrations[step]}
         alt={altTexts[step]}
-        className="w-full h-full object-contain animate-fade-up"
+        className="w-full h-full object-contain animate-fade-up rounded-lg shadow-lg animate-pulse-glow"
+        style={{
+          animation: 'pulse-glow 2s ease-in-out infinite'
+        }}
       />
+      <style jsx>{`
+        @keyframes pulse-glow {
+          0% {
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+          }
+          50% {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+          }
+          100% {
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+          }
+        }
+      `}</style>
     </div>
   );
 };
