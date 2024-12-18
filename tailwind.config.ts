@@ -53,7 +53,7 @@ export default {
         },
         brand: {
           turquoise: "#2DFFF9",
-          skyBlue: "#DAEFFF",
+          skyBlue: "#DAEFFF", 
           coral: "#FF7777",
           success: "#22C55E",
           warning: "#F59E0B",
