@@ -61,7 +61,7 @@ const Index = () => {
               </div>
               <div>
                 <h2 className="text-3xl font-bold mb-2 text-brand-text-primary p-1 rounded bg-gradient-to-r from-brand-turquoise to-brand-coral bg-[length:100%_2px] bg-no-repeat bg-bottom">
-                  Connect your wallet!
+                  Sign in with World ID to secure a loan against your identity
                 </h2>
                 <p className="text-brand-text-secondary">To start exploring MAGBot</p>
               </div>
