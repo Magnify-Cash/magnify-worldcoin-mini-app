@@ -32,7 +32,7 @@ export default {
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#DAEFFF",
+          DEFAULT: "rgba(255, 255, 255, 0.1)",
           foreground: "#374151",
         },
         destructive: {
@@ -48,12 +48,12 @@ export default {
           foreground: "#FFFFFF",
         },
         card: {
-          DEFAULT: "rgba(218, 239, 255, 0.9)",
+          DEFAULT: "rgba(255, 255, 255, 0.1)",
           foreground: "#374151",
         },
         brand: {
           turquoise: "#2DFFF9",
-          skyBlue: "#DAEFFF", 
+          skyBlue: "rgba(255, 255, 255, 0.1)", 
           coral: "#FF7777",
           success: "#22C55E",
           warning: "#F59E0B",

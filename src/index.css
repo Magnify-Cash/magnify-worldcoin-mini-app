@@ -7,16 +7,16 @@
     --background: 252 20% 98%;
     --foreground: 220 10% 22%;
     
-    --card: 210 100% 93%;
+    --card: 0 0% 100%;
     --card-foreground: 220 10% 22%;
     
-    --popover: 210 100% 93%;
+    --popover: 0 0% 100%;
     --popover-foreground: 220 10% 22%;
     
     --primary: 183 100% 59%;
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 210 100% 93%;
+    --secondary: 0 0% 100%;
     --secondary-foreground: 220 10% 22%;
     
     --muted: 252 20% 98%;
@@ -28,8 +28,8 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 210 100% 93%;
-    --input: 210 100% 93%;
+    --border: 0 0% 100%;
+    --input: 0 0% 100%;
     --ring: 183 100% 59%;
     
     --radius: 0.75rem;
@@ -49,7 +49,7 @@
 
 @layer components {
   .glass-card {
-    @apply backdrop-blur-sm bg-card shadow-glass border border-white/20 transition-all hover:shadow-glass-hover;
+    @apply backdrop-blur-md bg-white/10 shadow-glass border border-white/20 transition-all hover:shadow-glass-hover;
   }
   
   .primary-button {
@@ -61,6 +61,6 @@
   }
   
   .input-field {
-    @apply bg-secondary border border-brand-skyBlue rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-turquoise/20 focus:border-brand-turquoise transition-all;
+    @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-turquoise/20 focus:border-brand-turquoise transition-all;
   }
 }
