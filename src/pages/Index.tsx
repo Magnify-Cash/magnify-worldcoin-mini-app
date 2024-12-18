@@ -2,13 +2,16 @@ import { useState } from "react";
 import { IDKitWidget } from "@worldcoin/idkit";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, DollarSign, Clock, Wallet } from "lucide-react";
+import { ChevronRight, DollarSign, Clock, Wallet, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
+import { MascotIllustration } from "@/components/MascotIllustration";
+import { HelpGuide } from "@/components/HelpGuide";
 
 const Index = () => {
   const [verificationResult, setVerificationResult] = useState<any>(null);
   const [currentStep, setCurrentStep] = useState<"verify" | "onboarding" | "dashboard">("verify");
   const [onboardingPage, setOnboardingPage] = useState(1);
+  const [showHelpGuide, setShowHelpGuide] = useState(false);
 
   const handleVerify = async (proof: any) => {
     console.log("Proof received:", proof);
@@ -17,7 +20,6 @@ const Index = () => {
     setCurrentStep("onboarding");
   };
 
-  // Add mock verification function
   const handleMockVerify = () => {
     const mockProof = {
       merkle_root: "mock_merkle_root_123",
@@ -37,17 +39,14 @@ const Index = () => {
       {
         title: "Welcome to MAGBot!",
         description: "Access gas-free, instant micro-loans with your World ID.",
-        image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7"
       },
       {
         title: "Bigger Loans for Verified Users!",
         description: "ORB Verified: $10 | Passport Verified: $3 | Non-Verified: $1.",
-        image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b"
       },
       {
         title: "How It Works",
         description: "1. Verify your World ID\n2. Apply for a loan instantly\n3. Track repayments easily",
-        image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
       }
     ];
 
@@ -55,11 +54,7 @@ const Index = () => {
 
     return (
       <div className="space-y-8 animate-fade-up">
-        <img
-          src={currentPage.image}
-          alt={currentPage.title}
-          className="w-full h-48 object-cover rounded-lg"
-        />
+        <MascotIllustration step={onboardingPage as 1 | 2 | 3} />
         <div className="space-y-4">
           <h2 className="text-2xl font-bold">{currentPage.title}</h2>
           <p className="text-gray-600 whitespace-pre-line">{currentPage.description}</p>
@@ -70,7 +65,7 @@ const Index = () => {
               <div
                 key={idx}
                 className={`h-2 w-2 rounded-full ${
-                  idx + 1 === onboardingPage ? "bg-blue-600" : "bg-gray-200"
+                  idx + 1 === onboardingPage ? "bg-worldcoin-primary" : "bg-gray-200"
                 }`}
               />
             ))}
@@ -89,7 +84,7 @@ const Index = () => {
 
   const renderDashboard = () => (
     <div className="space-y-8 animate-fade-up">
-      <div className="bg-gradient-to-r from-blue-600 to-blue-400 p-6 rounded-lg text-white">
+      <div className="bg-gradient-to-r from-worldcoin-primary to-worldcoin-secondary p-6 rounded-lg text-white">
         <h3 className="text-xl font-semibold mb-2">Status: ORB Verified ✅</h3>
         <p className="text-lg">Eligible Loan: $10</p>
       </div>
@@ -102,9 +97,19 @@ const Index = () => {
           <Clock className="mr-2" /> Track Repayments
         </Button>
         <Button className="w-full" variant="outline" size="lg">
-          <Wallet className="mr-2" /> View Wallet
+          <Wallet className="mr-2" /> Add Funds
+        </Button>
+        <Button 
+          className="w-full" 
+          variant="ghost" 
+          size="lg"
+          onClick={() => setShowHelpGuide(true)}
+        >
+          <HelpCircle className="mr-2" /> Need Help?
         </Button>
       </div>
+
+      {showHelpGuide && <HelpGuide onClose={() => setShowHelpGuide(false)} />}
     </div>
   );
 
@@ -112,7 +117,7 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div className="container max-w-4xl mx-auto px-4 py-16">
         <div className="space-y-8">
-          <h1 className="text-4xl md:text-6xl font-bold text-center bg-gradient-to-r from-blue-600 to-blue-400 text-transparent bg-clip-text">
+          <h1 className="text-4xl md:text-6xl font-bold text-center bg-gradient-to-r from-worldcoin-primary to-worldcoin-secondary text-transparent bg-clip-text">
             MAGBot Mini App
           </h1>
           
@@ -132,14 +137,13 @@ const Index = () => {
                     {({ open }) => (
                       <Button
                         onClick={open}
-                        className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-lg font-semibold shadow-lg hover:opacity-90 transition-opacity"
+                        className="px-8 py-4 bg-gradient-to-r from-worldcoin-primary to-worldcoin-secondary text-white rounded-lg font-semibold shadow-lg hover:opacity-90 transition-opacity"
                       >
                         Verify with World ID
                       </Button>
                     )}
                   </IDKitWidget>
                   
-                  {/* Add mock verification button */}
                   <div className="mt-4">
                     <Button
                       onClick={handleMockVerify}
