@@ -31,27 +31,25 @@ const LoanPage = () => {
   };
 
   return (
-    <div className="h-full p-6 overflow-auto">
-      <div className="container mx-auto max-w-4xl space-y-6">
-        <h1 className="text-2xl font-bold text-center mb-6">Get a Loan</h1>
-        
-        <LoanEligibility level={verificationLevel} />
-        
-        {currentStep === "application" ? (
-          <LoanApplicationForm
-            maxLoanAmount={10}
-            verificationLevel={verificationLevel}
-            onSubmit={handleLoanApplication}
-          />
-        ) : loanDetails ? (
-          <LoanConfirmation
-            amount={loanDetails.amount}
-            duration={loanDetails.duration}
-            transactionId={loanDetails.transactionId}
-            onClose={() => setCurrentStep("application")}
-          />
-        ) : null}
-      </div>
+    <div className="p-6 space-y-6 animate-fade-up">
+      <h1 className="text-2xl font-bold text-center mb-6">Get a Loan</h1>
+      
+      <LoanEligibility level={verificationLevel} />
+      
+      {currentStep === "application" ? (
+        <LoanApplicationForm
+          maxLoanAmount={10}
+          verificationLevel={verificationLevel}
+          onSubmit={handleLoanApplication}
+        />
+      ) : loanDetails ? (
+        <LoanConfirmation
+          amount={loanDetails.amount}
+          duration={loanDetails.duration}
+          transactionId={loanDetails.transactionId}
+          onClose={() => setCurrentStep("application")}
+        />
+      ) : null}
     </div>
   );
 };

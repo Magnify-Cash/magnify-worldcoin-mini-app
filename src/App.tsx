@@ -17,9 +17,9 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <div className="h-screen flex flex-col overflow-hidden">
+          <div className="min-h-screen flex flex-col">
             <Header />
-            <main className="flex-1 overflow-hidden">
+            <main className="flex-1">
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/loan" element={<LoanPage />} />
