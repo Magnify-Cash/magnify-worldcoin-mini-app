@@ -23,11 +23,8 @@ const WalletDashboard = ({
   return (
     <div className="space-y-8 animate-fade-up">
       <div className="text-center space-y-8">
-        <h2 className="text-6xl font-bold text-brand-text-primary relative">
-          <span className="relative">
-            <span className="absolute -inset-1 bg-main-gradient blur-sm opacity-50"></span>
-            <span className="relative">${balance.toFixed(2)}</span>
-          </span>
+        <h2 className="text-6xl font-bold text-brand-text-primary">
+          ${balance.toFixed(2)}
         </h2>
         
         <div className="grid grid-cols-2 gap-4 mb-8">
