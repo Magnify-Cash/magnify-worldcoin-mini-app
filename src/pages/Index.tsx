@@ -42,7 +42,9 @@ const Index = () => {
           <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
             <X className="h-6 w-6 text-brand-text-primary" />
           </button>
-          <h1 className="text-xl font-semibold bg-main-gradient bg-clip-text text-transparent">MAGBot</h1>
+          <h1 className="text-xl font-semibold text-brand-text-primary p-1 rounded bg-gradient-to-r from-brand-turquoise to-brand-coral bg-[length:100%_2px] bg-no-repeat bg-bottom">
+            MAGBot
+          </h1>
           <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
             <Settings className="h-6 w-6 text-brand-text-primary" />
           </button>
