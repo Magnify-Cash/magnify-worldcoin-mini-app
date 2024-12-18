@@ -1,10 +1,6 @@
-import { Link } from "react-router-dom";
 import {
   NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
 const Header = () => {
@@ -13,21 +9,6 @@ const Header = () => {
       <div className="container flex h-14 items-center">
         <NavigationMenu>
           <NavigationMenuList>
-            <NavigationMenuItem>
-              <Link to="/" className={navigationMenuTriggerStyle()}>
-                Home
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link to="/loan" className={navigationMenuTriggerStyle()}>
-                Get a Loan
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link to="/dashboard" className={navigationMenuTriggerStyle()}>
-                Loan Dashboard
-              </Link>
-            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
       </div>

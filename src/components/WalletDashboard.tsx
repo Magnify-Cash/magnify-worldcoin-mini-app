@@ -4,6 +4,12 @@ import { VerificationStatus } from "./verification/VerificationStatus";
 import { VerificationLevel } from "@/types/verification";
 import { useNavigate } from "react-router-dom";
 import { Plus, Send, MoreHorizontal, ArrowDown, ArrowUp } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface WalletDashboardProps {
   balance: number;
@@ -60,14 +66,31 @@ const WalletDashboard = ({
               <span>Send</span>
             </Button>
             
-            <Button 
-              variant="outline"
-              className="flex flex-col items-center justify-center gap-2 p-4 w-24 h-24 glass-card"
-              onClick={onShowHelpGuide}
-            >
-              <MoreHorizontal className="h-8 w-8" />
-              <span>More</span>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="outline"
+                  className="flex flex-col items-center justify-center gap-2 p-4 w-24 h-24 glass-card"
+                >
+                  <MoreHorizontal className="h-8 w-8" />
+                  <span>More</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => navigate("/")}>
+                  Home
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/loan")}>
+                  Get a Loan
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+                  Loan Dashboard
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onShowHelpGuide}>
+                  Help Guide
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         
