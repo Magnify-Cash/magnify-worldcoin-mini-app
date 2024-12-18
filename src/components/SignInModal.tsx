@@ -35,6 +35,7 @@ const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
         console.log("Authentication successful:", payload);
         toast.success("Successfully signed in!");
         onSignIn();
+        onClose(); // Close the modal after successful sign-in
       } catch (error) {
         console.error("Error processing auth response:", error);
         toast.error("Failed to complete authentication. Please try again.");
@@ -46,7 +47,7 @@ const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
     return () => {
       MiniKit.unsubscribe(ResponseEvent.MiniAppWalletAuth);
     };
-  }, [onSignIn]);
+  }, [onSignIn, onClose]); // Added onClose to dependency array
 
   const handleSignIn = async () => {
     try {
