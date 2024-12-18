@@ -8,6 +8,7 @@ import Header from "./components/Header";
 import Index from "./pages/Index";
 import LoanPage from "./pages/LoanPage";
 import LoanDashboardPage from "./pages/LoanDashboardPage";
+import WalletPage from "./pages/WalletPage";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/loan" element={<LoanPage />} />
                 <Route path="/dashboard" element={<LoanDashboardPage />} />
+                <Route path="/wallet" element={<WalletPage />} />
               </Routes>
             </main>
           </div>
