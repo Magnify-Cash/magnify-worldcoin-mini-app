@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Wallet } from "lucide-react";
 import { toast } from "sonner";
-import { MiniKit } from "@worldcoin/minikit-js";
+import { MiniKit, ResponseEvent } from "@worldcoin/minikit-js";
 
 interface SignInModalProps {
   isOpen: boolean;
@@ -16,24 +16,51 @@ interface SignInModalProps {
 const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
   const [rememberMe, setRememberMe] = useState(false);
 
+  useEffect(() => {
+    if (!MiniKit.isInstalled()) {
+      console.error("MiniKit is not installed");
+      return;
+    }
+
+    const handleAuthResponse = async (payload: any) => {
+      console.log("Auth response received:", payload);
+      if (payload.status === "error") {
+        console.error("Authentication failed:", payload);
+        toast.error("Failed to sign in. Please try again.");
+        return;
+      }
+
+      try {
+        // In a real app, you would verify this on your backend
+        console.log("Authentication successful:", payload);
+        toast.success("Successfully signed in!");
+        onSignIn();
+      } catch (error) {
+        console.error("Error processing auth response:", error);
+        toast.error("Failed to complete authentication. Please try again.");
+      }
+    };
+
+    MiniKit.subscribe(ResponseEvent.MiniAppWalletAuth, handleAuthResponse);
+
+    return () => {
+      MiniKit.unsubscribe(ResponseEvent.MiniAppWalletAuth);
+    };
+  }, [onSignIn]);
+
   const handleSignIn = async () => {
     try {
       console.log("Initiating wallet authentication...");
-      const nonce = Math.random().toString(36).substring(7);
+      const nonce = crypto.randomUUID().replace(/-/g, "");
       
-      const authPayload = await MiniKit.commands.walletAuth({
+      await MiniKit.commands.walletAuth({
         nonce,
         statement: "Sign in to MAGBot to manage your loans.",
         expirationTime: rememberMe
           ? new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000)
           : new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+        notBefore: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
       });
-
-      if (authPayload) {
-        console.log("Authentication successful:", authPayload);
-        toast.success("Successfully signed in!");
-        onSignIn();
-      }
     } catch (error) {
       console.error("Authentication failed:", error);
       toast.error("Failed to sign in. Please try again.");
