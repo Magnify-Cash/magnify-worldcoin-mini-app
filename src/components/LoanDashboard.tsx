@@ -5,6 +5,7 @@ import { VerificationLevel } from "@/types/verification";
 import { CircularProgressbar } from 'react-circular-progressbar';
 import { Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { LoanEligibility } from "./verification/LoanEligibility";
 import 'react-circular-progressbar/dist/styles.css';
 
 interface LoanDashboardProps {
@@ -84,23 +85,13 @@ const LoanDashboard = ({
         </Card>
       </div>
 
-      <Card className="p-6 glass-card space-y-4">
-        <div className="flex justify-between items-center">
-          <h3 className="text-xl font-semibold">Loan Eligibility</h3>
-          <VerificationBadge level={verificationLevel} />
-        </div>
-        <p className="text-brand-text-secondary">
-          Based on your verification status, you can borrow up to:
-        </p>
-        <p className="text-3xl font-bold text-brand-turquoise">
-          ${verificationLevel === 'ORB' ? '10.00' : verificationLevel === 'PASSPORT' ? '3.00' : '1.00'}
-        </p>
-        {verificationLevel === 'NONE' && (
-          <Button className="w-full primary-button">
-            Get Verified with World ID
-          </Button>
-        )}
-      </Card>
+      <LoanEligibility level={verificationLevel} />
+
+      {verificationLevel === 'NONE' && (
+        <Button className="w-full primary-button">
+          Get Verified with World ID
+        </Button>
+      )}
     </Card>
   );
 };
