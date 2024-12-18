@@ -7,8 +7,6 @@ import SignInModal from "@/components/SignInModal";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { FundingOptions } from "@/components/FundingOptions";
 import { MascotIllustration } from "@/components/MascotIllustration";
-import LoanApplicationForm from "@/components/loan/LoanApplicationForm";
-import LoanConfirmation from "@/components/loan/LoanConfirmation";
 import WalletDashboard from "@/components/WalletDashboard";
 import { VerificationLevel } from "@/types/verification";
 
@@ -32,21 +30,13 @@ const ONBOARDING_SLIDES = [
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState<
-    "verify" | "onboarding" | "dashboard" | "loan-application" | "loan-confirmation"
+    "verify" | "onboarding" | "dashboard"
   >("verify");
   const [onboardingSlide, setOnboardingSlide] = useState(1);
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [showFundingOptions, setShowFundingOptions] = useState(false);
   const [walletBalance, setWalletBalance] = useState(0);
   const [verificationLevel, setVerificationLevel] = useState<VerificationLevel>('NONE');
-  const [loanDetails, setLoanDetails] = useState<{
-    amount: number;
-    duration: number;
-    transactionId: string;
-  } | null>(null);
-
-  // Determine max loan amount based on verification level
-  const maxLoanAmount = 10; // This would come from verification level
 
   const handleSignIn = () => {
     console.log("User signed in successfully");
@@ -60,18 +50,6 @@ const Index = () => {
       setCurrentStep("dashboard");
       toast.success("Welcome to MAGBot! You're all set to start.");
     }
-  };
-
-  const handleLoanApplication = (amount: number, duration: number) => {
-    // Here we would integrate with smart contract
-    const mockTransactionId = "0x" + Math.random().toString(16).substr(2, 40);
-    setLoanDetails({
-      amount,
-      duration,
-      transactionId: mockTransactionId
-    });
-    setCurrentStep("loan-confirmation");
-    console.log("Loan application submitted:", { amount, duration, mockTransactionId });
   };
 
   const renderContent = () => {
@@ -139,24 +117,6 @@ const Index = () => {
             </div>
           </div>
         );
-
-      case "loan-application":
-        return (
-          <LoanApplicationForm
-            maxLoanAmount={10}
-            onSubmit={handleLoanApplication}
-          />
-        );
-
-      case "loan-confirmation":
-        return loanDetails ? (
-          <LoanConfirmation
-            amount={loanDetails.amount}
-            duration={loanDetails.duration}
-            transactionId={loanDetails.transactionId}
-            onClose={() => setCurrentStep("dashboard")}
-          />
-        ) : null;
 
       case "dashboard":
         return (
