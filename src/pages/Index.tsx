@@ -1,24 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IDKitWidget } from "@worldcoin/idkit";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { 
-  ChevronRight, 
-  DollarSign, 
-  Clock, 
-  Wallet, 
-  HelpCircle,
-  CreditCard,
-  Euro,
-  PoundSterling,
-  IndianRupee,
-  JapaneseYen,
-  RussianRuble,
-  SwissFranc
-} from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { MascotIllustration } from "@/components/MascotIllustration";
 import { HelpGuide } from "@/components/HelpGuide";
+import SignInModal from "@/components/SignInModal";
+import WalletDashboard from "@/components/WalletDashboard";
+import { FundingOptions } from "@/components/FundingOptions";
 
 const Index = () => {
   const [verificationResult, setVerificationResult] = useState<any>(null);
@@ -26,6 +16,13 @@ const Index = () => {
   const [onboardingPage, setOnboardingPage] = useState(1);
   const [showHelpGuide, setShowHelpGuide] = useState(false);
   const [showFundingOptions, setShowFundingOptions] = useState(false);
+  const [showSignInModal, setShowSignInModal] = useState(true);
+  const [walletBalance, setWalletBalance] = useState(0);
+
+  useEffect(() => {
+    // Only show sign-in modal if we're in the dashboard
+    setShowSignInModal(currentStep === "dashboard");
+  }, [currentStep]);
 
   const handleVerify = async (proof: any) => {
     console.log("Proof received:", proof);
@@ -96,93 +93,6 @@ const Index = () => {
     );
   };
 
-  const handleAddFunds = (method: string) => {
-    console.log(`Selected funding method: ${method}`);
-    toast.info(`${method} funding option selected. This feature is coming soon!`);
-    setShowFundingOptions(false);
-  };
-
-  const renderFundingOptions = () => (
-    <div className="space-y-4 animate-fade-up">
-      <h3 className="text-xl font-semibold mb-4">Select Funding Method</h3>
-      <div className="grid grid-cols-2 gap-4">
-        <Button
-          variant="outline"
-          className="flex items-center justify-start space-x-2 p-4"
-          onClick={() => handleAddFunds('Credit Card')}
-        >
-          <CreditCard className="h-5 w-5" />
-          <span>Credit Card</span>
-        </Button>
-        <Button
-          variant="outline"
-          className="flex items-center justify-start space-x-2 p-4"
-          onClick={() => handleAddFunds('USD')}
-        >
-          <DollarSign className="h-5 w-5" />
-          <span>USD</span>
-        </Button>
-        <Button
-          variant="outline"
-          className="flex items-center justify-start space-x-2 p-4"
-          onClick={() => handleAddFunds('EUR')}
-        >
-          <Euro className="h-5 w-5" />
-          <span>EUR</span>
-        </Button>
-        <Button
-          variant="outline"
-          className="flex items-center justify-start space-x-2 p-4"
-          onClick={() => handleAddFunds('GBP')}
-        >
-          <PoundSterling className="h-5 w-5" />
-          <span>GBP</span>
-        </Button>
-      </div>
-    </div>
-  );
-
-  const renderDashboard = () => (
-    <div className="space-y-8 animate-fade-up">
-      <div className="bg-gradient-to-r from-worldcoin-primary to-worldcoin-secondary p-6 rounded-lg text-white">
-        <h3 className="text-xl font-semibold mb-2">Status: ORB Verified ✅</h3>
-        <p className="text-lg">Eligible Loan: $10</p>
-      </div>
-      
-      <div className="grid gap-4">
-        <Button 
-          className="w-full" 
-          size="lg"
-          onClick={() => setShowFundingOptions(true)}
-        >
-          <Wallet className="mr-2" /> Add Funds
-        </Button>
-        <Button className="w-full" variant="outline" size="lg">
-          <DollarSign className="mr-2" /> Take Out a Loan
-        </Button>
-        <Button className="w-full" variant="outline" size="lg">
-          <Clock className="mr-2" /> Track Repayments
-        </Button>
-        <Button 
-          className="w-full" 
-          variant="ghost" 
-          size="lg"
-          onClick={() => setShowHelpGuide(true)}
-        >
-          <HelpCircle className="mr-2" /> Need Help?
-        </Button>
-      </div>
-
-      {showFundingOptions && (
-        <Card className="p-6 mt-4">
-          {renderFundingOptions()}
-        </Card>
-      )}
-
-      {showHelpGuide && <HelpGuide onClose={() => setShowHelpGuide(false)} />}
-    </div>
-  );
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <div className="container max-w-4xl mx-auto px-4 py-16">
@@ -228,7 +138,29 @@ const Index = () => {
             )}
             
             {currentStep === "onboarding" && renderOnboarding()}
-            {currentStep === "dashboard" && renderDashboard()}
+            {currentStep === "dashboard" && (
+              <>
+                <WalletDashboard
+                  balance={walletBalance}
+                  onShowFundingOptions={() => setShowFundingOptions(true)}
+                  onShowHelpGuide={() => setShowHelpGuide(true)}
+                />
+                {showFundingOptions && (
+                  <Card className="p-6 mt-4">
+                    <FundingOptions onClose={() => setShowFundingOptions(false)} />
+                  </Card>
+                )}
+                {showHelpGuide && <HelpGuide onClose={() => setShowHelpGuide(false)} />}
+                <SignInModal
+                  isOpen={showSignInModal}
+                  onClose={() => setShowSignInModal(false)}
+                  onSignIn={() => {
+                    setShowSignInModal(false);
+                    setWalletBalance(0);
+                  }}
+                />
+              </>
+            )}
           </Card>
         </div>
       </div>
