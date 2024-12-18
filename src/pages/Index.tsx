@@ -27,14 +27,14 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white font-['Bai_Jamjuree']">
       <div className="max-w-md mx-auto relative">
         {/* Top Navigation Bar */}
         <div className="flex justify-between items-center p-4 border-b">
           <button className="p-2 hover:bg-gray-100 rounded-full">
             <X className="h-6 w-6" />
           </button>
-          <h1 className="text-xl font-semibold">MemeWallet</h1>
+          <h1 className="text-xl font-semibold">MAGBot</h1>
           <button className="p-2 hover:bg-gray-100 rounded-full">
             <Settings className="h-6 w-6" />
           </button>
@@ -45,11 +45,11 @@ const Index = () => {
           {currentStep === "verify" && (
             <div className="space-y-8 text-center">
               <div className="w-24 h-24 mx-auto bg-black rounded-xl flex items-center justify-center">
-                <img src="/placeholder.svg" alt="Logo" className="w-16 h-16" />
+                <img src="/placeholder.svg" alt="MAGBot Logo" className="w-16 h-16" />
               </div>
               <div>
                 <h2 className="text-3xl font-bold mb-2">Connect your wallet!</h2>
-                <p className="text-gray-600">To start exploring meme world</p>
+                <p className="text-gray-600">To start exploring MAGBot</p>
               </div>
               <Button 
                 className="w-full bg-purple-500 hover:bg-purple-600 text-white rounded-full py-6"
