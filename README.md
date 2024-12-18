@@ -26,6 +26,33 @@ cp .env.example .env
 npm run dev
 ```
 
+## DevOps Setup
+
+### Monitoring
+- Sentry for error tracking and performance monitoring
+- Console logging with different levels (info, warn, error)
+- Performance measurements for critical operations
+
+### Environment Variables
+Required environment variables:
+- `VITE_SENTRY_DSN`: Sentry project DSN
+- Additional variables as needed for specific features
+
+### Deployment Environments
+- Development: Local development environment
+- Staging: For testing before production
+- Production: Live environment
+
+### Error Handling
+- Global error boundary
+- Unhandled promise rejection catching
+- Structured logging
+
+### Performance Monitoring
+- Custom performance measurements
+- Sentry performance tracking
+- Console-based performance logging
+
 ## Documentation
 
 - [Backend Integration](./docs/BACKEND_INTEGRATION.md)
