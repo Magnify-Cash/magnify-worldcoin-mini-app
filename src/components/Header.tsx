@@ -23,6 +23,11 @@ const Header = () => {
                 Get a Loan
               </Link>
             </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link to="/dashboard" className={navigationMenuTriggerStyle()}>
+                Loan Dashboard
+              </Link>
+            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
       </div>

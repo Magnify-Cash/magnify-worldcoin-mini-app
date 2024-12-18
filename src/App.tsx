@@ -7,6 +7,7 @@ import { MiniKitProvider } from "./providers/MiniKitProvider";
 import Header from "./components/Header";
 import Index from "./pages/Index";
 import LoanPage from "./pages/LoanPage";
+import LoanDashboardPage from "./pages/LoanDashboardPage";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/loan" element={<LoanPage />} />
+                <Route path="/dashboard" element={<LoanDashboardPage />} />
               </Routes>
             </main>
           </div>
