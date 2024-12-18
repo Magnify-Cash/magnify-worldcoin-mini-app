@@ -8,6 +8,9 @@ interface VerificationBadgeProps {
 }
 
 export const VerificationBadge = ({ level, className = "" }: VerificationBadgeProps) => {
+  // If level is 'NONE', return null to hide the badge
+  if (level === 'NONE') return null;
+
   const tier = VERIFICATION_TIERS[level];
   
   return (
@@ -15,11 +18,7 @@ export const VerificationBadge = ({ level, className = "" }: VerificationBadgePr
       variant="secondary" 
       className={`flex items-center gap-1 ${tier.color} ${className}`}
     >
-      {level === 'NONE' ? (
-        <ShieldAlert className="w-3 h-3" />
-      ) : (
-        <ShieldCheck className="w-3 h-3" />
-      )}
+      <ShieldCheck className="w-3 h-3" />
       {tier.description}
     </Badge>
   );
