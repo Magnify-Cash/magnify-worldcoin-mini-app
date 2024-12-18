@@ -94,7 +94,7 @@ const LoanDashboard = ({
           </Button>
         )}
       </Card>
-    </div>
+    </Card>
   );
 };
 
