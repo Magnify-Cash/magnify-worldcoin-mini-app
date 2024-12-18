@@ -57,6 +57,11 @@ export default {
           secondary: "#0EA5E9",
           background: "#F8FAFC",
         },
+        highlight: {
+          cyan: "#2DFFF9",
+          blue: "#DAEFFF",
+          coral: "#FF7777",
+        },
       },
       animation: {
         "fade-up": "fadeUp 0.5s ease-out forwards",

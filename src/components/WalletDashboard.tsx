@@ -15,23 +15,29 @@ const WalletDashboard = ({
 }: WalletDashboardProps) => {
   return (
     <div className="space-y-8 animate-fade-up">
-      <div className="bg-gradient-to-r from-worldcoin-primary to-worldcoin-secondary p-6 rounded-lg text-white">
+      <div className="bg-gradient-to-r from-highlight-cyan to-highlight-blue p-6 rounded-lg text-gray-800">
         <h3 className="text-xl font-semibold mb-2">Wallet Balance</h3>
         <p className="text-2xl font-bold">{balance.toFixed(2)} WUSDC</p>
       </div>
       
       <div className="grid gap-4">
         <Button 
-          className="w-full" 
+          className="w-full bg-highlight-cyan hover:bg-highlight-cyan/90 text-gray-800" 
           size="lg"
           onClick={onShowFundingOptions}
         >
           <Wallet className="mr-2" /> Add Funds
         </Button>
-        <Button className="w-full" variant="outline" size="lg">
+        <Button 
+          className="w-full bg-highlight-blue hover:bg-highlight-blue/90 text-gray-800" 
+          size="lg"
+        >
           <DollarSign className="mr-2" /> Take Out a Loan
         </Button>
-        <Button className="w-full" variant="outline" size="lg">
+        <Button 
+          className="w-full bg-highlight-coral hover:bg-highlight-coral/90 text-white" 
+          size="lg"
+        >
           <Clock className="mr-2" /> Track Repayments
         </Button>
         <Button 
