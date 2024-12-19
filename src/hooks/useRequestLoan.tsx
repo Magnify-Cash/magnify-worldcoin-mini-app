@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect } from "react";
 import { MiniKit } from "@worldcoin/minikit-js";
 import { abi } from "@/utils/abi";
-import { MAGNIFY_PROTOCOL_ADDRESS, WORLDCOIN_CLIENT_ID, WORLDCOIN_NFT_COLLATERAL } from "@/utils/constants";
+import { MAGNIFY_PROTOCOL_ADDRESS, WORLDCOIN_CLIENT_ID, WORLDCOIN_DESK_INFO } from "@/utils/constants";
 import { useWaitForTransactionReceipt } from "@worldcoin/minikit-react";
 import { createPublicClient, http } from "viem";
 import { worldchain } from "wagmi/chains";
@@ -41,14 +41,7 @@ const useInitializeNewLoan = () => {
   }, [isConfirmingTransaction, isTransactionConfirmed]);
 
   const initializeNewLoan = useCallback(
-    async (
-      lendingDeskId: number,
-      nftCollection: string,
-      nftId: bigint,
-      duration: number,
-      amount: bigint,
-      maxInterestAllowed: number,
-    ) => {
+    async (nftId: bigint, duration: number, amount: bigint, maxInterestAllowed: number) => {
       if (!MiniKit.isInstalled()) {
         setError("Worldcoin MiniKit is not installed");
         return;
@@ -69,13 +62,20 @@ const useInitializeNewLoan = () => {
               address: MAGNIFY_PROTOCOL_ADDRESS,
               abi: abi,
               functionName: "initializeNewLoan",
-              args: [lendingDeskId, nftCollection, nftId, duration, amount, maxInterestAllowed],
+              args: [
+                WORLDCOIN_DESK_INFO.lending_desk_id,
+                WORLDCOIN_DESK_INFO.nft_collection_address,
+                nftId,
+                duration,
+                amount,
+                maxInterestAllowed,
+              ],
             },
           ],
           permit2: [
             {
               permitted: {
-                token: WORLDCOIN_NFT_COLLATERAL,
+                token: WORLDCOIN_DESK_INFO.nft_collection_address,
                 amount: "1",
               },
               nonce: Date.now().toString(),

@@ -57,22 +57,13 @@ const LoanPage = () => {
 
       try {
         // Convert string inputs to BigInt for smart contract interaction
-        const lendingDeskId = 1;
-        const nftCollection = WORLDCOIN_NFT_COLLATERAL;
         const nftId = BigInt(1234);
         const durationBigInt = parseInt(duration);
         const amountBigInt = BigInt(numAmount * 1e18);
         const maxInterestAllowed = 5;
 
         // Initialize loan using the custom hook which interfaces with the blockchain
-        await initializeNewLoan(
-          lendingDeskId,
-          nftCollection,
-          nftId,
-          durationBigInt,
-          amountBigInt,
-          maxInterestAllowed,
-        );
+        await initializeNewLoan(nftId, durationBigInt, amountBigInt, maxInterestAllowed);
       } catch (err) {
         // Error handling for the loan initialization process
         console.error("Error in loan application:", err);
