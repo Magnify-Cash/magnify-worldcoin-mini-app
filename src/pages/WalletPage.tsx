@@ -7,6 +7,7 @@ import { VerificationLevel } from "@/types/verification";
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { VerificationStatus } from "@/components/verification/VerificationStatus";
+import { MascotIllustration } from "@/components/MascotIllustration";
 
 const WalletPage = () => {
   const [showFundingOptions, setShowFundingOptions] = useState(false);
@@ -150,29 +151,35 @@ const WalletPage = () => {
 
         {/* Token List */}
         <div className="space-y-4">
-          {tokens.map((token) => (
-            <Card
-              key={token.symbol}
-              className="flex items-center justify-between p-4 glass-card"
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className={`w-10 h-10 rounded-full ${randomTailwindColor(token.symbol[0])} flex items-center justify-center`}
-                >
-                  <span className="text-white text-lg">{token.symbol[0]}</span>
+          {tokens.length > 0 ? (
+            tokens.map((token) => (
+              <Card key={token.symbol} className="flex items-center justify-between p-4 glass-card">
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-10 h-10 rounded-full ${randomTailwindColor(token.symbol[0])} flex items-center justify-center`}
+                  >
+                    <span className="text-white text-lg">{token.symbol[0]}</span>
+                  </div>
+                  <div className="text-left">
+                    <h3 className="font-semibold">{token.name}</h3>
+                    <p className="text-sm text-brand-text-secondary">{token.symbol}</p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <h3 className="font-semibold">{token.name}</h3>
-                  <p className="text-sm text-brand-text-secondary">
-                    {token.symbol}
-                  </p>
+                <div className="text-right">
+                  <p className="font-semibold">{token.balance}</p>
                 </div>
-              </div>
-              <div className="text-right">
-                <p className="font-semibold">{token.balance}</p>
-              </div>
+              </Card>
+            ))
+          ) : (
+            <Card className="p-6 glass-card flex items-center justify-center flex-col">
+              <MascotIllustration step={1} />
+              <p className="text-xl font-semibold text-brand-text-primary">No Tokens Found</p>
+              <p className="text-sm text-brand-text-secondary mt-1">
+                Looks like you don't have any tokens yet. <br />
+                Deposit some to get started!
+              </p>
             </Card>
-          ))}
+          )}
         </div>
         {/* End Token List */}
         <Sheet open={showFundingOptions} onOpenChange={setShowFundingOptions}>
