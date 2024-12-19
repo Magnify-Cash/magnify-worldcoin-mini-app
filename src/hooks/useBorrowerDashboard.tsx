@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { readContract } from "@wagmi/core";
 import { config } from "@/providers/Wagmi";
 import { abi } from "@/utils/abi";
+import { MAGNIFY_PROTOCOL_ADDRESS } from "@/utils/constants";
 
 export type Loan = {
   id: string;
@@ -122,7 +123,7 @@ function useBorrowerDashboard(walletAddress: `0x${string}`, isMock = false) {
           borrowerData.loans.map(async (loan) => {
             const paymentAmountDue = await readContract(config, {
               abi,
-              address: "0x781EBE3865b0911D6989854dCD29DF3cd81168eB",
+              address: MAGNIFY_PROTOCOL_ADDRESS,
               functionName: "getLoanAmountDue",
               args: [loan.id],
               account: walletAddress,
