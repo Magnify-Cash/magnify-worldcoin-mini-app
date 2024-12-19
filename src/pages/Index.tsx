@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import SignInModal from "@/components/SignInModal";
 import { Sheet, SheetContent } from "@/ui/sheet";
@@ -17,13 +17,23 @@ const Index = () => {
     navigate("/onboarding");
   };
 
+  const [step, setStep] = useState(1);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStep((prevStep) => (prevStep % 3) + 1); // Cycle through 1, 2, 3
+    }, 1500);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-brand-background to-brand-background-end">
       <div className="flex flex-col items-center justify-center min-h-screen p-6 space-y-6">
-        <MascotIllustration step={1} />
+        <MascotIllustration step={step} />
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold">Welcome to MAGBot</h1>
-          <p className="text-xl text-gray-600">Your AI-powered lending companion</p>
+          <p className="text-xl text-gray-600">
+            Your AI-powered lending companion
+          </p>
         </div>
         <div className="w-full max-w-md space-y-4">
           <button
