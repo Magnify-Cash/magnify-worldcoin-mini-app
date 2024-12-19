@@ -2,7 +2,7 @@ import { CircularProgressbar } from "react-circular-progressbar";
 import { Info } from "lucide-react";
 import "react-circular-progressbar/dist/styles.css";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/ui/tooltip";
-import RepayLoanCard from "@/components/loan/RepayLoanCard";
+import RepayLoanCard from "@/components/RepayLoanCard";
 import useBorrowerDashboard from "@/hooks/useBorrowerDashboard";
 import { Card } from "@/ui/card";
 
