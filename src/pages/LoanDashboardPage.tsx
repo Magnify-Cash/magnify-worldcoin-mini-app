@@ -13,6 +13,7 @@ import {
 import { LoanEligibility } from "@/components/verification/LoanEligibility";
 import RepayLoanCard from "@/components/loan/RepayLoanCard";
 import "react-circular-progressbar/dist/styles.css";
+import useBorrowerDashboard from "@/hooks/useBorrowerDashboard";
 
 const LoanDashboardPage = () => {
   // For now using static data, these could be fetched from an API later
@@ -31,6 +32,11 @@ const LoanDashboardPage = () => {
     interestRate: 1.5,
     totalDue: 5.08,
   };
+
+  const { data, isLoading, isError, error } = useBorrowerDashboard("");
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error.message}</div>;
+  console.log(data);
 
   return (
     <div className="container mx-auto p-6">
