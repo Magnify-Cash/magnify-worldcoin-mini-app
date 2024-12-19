@@ -1,4 +1,6 @@
 import React from "react";
+import { WagmiProvider } from "wagmi";
+import { config } from "@/providers/Wagmi";
 import { Toaster } from "@/ui/toaster";
 import { Toaster as Sonner } from "@/ui/sonner";
 import { TooltipProvider } from "@/ui/tooltip";
@@ -26,28 +28,33 @@ const queryClient = new QueryClient({
 const App = () => (
   <ErrorBoundary fallback={<div>An error has occurred</div>}>
     <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <MiniKitProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <div className="min-h-screen flex flex-col">
-                <Header />
-                <main className="flex-1">
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/onboarding" element={<Onboarding />} />
-                    <Route path="/loan" element={<LoanPage />} />
-                    <Route path="/dashboard" element={<LoanDashboardPage />} />
-                    <Route path="/wallet" element={<WalletPage />} />
-                  </Routes>
-                </main>
-              </div>
-            </BrowserRouter>
-          </TooltipProvider>
-        </MiniKitProvider>
-      </QueryClientProvider>
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+          <MiniKitProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <div className="min-h-screen flex flex-col">
+                  <Header />
+                  <main className="flex-1">
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/onboarding" element={<Onboarding />} />
+                      <Route path="/loan" element={<LoanPage />} />
+                      <Route
+                        path="/dashboard"
+                        element={<LoanDashboardPage />}
+                      />
+                      <Route path="/wallet" element={<WalletPage />} />
+                    </Routes>
+                  </main>
+                </div>
+              </BrowserRouter>
+            </TooltipProvider>
+          </MiniKitProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
     </React.StrictMode>
   </ErrorBoundary>
 );
