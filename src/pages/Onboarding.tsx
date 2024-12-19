@@ -19,8 +19,7 @@ export const Onboarding = () => {
     },
     {
       title: "2. Apply for a Loan",
-      description:
-        "Choose your loan amount and duration based on your verification level:",
+      description: "Choose your loan amount and duration based on your verification level:",
       details: [
         "Select the loan size available to you: $1, $3, or $10.",
         "Pick a repayment duration (e.g., 7 days or 14 days).",
@@ -29,8 +28,7 @@ export const Onboarding = () => {
     },
     {
       title: "3. Track & Repay",
-      description:
-        "Easily monitor your active loans and make repayments directly through your wallet:",
+      description: "Easily monitor your active loans and make repayments directly through your wallet:",
       details: [
         "View your loan details, repayment schedule, and status.",
         "Make early repayments anytime after 1 hour to close your loan faster.",
@@ -40,7 +38,7 @@ export const Onboarding = () => {
   ];
 
   return (
-    <div className="py-4 overflow-y-auto">
+    <div className="container py-4 overflow-y-auto">
       <Card className="p-6 space-y-6">
         <div className="flex items-center gap-4">
           <h2 className="text-2xl font-bold">How to Use MAGBot</h2>

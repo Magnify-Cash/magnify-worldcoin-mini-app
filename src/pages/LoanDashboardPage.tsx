@@ -19,13 +19,7 @@ const LoanDashboardPage = () => {
   if (isError) return <div>Error: {error.message}</div>;
   return (
     <div className="container mx-auto p-6">
-      <Card className="p-4 glass-card">
-        <div className="flex justify-between items-start mb-8">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Welcome to Your Loan Dashboard</h1>
-          </div>
-        </div>
-      </Card>
+      <h1 className="text-2xl font-bold text-center mb-6">Loan Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <Card className="p-4 glass-card">
           <h4 className="text-sm text-brand-text-secondary mb-1">Total Loans Repaid</h4>

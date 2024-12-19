@@ -31,7 +31,7 @@ const LoanPage = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 animate-fade-up">
+    <div className="container p-6 space-y-6 animate-fade-up">
       <h1 className="text-2xl font-bold text-center mb-6">Get a Loan</h1>
 
       <LoanEligibility level={verificationLevel} />
