@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
@@ -15,18 +15,12 @@ import { VerificationLevel, VERIFICATION_TIERS } from "@/types/verification";
 const LoanPage = () => {
   // State Management
   // =================
-  const [currentStep, setCurrentStep] = useState<"application" | "confirmation">("application");
-  const [loanDetails, setLoanDetails] = useState<{
-    amount: number;
-    duration: number;
-    transactionId: string;
-  } | null>(null);
   const [amount, setAmount] = useState<string>("1"); // Loan amount as string for input control
   const [duration, setDuration] = useState<string>("30"); // Loan duration in days as string
 
   // Hooks
   // ============================
-  const { initializeNewLoan, isConfirming, error, transactionId } = useInitializeNewLoan();
+  const { initializeNewLoan, isConfirming, isConfirmed, error, loanDetails } = useInitializeNewLoan();
   const navigate = useNavigate();
 
   // Constants
@@ -35,7 +29,22 @@ const LoanPage = () => {
   const verificationLevel: VerificationLevel = "NONE";
   const tier = VERIFICATION_TIERS[verificationLevel];
 
-  // Event Handlers
+  // Toasts
+  // ========
+  // Use effects for toast notifications
+  useEffect(() => {
+    if (error) {
+      toast.error(`Failed to apply for loan: ${error}`);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (isConfirmed) {
+      toast.success("Loan application successful!");
+    }
+  }, [isConfirmed]);
+
+  // Loan Handler
   // ==============
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -56,7 +65,7 @@ const LoanPage = () => {
         const maxInterestAllowed = 5;
 
         // Initialize loan using the custom hook which interfaces with the blockchain
-        const transactionResult = await initializeNewLoan(
+        await initializeNewLoan(
           lendingDeskId,
           nftCollection,
           nftId,
@@ -64,17 +73,8 @@ const LoanPage = () => {
           amountBigInt,
           maxInterestAllowed,
         );
-        // Update state with loan details and move to confirmation step
-        setLoanDetails({
-          amount: numAmount,
-          duration: parseInt(duration),
-          transactionId: transactionId || "0xMockTransactionId",
-        });
-        setCurrentStep("confirmation");
-        toast.success("Loan application successful!");
       } catch (err) {
         // Error handling for the loan initialization process
-        toast.error(`Failed to apply for loan: ${error || "An unexpected error occurred"}`);
         console.error("Error in loan application:", err);
       }
     },
@@ -86,7 +86,40 @@ const LoanPage = () => {
       <h1 className="text-2xl font-bold text-center mb-6">Get a Loan</h1>
       <LoanEligibility level={verificationLevel} />
 
-      {currentStep === "application" ? (
+      {isConfirming ? (
+        <Card className="p-6 text-center space-y-6">
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <div className="relative">
+              <div className="w-16 h-16 rounded-full border-4 border-black animate-spin border-t-transparent" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-pulse text-black" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-xl font-semibold">Processing Loan</h3>
+              <p className="text-gray-600">Confirming transaction on WorldChain...</p>
+            </div>
+          </div>
+        </Card>
+      ) : isConfirmed && loanDetails ? (
+        <Card className="p-6 text-center space-y-6">
+          <div className="flex justify-center">
+            <CheckCircle2 className="h-16 w-16 text-green-500" />
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-xl font-semibold">Loan Approved!</h3>
+            <div className="space-y-1 text-gray-600">
+              <p>Amount: ${loanDetails.amount}</p>
+              <p>Duration: {loanDetails.duration} days</p>
+              <p>APR: {loanDetails.duration === 7 ? "1.5%" : "2%"}</p>
+              <p className="text-xs break-all mt-2">Transaction ID: {loanDetails.transactionId}</p>
+            </div>
+          </div>
+          <Button onClick={() => navigate("/dashboard")} className="w-full">
+            View Dashboard
+          </Button>
+        </Card>
+      ) : (
         <Card className="p-6 space-y-6 bg-white/50 backdrop-blur-sm">
           <div className="space-y-2">
             <h3 className="text-xl font-semibold">Apply for a Loan</h3>
@@ -133,42 +166,7 @@ const LoanPage = () => {
             </Button>
           </form>
         </Card>
-      ) : loanDetails ? (
-        isConfirming ? (
-          <Card className="p-6 text-center space-y-6">
-            <div className="flex flex-col items-center justify-center space-y-4">
-              <div className="relative">
-                <div className="w-16 h-16 rounded-full border-4 border-black animate-spin border-t-transparent" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="w-8 h-8 animate-pulse text-black" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-xl font-semibold">Processing Loan</h3>
-                <p className="text-gray-600">Confirming transaction on WorldChain...</p>
-              </div>
-            </div>
-          </Card>
-        ) : (
-          <Card className="p-6 text-center space-y-6">
-            <div className="flex justify-center">
-              <CheckCircle2 className="h-16 w-16 text-green-500" />
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-xl font-semibold">Loan Approved!</h3>
-              <div className="space-y-1 text-gray-600">
-                <p>Amount: ${loanDetails.amount}</p>
-                <p>Duration: {loanDetails.duration} days</p>
-                <p>APR: {loanDetails.duration === 7 ? "1.5%" : "2%"}</p>
-                <p className="text-xs break-all mt-2">Transaction ID: {loanDetails.transactionId}</p>
-              </div>
-            </div>
-            <Button onClick={() => navigate("/dashboard")} className="w-full">
-              View Dashboard
-            </Button>
-          </Card>
-        )
-      ) : null}
+      )}
     </div>
   );
 };

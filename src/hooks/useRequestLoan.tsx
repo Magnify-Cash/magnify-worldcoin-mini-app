@@ -5,12 +5,21 @@ import { MAGNIFY_PROTOCOL_ADDRESS, WORLDCOIN_CLIENT_ID, WORLDCOIN_NFT_COLLATERAL
 import { useWaitForTransactionReceipt } from "@worldcoin/minikit-react";
 import { createPublicClient, http } from "viem";
 import { worldchain } from "wagmi/chains";
+import { toast } from "sonner";
+
+type LoanDetails = {
+  amount: number;
+  duration: number;
+  transactionId: string;
+};
 
 const useInitializeNewLoan = () => {
   const [error, setError] = useState<string | null>(null);
   const [transactionId, setTransactionId] = useState<string | null>(null);
   const [isConfirming, setIsConfirming] = useState<boolean>(false);
   const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
+  const [loanDetails, setLoanDetails] = useState<LoanDetails | null>(null);
+
   const client = createPublicClient({
     chain: worldchain,
     transport: http("https://worldchain-mainnet.g.alchemy.com/public"),
@@ -49,6 +58,7 @@ const useInitializeNewLoan = () => {
       setTransactionId(null);
       setIsConfirming(false);
       setIsConfirmed(false);
+      setLoanDetails(null);
 
       try {
         const deadline = Math.floor((Date.now() + 30 * 60 * 1000) / 1000).toString();
@@ -75,21 +85,29 @@ const useInitializeNewLoan = () => {
           ],
         });
 
-        if (finalPayload.status == "success") {
+        if (finalPayload.status === "success") {
           setTransactionId(finalPayload.transaction_id);
           console.log("Loan initialization transaction sent:", finalPayload.transaction_id);
+
+          // Convert bigint to number for amount and duration
+          setLoanDetails({
+            amount: Number(amount), // Assuming amount is in smallest unit, convert to readable number
+            duration: duration, // Assuming duration is already in days or whatever unit you want to display
+            transactionId: finalPayload.transaction_id,
+          });
         } else {
           console.error("Error sending transaction", finalPayload);
-          setError(`Transaction failed: ${finalPayload.details}`);
+          setError(`Transaction failed`);
         }
       } catch (err) {
+        console.error("Error sending transaction", err);
         setError(`Transaction failed: ${(err as Error).message}`);
       }
     },
-    [], // Empty array since we're not using any state or props directly in the useCallback dependency array
+    [], // Empty array for simplicity, consider adding state setters if needed
   );
 
-  return { initializeNewLoan, error, transactionId, isConfirming, isConfirmed };
+  return { initializeNewLoan, error, transactionId, isConfirming, isConfirmed, loanDetails };
 };
 
 export default useInitializeNewLoan;
