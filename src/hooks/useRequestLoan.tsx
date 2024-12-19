@@ -1,33 +1,59 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { MiniKit } from "@worldcoin/minikit-js";
 import { abi } from "@/utils/abi";
-import { MAGNIFY_PROTOCOL_ADDRESS, WORLDCOIN_NFT_COLLATERAL } from "@/utils/constants";
+import { MAGNIFY_PROTOCOL_ADDRESS, WORLDCOIN_CLIENT_ID, WORLDCOIN_NFT_COLLATERAL } from "@/utils/constants";
+import { useWaitForTransactionReceipt } from "@worldcoin/minikit-react";
+import { createPublicClient, http } from "viem";
+import { worldchain } from "wagmi/chains";
 
 const useInitializeNewLoan = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+  const [transactionId, setTransactionId] = useState<string | null>(null);
+  const [isConfirming, setIsConfirming] = useState<boolean>(false);
+  const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
+  const client = createPublicClient({
+    chain: worldchain,
+    transport: http("https://worldchain-mainnet.g.alchemy.com/public"),
+  });
+
+  // Use the hook at the top level of your custom hook
+  const { isLoading: isConfirmingTransaction, isSuccess: isTransactionConfirmed } =
+    useWaitForTransactionReceipt({
+      client: client,
+      transactionId: transactionId || "",
+      appConfig: {
+        app_id: WORLDCOIN_CLIENT_ID,
+      },
+    });
+
+  useEffect(() => {
+    setIsConfirming(isConfirmingTransaction);
+    setIsConfirmed(isTransactionConfirmed);
+  }, [isConfirmingTransaction, isTransactionConfirmed]);
 
   const initializeNewLoan = useCallback(
     async (
-      lendingDeskId: number, // uint64, but number for simplicity in JavaScript
-      nftCollection: string, // address in Ethereum is string
-      nftId: bigint, // uint256, use BigInt for large numbers
-      duration: number, // uint32
-      amount: bigint, // uint256, use BigInt for large numbers
-      maxInterestAllowed: number, // uint32
+      lendingDeskId: number,
+      nftCollection: string,
+      nftId: bigint,
+      duration: number,
+      amount: bigint,
+      maxInterestAllowed: number,
     ) => {
       if (!MiniKit.isInstalled()) {
         setError("Worldcoin MiniKit is not installed");
         return;
       }
 
-      setIsLoading(true);
       setError(null);
+      setTransactionId(null);
+      setIsConfirming(false);
+      setIsConfirmed(false);
 
       try {
         const deadline = Math.floor((Date.now() + 30 * 60 * 1000) / 1000).toString();
 
-        const { commandPayload, finalPayload } = await MiniKit.commandsAsync.sendTransaction({
+        const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
           transaction: [
             {
               address: MAGNIFY_PROTOCOL_ADDRESS,
@@ -39,26 +65,31 @@ const useInitializeNewLoan = () => {
           permit2: [
             {
               permitted: {
-                token: WORLDCOIN_NFT_COLLATERAL, // Address of the NFT contract
-                amount: "1", // For NFTs, amount is usually 1 since you're transferring one token
+                token: WORLDCOIN_NFT_COLLATERAL,
+                amount: "1",
               },
               nonce: Date.now().toString(),
               deadline: deadline,
-              spender: MAGNIFY_PROTOCOL_ADDRESS, // The contract address that will spend this NFT
+              spender: MAGNIFY_PROTOCOL_ADDRESS,
             },
           ],
         });
-        console.log("Loan initialization successful:", commandPayload, finalPayload);
+
+        if (finalPayload.status == "success") {
+          setTransactionId(finalPayload.transaction_id);
+          console.log("Loan initialization transaction sent:", finalPayload.transaction_id);
+        } else {
+          console.error("Error sending transaction", finalPayload);
+          setError(`Transaction failed: ${finalPayload.details}`);
+        }
       } catch (err) {
-        setError(`Transaction failed: ${err.message}`);
-      } finally {
-        setIsLoading(false);
+        setError(`Transaction failed: ${(err as Error).message}`);
       }
     },
-    [],
+    [], // Empty array since we're not using any state or props directly in the useCallback dependency array
   );
 
-  return { initializeNewLoan, isLoading, error };
+  return { initializeNewLoan, error, transactionId, isConfirming, isConfirmed };
 };
 
 export default useInitializeNewLoan;
