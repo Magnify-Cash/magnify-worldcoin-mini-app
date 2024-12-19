@@ -1,11 +1,9 @@
 import { useCallback, useState, useEffect } from "react";
 import { MiniKit } from "@worldcoin/minikit-js";
-import { abi } from "@/utils/abi";
 import { MAGNIFY_PROTOCOL_ADDRESS, WORLDCOIN_CLIENT_ID, WORLDCOIN_DESK_INFO } from "@/utils/constants";
 import { useWaitForTransactionReceipt } from "@worldcoin/minikit-react";
 import { createPublicClient, http } from "viem";
 import { worldchain } from "wagmi/chains";
-import { toast } from "sonner";
 
 type LoanDetails = {
   amount: number;
@@ -56,16 +54,31 @@ const useInitializeNewLoan = () => {
       try {
         const deadline = Math.floor((Date.now() + 30 * 60 * 1000) / 1000).toString();
 
-        const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
+        const { commandPayload, finalPayload } = await MiniKit.commandsAsync.sendTransaction({
           transaction: [
             {
               address: MAGNIFY_PROTOCOL_ADDRESS,
-              abi: abi,
+              abi: [
+                {
+                  inputs: [
+                    { internalType: "uint64", name: "_lendingDeskId", type: "uint64" },
+                    { internalType: "address", name: "_nftCollection", type: "address" },
+                    { internalType: "uint256", name: "_nftId", type: "uint256" },
+                    { internalType: "uint32", name: "_duration", type: "uint32" },
+                    { internalType: "uint256", name: "_amount", type: "uint256" },
+                    { internalType: "uint32", name: "_maxInterestAllowed", type: "uint32" },
+                  ],
+                  name: "initializeNewLoan",
+                  outputs: [],
+                  stateMutability: "nonpayable",
+                  type: "function",
+                },
+              ],
               functionName: "initializeNewLoan",
               args: [
-                WORLDCOIN_DESK_INFO.lending_desk_id,
+                BigInt(WORLDCOIN_DESK_INFO.lending_desk_id),
                 WORLDCOIN_DESK_INFO.nft_collection_address,
-                nftId,
+                BigInt(nftId),
                 duration,
                 amount,
                 maxInterestAllowed,
@@ -96,7 +109,7 @@ const useInitializeNewLoan = () => {
             transactionId: finalPayload.transaction_id,
           });
         } else {
-          console.error("Error sending transaction", finalPayload);
+          console.error("Error sending transaction", finalPayload, commandPayload);
           setError(`Transaction failed`);
         }
       } catch (err) {
