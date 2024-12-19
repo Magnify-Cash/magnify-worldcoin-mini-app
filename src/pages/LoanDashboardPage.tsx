@@ -75,7 +75,7 @@ const LoanDashboardPage = () => {
       </div>
       <Card className="w-full p-6 bg-white/50 backdrop-blur-sm space-y-6">
         {data.loans.length > 0 ? (
-          data.loans.map((loan) => <RepayLoanCard loan={loan} />)
+          data.loans.map((loan) => <RepayLoanCard key={loan.id} loan={loan} />)
         ) : (
           <div>no loans</div>
         )}
