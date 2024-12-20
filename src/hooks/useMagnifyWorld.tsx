@@ -1,8 +1,9 @@
-import { useCallback } from "react";
-import { useReadContract } from "wagmi";
+import { readContract } from "@wagmi/core";
 import { magnifyworldabi } from "@/utils/magnifyworldabi";
 import { MAGNIFY_WORLD_ADDRESS } from "@/utils/constants";
+import { config } from "@/providers/Wagmi";
 
+// Define types for better type-safety
 interface Tier {
   loanAmount: bigint;
   interestRate: bigint;
@@ -23,153 +24,111 @@ interface LoanInfo {
   totalDue: bigint;
 }
 
-export function useMagnifyWorld() {
-  // Basic contract information
-  const { data: loanToken } = useReadContract({
+// Basic contract information
+export async function getLoanToken() {
+  return await readContract(config, {
     address: MAGNIFY_WORLD_ADDRESS,
     abi: magnifyworldabi,
     functionName: "loanToken",
   });
+}
 
-  const { data: tierCount } = useReadContract({
+export async function getTierCount() {
+  return await readContract(config, {
     address: MAGNIFY_WORLD_ADDRESS,
     abi: magnifyworldabi,
     functionName: "tierCount",
   });
+}
 
-  // Hook for getting tier information
-  const { data: tierData } = useReadContract({
-    address: MAGNIFY_WORLD_ADDRESS,
-    abi: magnifyworldabi,
-    functionName: "tiers",
-  });
-
-  // Hook for getting NFT tier
-  const { data: nftTierData } = useReadContract({
-    address: MAGNIFY_WORLD_ADDRESS,
-    abi: magnifyworldabi,
-    functionName: "nftToTier",
-  });
-
-  // Hook for getting loan information
-  const { data: loanData } = useReadContract({
-    address: MAGNIFY_WORLD_ADDRESS,
-    abi: magnifyworldabi,
-    functionName: "loans",
-  });
-
-  // Hook for checking if address has NFT
-  const { data: hasNFTData } = useReadContract({
+export async function checkHasNFT(address: `0x${string}`) {
+  return await readContract(config, {
     address: MAGNIFY_WORLD_ADDRESS,
     abi: magnifyworldabi,
     functionName: "hasNFT",
+    args: [address],
   });
+}
 
-  // Hook for checking NFT ownership
-  const { data: ownershipData } = useReadContract({
+// Read Tier information
+export async function getTier(tierId: number): Promise<Tier | null> {
+  const tier = await readContract(config, {
+    address: MAGNIFY_WORLD_ADDRESS,
+    abi: magnifyworldabi,
+    functionName: "tiers",
+    args: [BigInt(tierId)],
+  });
+  return tier
+    ? {
+        loanAmount: tier[0],
+        interestRate: tier[1],
+        loanPeriod: tier[2],
+      }
+    : null;
+}
+
+// Read NFT tier
+export async function getNFTTier(tokenId: number): Promise<bigint | null> {
+  return await readContract(config, {
+    address: MAGNIFY_WORLD_ADDRESS,
+    abi: magnifyworldabi,
+    functionName: "nftToTier",
+    args: [BigInt(tokenId)],
+  });
+}
+
+// Read Loan information
+export async function getLoan(tokenId: number): Promise<Loan | null> {
+  const loan = await readContract(config, {
+    address: MAGNIFY_WORLD_ADDRESS,
+    abi: magnifyworldabi,
+    functionName: "loans",
+    args: [BigInt(tokenId)],
+  });
+  return loan
+    ? {
+        amount: loan[0],
+        startTime: loan[1],
+        isActive: loan[2],
+        interestRate: loan[3],
+        loanPeriod: loan[4],
+      }
+    : null;
+}
+
+// Check NFT ownership
+export async function checkOwnership(owner: `0x${string}`, tokenId: number): Promise<boolean> {
+  return await readContract(config, {
     address: MAGNIFY_WORLD_ADDRESS,
     abi: magnifyworldabi,
     functionName: "checkOwnership",
+    args: [owner, BigInt(tokenId)],
   });
+}
 
-  // Hook for fetching loans by address
-  const { data: loansByAddressData } = useReadContract({
+// Fetch loans by address
+export async function fetchLoansByAddress(wallet: `0x${string}`): Promise<bigint[] | null> {
+  return await readContract(config, {
     address: MAGNIFY_WORLD_ADDRESS,
     abi: magnifyworldabi,
     functionName: "fetchLoansByAddress",
+    args: [wallet],
   });
+}
 
-  // Hook for fetching loan info
-  const { data: loanInfoData } = useReadContract({
+// Fetch loan info
+export async function fetchLoanInfo(tokenId: number): Promise<LoanInfo | null> {
+  const loanInfo = await readContract(config, {
     address: MAGNIFY_WORLD_ADDRESS,
     abi: magnifyworldabi,
     functionName: "fetchLoanInfo",
+    args: [BigInt(tokenId)],
   });
-
-  // Wrapper functions that use the hook data
-  const getTier = useCallback(
-    (tierId: number) => {
-      if (!tierData) return null;
-      return tierData[BigInt(tierId)] as Tier;
-    },
-    [tierData],
-  );
-
-  const getNFTTier = useCallback(
-    (tokenId: number) => {
-      if (!nftTierData) return null;
-      return nftTierData[BigInt(tokenId)] as bigint;
-    },
-    [nftTierData],
-  );
-
-  const getLoan = useCallback(
-    (tokenId: number) => {
-      if (!loanData) return null;
-      return loanData[BigInt(tokenId)] as Loan;
-    },
-    [loanData],
-  );
-
-  const checkHasNFT = useCallback(
-    (address: `0x${string}`) => {
-      if (!hasNFTData) return false;
-      return hasNFTData[address] as boolean;
-    },
-    [hasNFTData],
-  );
-
-  const checkOwnership = useCallback(
-    (owner: `0x${string}`, tokenId: number) => {
-      if (!ownershipData) return false;
-      return ownershipData[owner]?.[BigInt(tokenId)] as boolean;
-    },
-    [ownershipData],
-  );
-
-  const fetchLoansByAddress = useCallback(
-    (wallet: `0x${string}`) => {
-      if (!loansByAddressData) return [];
-      return loansByAddressData[wallet] as bigint[];
-    },
-    [loansByAddressData],
-  );
-
-  const fetchLoanInfo = useCallback(
-    (tokenId: number): LoanInfo | null => {
-      if (!loanInfoData) return null;
-      const info = loanInfoData[BigInt(tokenId)];
-      if (!info) return null;
-
-      return {
-        amountBorrowed: info[0],
-        dueDate: info[1],
-        totalDue: info[2],
-      };
-    },
-    [loanInfoData],
-  );
-
-  const getAllTiers = useCallback(() => {
-    if (!tierCount) return [];
-    return Array.from({ length: Number(tierCount) }, (_, i) => getTier(i + 1)).filter(Boolean);
-  }, [tierCount, getTier]);
-
-  return {
-    // Contract info
-    loanToken,
-    tierCount,
-
-    // Getter functions
-    getTier,
-    getNFTTier,
-    getLoan,
-    checkHasNFT,
-    checkOwnership,
-
-    // View functions
-    fetchLoansByAddress,
-    fetchLoanInfo,
-    getAllTiers,
-  };
+  return loanInfo
+    ? {
+        amountBorrowed: loanInfo[0],
+        dueDate: loanInfo[1],
+        totalDue: loanInfo[2],
+      }
+    : null;
 }
