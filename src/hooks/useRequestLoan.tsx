@@ -11,7 +11,7 @@ type LoanDetails = {
   transactionId: string;
 };
 
-const useInitializeNewLoan = () => {
+const useRequestLoan = () => {
   const [error, setError] = useState<string | null>(null);
   const [transactionId, setTransactionId] = useState<string | null>(null);
   const [isConfirming, setIsConfirming] = useState<boolean>(false);
@@ -38,89 +38,53 @@ const useInitializeNewLoan = () => {
     setIsConfirmed(isTransactionConfirmed);
   }, [isConfirmingTransaction, isTransactionConfirmed]);
 
-  const initializeNewLoan = useCallback(
-    async (nftId: bigint, duration: number, amount: bigint, maxInterestAllowed: number) => {
-      if (!MiniKit.isInstalled()) {
-        setError("Worldcoin MiniKit is not installed");
-        return;
-      }
+  const requestNewLoan = useCallback(async (nftId: bigint) => {
+    setError(null);
+    setTransactionId(null);
+    setIsConfirming(false);
+    setIsConfirmed(false);
+    setLoanDetails(null);
 
-      setError(null);
-      setTransactionId(null);
-      setIsConfirming(false);
-      setIsConfirmed(false);
-      setLoanDetails(null);
-
-      try {
-        const deadline = Math.floor((Date.now() + 30 * 60 * 1000) / 1000).toString();
-
-        const { commandPayload, finalPayload } = await MiniKit.commandsAsync.sendTransaction({
-          transaction: [
-            {
-              address: MAGNIFY_PROTOCOL_ADDRESS,
-              abi: [
-                {
-                  inputs: [
-                    { internalType: "uint64", name: "_lendingDeskId", type: "uint64" },
-                    { internalType: "address", name: "_nftCollection", type: "address" },
-                    { internalType: "uint256", name: "_nftId", type: "uint256" },
-                    { internalType: "uint32", name: "_duration", type: "uint32" },
-                    { internalType: "uint256", name: "_amount", type: "uint256" },
-                    { internalType: "uint32", name: "_maxInterestAllowed", type: "uint32" },
-                  ],
-                  name: "initializeNewLoan",
-                  outputs: [],
-                  stateMutability: "nonpayable",
-                  type: "function",
-                },
-              ],
-              functionName: "initializeNewLoan",
-              args: [
-                BigInt(WORLDCOIN_DESK_INFO.lending_desk_id),
-                WORLDCOIN_DESK_INFO.nft_collection_address,
-                BigInt(nftId),
-                duration,
-                amount,
-                maxInterestAllowed,
-              ],
-            },
-          ],
-          permit2: [
-            {
-              permitted: {
-                token: WORLDCOIN_DESK_INFO.nft_collection_address,
-                amount: "1",
+    try {
+      const { commandPayload, finalPayload } = await MiniKit.commandsAsync.sendTransaction({
+        transaction: [
+          {
+            address: MAGNIFY_PROTOCOL_ADDRESS,
+            abi: [
+              {
+                inputs: [
+                  {
+                    internalType: "uint256",
+                    name: "tokenId",
+                    type: "uint256",
+                  },
+                ],
+                name: "requestLoan",
+                outputs: [],
+                stateMutability: "nonpayable",
+                type: "function",
               },
-              nonce: Date.now().toString(),
-              deadline: deadline,
-              spender: MAGNIFY_PROTOCOL_ADDRESS,
-            },
-          ],
-        });
+            ],
+            functionName: "requestNewLoan",
+            args: [nftId],
+          },
+        ],
+      });
 
-        if (finalPayload.status === "success") {
-          setTransactionId(finalPayload.transaction_id);
-          console.log("Loan initialization transaction sent:", finalPayload.transaction_id);
-
-          // Convert bigint to number for amount and duration
-          setLoanDetails({
-            amount: Number(amount), // Assuming amount is in smallest unit, convert to readable number
-            duration: duration, // Assuming duration is already in days or whatever unit you want to display
-            transactionId: finalPayload.transaction_id,
-          });
-        } else {
-          console.error("Error sending transaction", finalPayload, commandPayload);
-          setError(`Transaction failed`);
-        }
-      } catch (err) {
-        console.error("Error sending transaction", err);
-        setError(`Transaction failed: ${(err as Error).message}`);
+      if (finalPayload.status === "success") {
+        setTransactionId(finalPayload.transaction_id);
+        console.log("Loan initialization transaction sent:", finalPayload.transaction_id);
+      } else {
+        console.error("Error sending transaction", finalPayload, commandPayload);
+        setError(`Transaction failed`);
       }
-    },
-    [], // Empty array for simplicity, consider adding state setters if needed
-  );
+    } catch (err) {
+      console.error("Error sending transaction", err);
+      setError(`Transaction failed: ${(err as Error).message}`);
+    }
+  }, []);
 
-  return { initializeNewLoan, error, transactionId, isConfirming, isConfirmed, loanDetails };
+  return { requestNewLoan, error, transactionId, isConfirming, isConfirmed, loanDetails };
 };
 
-export default useInitializeNewLoan;
+export default useRequestLoan;
