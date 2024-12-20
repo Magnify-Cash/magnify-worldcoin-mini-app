@@ -18,7 +18,6 @@ const WalletPage = () => {
   const [tokens, setBalances] = useState([]);
   useEffect(() => {
     const url = `https://worldchain-mainnet.g.alchemy.com/v2/j-_GFK85PRHN59YaKb8lmVbV0LHmFGBL`;
-    const address = "";
     const fetchBalances = async () => {
       try {
         const ethBalanceResponse = await fetch(url, {
@@ -99,10 +98,10 @@ const WalletPage = () => {
       }
     };
 
-    if (address) {
+    if (user?.walletAddress) {
       fetchBalances();
     }
-  }, []);
+  }, [user?.walletAddress]);
   const randomTailwindColor = (char) => {
     const colors = ["red", "green", "blue", "indigo", "purple", "pink"];
     const colorIndex = char.charCodeAt(0) % colors.length;
