@@ -119,10 +119,10 @@ const WalletPage = () => {
               <div className="flex justify-between items-center">
                 <Badge
                   variant="secondary"
-                  className={`flex items-center gap-1 ${data.nftInfo.tier.verificationStatus.color}`}
+                  className={`flex items-center gap-1 ${data?.nftInfo.tier.verificationStatus.color}`}
                 >
                   <ShieldCheck className="w-3 h-3" />
-                  {data.nftInfo.tier.verificationStatus.description}
+                  {data?.nftInfo.tier.verificationStatus.description}
                 </Badge>
               </div>
             </div>
