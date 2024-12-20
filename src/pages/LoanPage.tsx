@@ -91,7 +91,7 @@ const LoanPage = () => {
                 <p className="text-sm text-brand-text-secondary">
                   Loan Amount:{" "}
                   <span className={`ml-2 font-medium ${nftInfo.tier?.color}`}>
-                    ${formatUnits(nftInfo.tier?.maxLoanAmount || 0, 6)}
+                    ${formatUnits(nftInfo.tier?.loanAmount || 0, 6)}
                   </span>
                 </p>
                 <p className="text-sm text-brand-text-secondary">
@@ -107,7 +107,7 @@ const LoanPage = () => {
                   </span>
                 </p>
                 <p className="text-xs text-brand-text-secondary/80 my-10">
-                  Based on your {nftInfo.tier?.description} status
+                  Based on your {nftInfo.tier?.verificationStatus.level} status
                 </p>
               </div>
             )}
