@@ -1,3 +1,4 @@
+import { Navigate, useNavigate } from "react-router";
 import { CircularProgressbar } from "react-circular-progressbar";
 import { Info } from "lucide-react";
 import "react-circular-progressbar/dist/styles.css";
@@ -6,12 +7,14 @@ import RepayLoanCard from "@/components/RepayLoanCard";
 import { useEffect, useState } from "react";
 import { fetchLoansByAddress, getLoan } from "@/hooks/useMagnifyWorld";
 import { Card } from "@/ui/card";
+import { Button } from "@/ui/button";
 
 const LoanDashboardPage = () => {
   const [activeLoans, setActiveLoans] = useState([]);
   const [userAddress, setUserAddress] = useState("0x123...");
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserLoans = async () => {
@@ -105,7 +108,13 @@ const LoanDashboardPage = () => {
         {activeLoans.length > 0 ? (
           activeLoans.map((loan) => <RepayLoanCard key={loan.id} loan={loan} />)
         ) : (
-          <div className="text-center">No active loans.</div>
+          <div className="text-center">
+            No active loans.
+            <br />
+            <Button onClick={() => navigate("/loan")} className="w-full mt-10">
+              Request a new loan
+            </Button>
+          </div>
         )}
       </Card>
     </div>
