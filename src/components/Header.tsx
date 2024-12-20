@@ -10,20 +10,13 @@ const Header = () => {
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
-        <Link to="/" className="mr-auto text-lg font-semibold">
-          Magnify Cash
-        </Link>
+        <div className="mr-auto text-lg font-semibold">Magnify Cash</div>
         {showNavigation && (
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center px-4 py-2">
               <Menu className="h-5 w-5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <Link to="/" className={cn("w-full", location.pathname === "/" && "text-primary")}>
-                  Home
-                </Link>
-              </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
                   to="/wallet"
