@@ -13,7 +13,7 @@ const LoanPage = () => {
   // Hooks
   const navigate = useNavigate();
   const user = MiniKit?.user;
-  const { data, isLoading, isError } = useMagnifyWorld("0x4d85532e92b03c355172ad7827c41f31330dbe6c");
+  const { data, isLoading, isError } = useMagnifyWorld(user?.walletAddress);
   const { requestNewLoan, error, transactionId, isConfirming, isConfirmed } = useRequestLoan();
 
   // Handle loan application
