@@ -7,10 +7,12 @@ import RepayLoanCard from "@/components/RepayLoanCard";
 import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
+import { MiniKit } from "@worldcoin/minikit-js";
 
 const LoanDashboardPage = () => {
   const navigate = useNavigate();
-  const { data, isLoading, isError } = useMagnifyWorld("0x7745B9B74a0C7637fa5B74d5Fc106118bdBB0eE7");
+  const user = MiniKit.user;
+  const { data, isLoading, isError } = useMagnifyWorld(user?.walletAddress);
 
   // TODO: These values should be fetched or computed based on loan data. Here's a placeholder calculation:
   const onTimeRepayments = 3; // This should be calculated based on loan history

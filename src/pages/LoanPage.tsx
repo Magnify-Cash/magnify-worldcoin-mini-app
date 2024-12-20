@@ -6,11 +6,13 @@ import { Button } from "@/ui/button";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
 import useRequestLoan from "@/hooks/useRequestLoan";
+import { MiniKit } from "@worldcoin/minikit-js";
 
 const LoanPage = () => {
   // Hooks
   const navigate = useNavigate();
-  const { data, isLoading, isError } = useMagnifyWorld("0x7745B9B74a0C7637fa5B74d5Fc106118bdBB0eE7");
+  const user = MiniKit.user;
+  const { data, isLoading, isError } = useMagnifyWorld(user?.walletAddress);
   const {
     requestNewLoan,
     error,

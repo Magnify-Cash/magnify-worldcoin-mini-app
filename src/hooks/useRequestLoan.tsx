@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from "react";
 import { MiniKit } from "@worldcoin/minikit-js";
-import { MAGNIFY_PROTOCOL_ADDRESS, WORLDCOIN_CLIENT_ID, WORLDCOIN_DESK_INFO } from "@/utils/constants";
+import { MAGNIFY_WORLD_ADDRESS, WORLDCOIN_CLIENT_ID } from "@/utils/constants";
 import { useWaitForTransactionReceipt } from "@worldcoin/minikit-react";
 import { createPublicClient, http } from "viem";
 import { worldchain } from "wagmi/chains";

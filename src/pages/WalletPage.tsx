@@ -8,11 +8,13 @@ import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { MascotIllustration } from "@/components/MascotIllustration";
 import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
+import { MiniKit } from "@worldcoin/minikit-js";
 
 const WalletPage = () => {
   const navigate = useNavigate();
+  const user = MiniKit.user;
   const [showFundingOptions, setShowFundingOptions] = useState(false);
-  const { data, isLoading, isError } = useMagnifyWorld("0x7745B9B74a0C7637fa5B74d5Fc106118bdBB0eE7");
+  const { data, isLoading, isError } = useMagnifyWorld(user?.walletAddress);
   const [tokens, setBalances] = useState([]);
   useEffect(() => {
     const url = `https://worldchain-mainnet.g.alchemy.com/v2/j-_GFK85PRHN59YaKb8lmVbV0LHmFGBL`;
@@ -131,6 +133,7 @@ const WalletPage = () => {
           <div className="text-center space-y-6">
             <div className="space-y-2">
               <h1 className="text-5xl font-bold tracking-tight">$TODO</h1>
+              <h2 className="text-3xl font-bold tracking-tight">{user.walletAddress}</h2>
             </div>
           </div>
         </div>
