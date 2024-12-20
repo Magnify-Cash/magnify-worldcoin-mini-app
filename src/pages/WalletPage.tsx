@@ -28,7 +28,7 @@ const WalletPage = () => {
           body: JSON.stringify({
             jsonrpc: "2.0",
             method: "eth_getBalance",
-            params: [address, "latest"], // "latest" for the latest block
+            params: [user?.walletAddress, "latest"], // "latest" for the latest block
             id: 1,
           }),
         });
@@ -44,7 +44,7 @@ const WalletPage = () => {
           body: JSON.stringify({
             jsonrpc: "2.0",
             method: "alchemy_getTokenBalances",
-            params: [address],
+            params: [user?.walletAddress],
             id: 2,
           }),
         });
