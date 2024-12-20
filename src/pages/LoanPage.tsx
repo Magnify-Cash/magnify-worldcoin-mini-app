@@ -12,7 +12,7 @@ import useRepayLoan from "@/hooks/useRepayLoan";
 const LoanPage = () => {
   // Hooks
   const navigate = useNavigate();
-  const user = MiniKit.user;
+  const user = MiniKit?.user;
   const { data, isLoading, isError } = useMagnifyWorld(user?.walletAddress);
   const { requestNewLoan, error, transactionId, isConfirming, isConfirmed } = useRequestLoan();
 

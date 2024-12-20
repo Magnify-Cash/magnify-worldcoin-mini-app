@@ -12,7 +12,7 @@ import { MiniKit } from "@worldcoin/minikit-js";
 
 const WalletPage = () => {
   const navigate = useNavigate();
-  const user = MiniKit.user;
+  const user = MiniKit?.user;
   const [showFundingOptions, setShowFundingOptions] = useState(false);
   const { data, isLoading, isError } = useMagnifyWorld(user?.walletAddress);
   const [tokens, setBalances] = useState([]);
@@ -133,9 +133,9 @@ const WalletPage = () => {
           <div className="text-center space-y-6">
             <div className="space-y-2">
               <h2 className="text-3xl font-bold tracking-tight">
-                {user.walletAddress.slice(0, 7)}
+                {user?.walletAddress.slice(0, 7)}
                 ...
-                {user.walletAddress.slice(34)}
+                {user?.walletAddress.slice(34)}
               </h2>
             </div>
           </div>

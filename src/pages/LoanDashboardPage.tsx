@@ -10,8 +10,8 @@ import useRepayLoan from "@/hooks/useRepayLoan";
 
 const LoanDashboardPage = () => {
   const navigate = useNavigate();
-  const user = MiniKit.user;
-  const { data, isLoading, isError } = useMagnifyWorld(user.walletAddress);
+  const user = MiniKit?.user;
+  const { data, isLoading, isError } = useMagnifyWorld(user?.walletAddress);
 
   if (isLoading) return <div className="container mx-auto p-6 text-center">Loading...</div>;
   if (isError) return <div className="container mx-auto p-6 text-center">Error fetching data.</div>;
