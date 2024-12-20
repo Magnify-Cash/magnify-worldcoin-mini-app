@@ -1,6 +1,6 @@
-# MAGBot Mini App
+# Magnify Cash Mini App
 
-MAGBot is an on-chain micro-lending platform offering gas-free micro-loans to Worldcoin users.
+Magnify Cash is an on-chain micro-lending platform offering gas-free micro-loans to Worldcoin users.
 
 ## Features
 
@@ -12,16 +12,19 @@ MAGBot is an on-chain micro-lending platform offering gas-free micro-loans to Wo
 ## Quick Start
 
 1. Install dependencies:
+
 ```bash
 npm install
 ```
 
 2. Set up environment variables:
+
 ```bash
 cp .env.example .env
 ```
 
 3. Run development server:
+
 ```bash
 npm run dev
 ```
@@ -29,26 +32,32 @@ npm run dev
 ## DevOps Setup
 
 ### Monitoring
+
 - Sentry for error tracking and performance monitoring
 - Console logging with different levels (info, warn, error)
 - Performance measurements for critical operations
 
 ### Environment Variables
+
 Required environment variables:
+
 - `VITE_SENTRY_DSN`: Sentry project DSN
 - Additional variables as needed for specific features
 
 ### Deployment Environments
+
 - Development: Local development environment
 - Staging: For testing before production
 - Production: Live environment
 
 ### Error Handling
+
 - Global error boundary
 - Unhandled promise rejection catching
 - Structured logging
 
 ### Performance Monitoring
+
 - Custom performance measurements
 - Sentry performance tracking
 - Console-based performance logging

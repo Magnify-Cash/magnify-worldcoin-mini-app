@@ -11,7 +11,7 @@ const Header = () => {
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <Link to="/" className="mr-auto text-lg font-semibold">
-          MAGBot
+          Magnify Cash
         </Link>
         {showNavigation && (
           <DropdownMenu>

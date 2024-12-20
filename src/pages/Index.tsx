@@ -29,7 +29,7 @@ const Index = () => {
       <div className="flex flex-col items-center justify-center min-h-screen p-6 space-y-6">
         <MascotIllustration step={step} />
         <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold">Welcome to MAGBot</h1>
+          <h1 className="text-4xl font-bold">Welcome to Magnify Cash</h1>
           <p className="text-xl text-gray-600">Your AI-powered lending companion</p>
         </div>
         <div className="w-full max-w-md space-y-4">

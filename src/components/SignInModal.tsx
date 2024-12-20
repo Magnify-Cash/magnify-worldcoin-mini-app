@@ -30,7 +30,7 @@ export const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => 
 
       MiniKit.commands.walletAuth({
         nonce,
-        statement: "Sign in to MAGBot to manage your loans.",
+        statement: "Sign in to Magnify Cash to manage your loans.",
         expirationTime: rememberMe
           ? new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000)
           : new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
@@ -55,7 +55,7 @@ export const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => 
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center">MAGBot</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-center">Magnify Cash</DialogTitle>
         </DialogHeader>
         <div className="space-y-6 py-4">
           <p className="text-center text-gray-600">

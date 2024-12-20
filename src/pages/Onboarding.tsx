@@ -24,7 +24,7 @@ export const Onboarding = () => {
         "Select the loan size available to you: $1, $3, or $10.",
         "Pick a repayment duration (e.g., 7 days or 14 days).",
       ],
-      tip: "Start small with a $1 loan if you're new to MAGBot, and increase your limits as you verify further.",
+      tip: "Start small with a $1 loan if you're new to Magnify Cash, and increase your limits as you verify further.",
     },
     {
       title: "3. Track & Repay",
@@ -41,7 +41,7 @@ export const Onboarding = () => {
     <div className="container py-4 overflow-y-auto">
       <Card className="p-6 space-y-6">
         <div className="flex items-center gap-4">
-          <h2 className="text-2xl font-bold">How to Use MAGBot</h2>
+          <h2 className="text-2xl font-bold">How to Use Magnify Cash</h2>
         </div>
 
         <div className="space-y-8">
