@@ -235,7 +235,6 @@ async function fetchAllTiers(tierCount: number): Promise<Record<number, Tier> | 
 
 // Helper function to get verification status based on tier ID
 function getVerificationStatus(tierId: number): VerificationTier {
-  console.log("YOO", tierId);
   let verificationLevel: VerificationLevel;
   switch (Number(tierId)) {
     case 1:
