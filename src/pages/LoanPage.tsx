@@ -1,35 +1,25 @@
 import { useNavigate } from "react-router";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
+import { useState } from "react";
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/ui/radio-group";
-import { Label } from "@/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/select";
 import { CheckCircle2, Loader2 } from "lucide-react";
-import { LoanEligibility } from "@/components/verification/LoanEligibility";
-import useInitializeNewLoan from "@/hooks/useRequestLoan";
-import { VerificationLevel, VERIFICATION_TIERS } from "@/types/verification";
 import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
 
 const LoanPage = () => {
   // State Management
   // =================
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loanDetails, setLoanDetails] = useState<any>();
 
   // Hooks
   // ============================
   const navigate = useNavigate();
-  const { data } = useMagnifyWorld("0x7745B9B74a0C7637fa5B74d5Fc106118bdBB0eE7");
+  const { data, isLoading, isError } = useMagnifyWorld("0x7745B9B74a0C7637fa5B74d5Fc106118bdBB0eE7");
 
   // Constants
   // =========
   // These would typically come from an authentication context or environment variables
-  console.log(data);
-  const verificationLevel: VerificationLevel = "NONE";
-  const tier = VERIFICATION_TIERS[verificationLevel];
-
+  if (isLoading) return <div className="container mx-auto p-6 text-center">Loading...</div>;
+  if (isError) return <div className="container mx-auto p-6 text-center">Error fetching data.</div>;
   return (
     <div className="container p-6 space-y-6 animate-fade-up">
       <h1 className="text-2xl font-bold text-center mb-6">Get a Loan</h1>
@@ -70,12 +60,24 @@ const LoanPage = () => {
         <Card className="p-6 space-y-6 bg-white/50 backdrop-blur-sm">
           <div className="space-y-2">
             <h3 className="text-xl font-semibold">Apply for a Loan</h3>
-            <p className="text-sm text-gray-500">{tier.message}</p>
+            <p className="text-sm text-gray-500">{data?.nftInfo.tier.verificationStatus.message}</p>
           </div>
 
           <form onSubmit={() => {}} className="space-y-6">
-            <LoanEligibility level={verificationLevel} />
-
+            <Card className="p-3 space-y-2 glass-card bg-opacity-50">
+              <h3 className="font-medium text-sm text-brand-text-secondary">Loan Eligibility</h3>
+              <div className="space-y-1">
+                <p className="text-sm text-brand-text-secondary">
+                  Maximum loan amount:
+                  <span className={`ml-2 font-medium ${data?.nftInfo.tier.verificationStatus.color}`}>
+                    ${data?.nftInfo.tier.loanAmount.toString()}
+                  </span>
+                </p>
+                <p className="text-xs text-brand-text-secondary/80">
+                  Based on your {data?.nftInfo.tier.verificationStatus.description} status
+                </p>
+              </div>
+            </Card>
             <Button type="submit" className="w-full">
               Apply Now
             </Button>

@@ -4,14 +4,52 @@ import { MAGNIFY_WORLD_ADDRESS } from "@/utils/constants";
 import { config } from "@/providers/Wagmi"; // Assuming this is where your Wagmi config lives
 import { useEffect, useState, useCallback } from "react";
 
-// Define types for better type-safety
-interface Tier {
+export const VERIFICATION_TIERS = {
+  ORB: {
+    level: "ORB",
+    maxLoanAmount: 10,
+    description: "World ID ORB Verified",
+    color: "text-brand-success",
+    availableAmounts: ["10"],
+    message: "You're fully verified and eligible for maximum loan amounts!",
+  },
+  PASSPORT: {
+    level: "PASSPORT",
+    maxLoanAmount: 3,
+    description: "World ID Passport Verified",
+    color: "text-brand-warning",
+    availableAmounts: ["5"],
+    message: "Get ORB verified to unlock $10 loans!",
+  },
+  NONE: {
+    level: "NONE",
+    maxLoanAmount: 1,
+    description: "Not Verified",
+    color: "text-brand-error",
+    availableAmounts: ["1"],
+    message:
+      "Get World ID verified to unlock higher loan amounts! Verify with Passport for $5 loans or get ORB verified for $10 loans.",
+  },
+};
+
+export type VerificationLevel = keyof typeof VERIFICATION_TIERS;
+export interface VerificationTier {
+  level: VerificationLevel;
+  maxLoanAmount: number;
+  description: string;
+  color: string;
+  availableAmounts: string[];
+  message: string;
+}
+export interface Tier {
   loanAmount: bigint;
   interestRate: bigint;
   loanPeriod: bigint;
+  tierId: bigint;
+  verificationStatus: VerificationTier;
 }
 
-interface Loan {
+export interface Loan {
   amount: bigint;
   startTime: bigint;
   isActive: boolean;
@@ -19,17 +57,16 @@ interface Loan {
   loanPeriod: bigint;
 }
 
-interface LoanInfo {
+export interface LoanInfo {
   amountBorrowed: bigint;
   dueDate: bigint;
   totalDue: bigint;
 }
 
-interface ContractData {
+export interface ContractData {
   loanToken: string | null;
   tierCount: number | null;
   nftInfo: {
-    hasNFT: boolean | null;
     tokenId: bigint | null;
     tier: Tier | null;
   };
@@ -73,27 +110,27 @@ export function useMagnifyWorld(walletAddress: `0x${string}`): {
         functionName: "tierCount",
       });
 
-      const hasNFT = await readContract(config, {
+      const hasNFT = (await readContract(config, {
         address: MAGNIFY_WORLD_ADDRESS,
         abi: magnifyworldabi,
         functionName: "hasNFT",
         args: [walletAddress],
-      });
+      })) as bigint;
 
       let tokenId: bigint | null = null;
       let nftTier: Tier | null = null;
-      if (hasNFT) {
-        tokenId = await readContract(config, {
-          address: MAGNIFY_WORLD_ADDRESS,
-          abi: magnifyworldabi,
-          functionName: "nftToTier",
-          args: [BigInt(Number(hasNFT))],
-        });
-
+      if (hasNFT !== BigInt(0)) {
+        tokenId = hasNFT;
         const tierData = await readContract(config, {
           address: MAGNIFY_WORLD_ADDRESS,
           abi: magnifyworldabi,
           functionName: "tiers",
+          args: [tokenId],
+        });
+        const tierId = await readContract(config, {
+          address: MAGNIFY_WORLD_ADDRESS,
+          abi: magnifyworldabi,
+          functionName: "nftToTier",
           args: [tokenId],
         });
 
@@ -102,6 +139,8 @@ export function useMagnifyWorld(walletAddress: `0x${string}`): {
             loanAmount: tierData[0],
             interestRate: tierData[1],
             loanPeriod: tierData[2],
+            tierId: tierId,
+            verificationStatus: getVerificationStatus(tierId),
           };
         }
       }
@@ -137,7 +176,6 @@ export function useMagnifyWorld(walletAddress: `0x${string}`): {
         loanToken: String(loanToken),
         tierCount: Number(tierCount),
         nftInfo: {
-          hasNFT: Boolean(hasNFT),
           tokenId,
           tier: nftTier,
         },
@@ -187,8 +225,32 @@ async function fetchAllTiers(tierCount: number): Promise<Record<number, Tier> | 
         loanAmount: tierData[0],
         interestRate: tierData[1],
         loanPeriod: tierData[2],
+        tierId: BigInt(i),
+        verificationStatus: getVerificationStatus(Number(i)),
       };
     }
   }
   return allTiers;
+}
+
+// Helper function to get verification status based on tier ID
+function getVerificationStatus(tierId: number): VerificationTier {
+  console.log("YOO", tierId);
+  let verificationLevel: VerificationLevel;
+  switch (Number(tierId)) {
+    case 1:
+      verificationLevel = "NONE";
+      break;
+    case 2:
+      verificationLevel = "PASSPORT";
+      break;
+    case 3:
+      verificationLevel = "ORB";
+      break;
+    default:
+      // You can decide what to do with unexpected tier IDs. Here, we default to NONE.
+      verificationLevel = "NONE";
+  }
+
+  return VERIFICATION_TIERS[verificationLevel];
 }

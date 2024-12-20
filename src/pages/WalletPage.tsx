@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
-import { Plus, Send } from "lucide-react";
+import { Plus, Send, ShieldCheck } from "lucide-react";
+import { Badge } from "@/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { Sheet, SheetContent } from "@/ui/sheet";
 import { FundingOptions } from "@/components/FundingOptions";
-import { VerificationLevel } from "@/types/verification";
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
-import { VerificationStatus } from "@/components/verification/VerificationStatus";
 import { MascotIllustration } from "@/components/MascotIllustration";
+import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
 
 const WalletPage = () => {
-  const [showFundingOptions, setShowFundingOptions] = useState(false);
-  const [verificationLevel] = useState<VerificationLevel>("ORB");
   const navigate = useNavigate();
-
+  const [showFundingOptions, setShowFundingOptions] = useState(false);
+  const { data, isLoading, isError } = useMagnifyWorld("0x7745B9B74a0C7637fa5B74d5Fc106118bdBB0eE7");
   const [tokens, setBalances] = useState([]);
   useEffect(() => {
     const url = `https://worldchain-mainnet.g.alchemy.com/v2/j-_GFK85PRHN59YaKb8lmVbV0LHmFGBL`;
@@ -116,7 +115,17 @@ const WalletPage = () => {
         <div className="space-y-8">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">Wallet</h2>
-            <VerificationStatus level={verificationLevel} />
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <Badge
+                  variant="secondary"
+                  className={`flex items-center gap-1 ${data.nftInfo.tier.verificationStatus.color}`}
+                >
+                  <ShieldCheck className="w-3 h-3" />
+                  {data.nftInfo.tier.verificationStatus.description}
+                </Badge>
+              </div>
+            </div>
           </div>
 
           <div className="text-center space-y-6">
