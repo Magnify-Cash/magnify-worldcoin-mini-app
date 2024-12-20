@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/react";
+import eruda from "eruda";
 
 // Initialize Sentry
 export const initializeMonitoring = () => {
@@ -9,24 +10,25 @@ export const initializeMonitoring = () => {
       tracesSampleRate: 1.0,
       environment: import.meta.env.MODE,
     });
+    eruda.init();
   }
 };
 
 // Custom logger with different log levels
 export const logger = {
   info: (message: string, data?: any) => {
-    console.info(`[INFO] ${message}`, data || '');
+    console.info(`[INFO] ${message}`, data || "");
     if (import.meta.env.PROD) {
       Sentry.addBreadcrumb({
-        category: 'info',
+        category: "info",
         message,
         data,
-        level: 'info',
+        level: "info",
       });
     }
   },
   error: (error: Error, context?: any) => {
-    console.error(`[ERROR] ${error.message}`, context || '');
+    console.error(`[ERROR] ${error.message}`, context || "");
     if (import.meta.env.PROD) {
       Sentry.captureException(error, {
         extra: context,
@@ -34,13 +36,13 @@ export const logger = {
     }
   },
   warn: (message: string, data?: any) => {
-    console.warn(`[WARN] ${message}`, data || '');
+    console.warn(`[WARN] ${message}`, data || "");
     if (import.meta.env.PROD) {
       Sentry.addBreadcrumb({
-        category: 'warning',
+        category: "warning",
         message,
         data,
-        level: 'warning',
+        level: "warning",
       });
     }
   },
