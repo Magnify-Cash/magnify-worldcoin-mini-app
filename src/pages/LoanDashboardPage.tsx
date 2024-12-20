@@ -1,10 +1,9 @@
-import { Navigate, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { CircularProgressbar } from "react-circular-progressbar";
 import { Info } from "lucide-react";
 import "react-circular-progressbar/dist/styles.css";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/ui/tooltip";
 import RepayLoanCard from "@/components/RepayLoanCard";
-import { useEffect, useState } from "react";
 import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
@@ -14,7 +13,6 @@ const LoanDashboardPage = () => {
   const { data, isLoading, isError } = useMagnifyWorld("0x7745B9B74a0C7637fa5B74d5Fc106118bdBB0eE7");
 
   // TODO: These values should be fetched or computed based on loan data. Here's a placeholder calculation:
-  const totalLoansRepaid = data?.loans?.filter((loan) => !loan.isActive).length || 0;
   const onTimeRepayments = 3; // This should be calculated based on loan history
   const creditScore = 100; // This should be computed or fetched from another source
   const creditScorePercentage = 40; // Placeholder, should be calculated or fetched
