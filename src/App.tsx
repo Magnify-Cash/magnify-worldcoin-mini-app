@@ -14,6 +14,7 @@ import Onboarding from "./pages/Onboarding";
 import LoanDashboardPage from "./pages/LoanDashboardPage";
 import WalletPage from "./pages/WalletPage";
 import { ErrorBoundary } from "./utils/monitoring";
+import Example from "./pages/Example";
 
 // Initialize QueryClient outside of component
 const queryClient = new QueryClient({
@@ -42,11 +43,9 @@ const App = () => (
                       <Route path="/" element={<Index />} />
                       <Route path="/onboarding" element={<Onboarding />} />
                       <Route path="/loan" element={<LoanPage />} />
-                      <Route
-                        path="/dashboard"
-                        element={<LoanDashboardPage />}
-                      />
+                      <Route path="/dashboard" element={<LoanDashboardPage />} />
                       <Route path="/wallet" element={<WalletPage />} />
+                      <Route path="/example" element={<Example />} />
                     </Routes>
                   </main>
                 </div>
