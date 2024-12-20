@@ -1,7 +1,8 @@
 import { readContract } from "@wagmi/core";
 import { magnifyworldabi } from "@/utils/magnifyworldabi";
 import { MAGNIFY_WORLD_ADDRESS } from "@/utils/constants";
-import { config } from "@/providers/Wagmi";
+import { config } from "@/providers/Wagmi"; // Assuming this is where your Wagmi config lives
+import { useEffect, useState } from "react";
 
 // Define types for better type-safety
 interface Tier {
@@ -24,111 +25,148 @@ interface LoanInfo {
   totalDue: bigint;
 }
 
-// Basic contract information
-export async function getLoanToken() {
-  return await readContract(config, {
-    address: MAGNIFY_WORLD_ADDRESS,
-    abi: magnifyworldabi,
-    functionName: "loanToken",
-  });
+interface ContractData {
+  loanToken: string | null;
+  tierCount: number | null;
+  nftInfo: {
+    hasNFT: boolean | null;
+    tokenId: bigint | null;
+    tier: Tier | null;
+  };
+  loans: Loan[] | null;
+  allTiers: Record<number, Tier> | null;
 }
 
-export async function getTierCount() {
-  return await readContract(config, {
-    address: MAGNIFY_WORLD_ADDRESS,
-    abi: magnifyworldabi,
-    functionName: "tierCount",
-  });
-}
+export function useMagnifyWorld(walletAddress: `0x${string}`): {
+  data: ContractData | null;
+  isLoading: boolean;
+  isError: boolean;
+} {
+  const [data, setData] = useState<ContractData | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isError, setIsError] = useState<boolean>(false);
 
-export async function checkHasNFT(address: `0x${string}`) {
-  return await readContract(config, {
-    address: MAGNIFY_WORLD_ADDRESS,
-    abi: magnifyworldabi,
-    functionName: "hasNFT",
-    args: [address],
-  });
-}
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        setIsError(false);
 
-// Read Tier information
-export async function getTier(tierId: number): Promise<Tier | null> {
-  const tier = await readContract(config, {
-    address: MAGNIFY_WORLD_ADDRESS,
-    abi: magnifyworldabi,
-    functionName: "tiers",
-    args: [BigInt(tierId)],
-  });
-  return tier
-    ? {
-        loanAmount: tier[0],
-        interestRate: tier[1],
-        loanPeriod: tier[2],
+        // Basic contract information
+        const loanToken = await readContract(config, {
+          address: MAGNIFY_WORLD_ADDRESS,
+          abi: magnifyworldabi,
+          functionName: "loanToken",
+        });
+
+        const tierCount = await readContract(config, {
+          address: MAGNIFY_WORLD_ADDRESS,
+          abi: magnifyworldabi,
+          functionName: "tierCount",
+        });
+
+        const hasNFT = await readContract(config, {
+          address: MAGNIFY_WORLD_ADDRESS,
+          abi: magnifyworldabi,
+          functionName: "hasNFT",
+          args: [walletAddress],
+        });
+
+        let tokenId: bigint | null = null;
+        let nftTier: Tier | null = null;
+        if (hasNFT) {
+          tokenId = await readContract(config, {
+            address: MAGNIFY_WORLD_ADDRESS,
+            abi: magnifyworldabi,
+            functionName: "nftToTier",
+            args: [BigInt(Number(hasNFT))],
+          });
+
+          const tierData = await readContract(config, {
+            address: MAGNIFY_WORLD_ADDRESS,
+            abi: magnifyworldabi,
+            functionName: "tiers",
+            args: [tokenId],
+          });
+
+          if (tierData) {
+            nftTier = {
+              loanAmount: tierData[0],
+              interestRate: tierData[1],
+              loanPeriod: tierData[2],
+            };
+          }
+        }
+
+        const loansArray = await readContract(config, {
+          address: MAGNIFY_WORLD_ADDRESS,
+          abi: magnifyworldabi,
+          functionName: "fetchLoansByAddress",
+          args: [walletAddress],
+        });
+
+        const loans = await Promise.all(
+          ((loansArray as bigint[]) || []).map(async (loanId) => {
+            const loanData = await readContract(config, {
+              address: MAGNIFY_WORLD_ADDRESS,
+              abi: magnifyworldabi,
+              functionName: "loans",
+              args: [loanId],
+            });
+            return {
+              amount: loanData[0],
+              startTime: loanData[1],
+              isActive: loanData[2],
+              interestRate: loanData[3],
+              loanPeriod: loanData[4],
+            };
+          }),
+        );
+
+        const allTiers = await fetchAllTiers(Number(tierCount));
+
+        setData({
+          loanToken: String(loanToken),
+          tierCount: Number(tierCount),
+          nftInfo: {
+            hasNFT: Boolean(hasNFT),
+            tokenId,
+            tier: nftTier,
+          },
+          loans,
+          allTiers,
+        });
+      } catch (error) {
+        console.error("Error fetching contract data:", error);
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
       }
-    : null;
+    };
+
+    fetchData();
+  }, [walletAddress]);
+
+  return { data, isLoading, isError };
 }
 
-// Read NFT tier
-export async function getNFTTier(tokenId: number): Promise<bigint | null> {
-  return await readContract(config, {
-    address: MAGNIFY_WORLD_ADDRESS,
-    abi: magnifyworldabi,
-    functionName: "nftToTier",
-    args: [BigInt(tokenId)],
-  });
-}
-
-// Read Loan information
-export async function getLoan(tokenId: number): Promise<Loan | null> {
-  const loan = await readContract(config, {
-    address: MAGNIFY_WORLD_ADDRESS,
-    abi: magnifyworldabi,
-    functionName: "loans",
-    args: [BigInt(tokenId)],
-  });
-  return loan
-    ? {
-        amount: loan[0],
-        startTime: loan[1],
-        isActive: loan[2],
-        interestRate: loan[3],
-        loanPeriod: loan[4],
-      }
-    : null;
-}
-
-// Check NFT ownership
-export async function checkOwnership(owner: `0x${string}`, tokenId: number): Promise<boolean> {
-  return await readContract(config, {
-    address: MAGNIFY_WORLD_ADDRESS,
-    abi: magnifyworldabi,
-    functionName: "checkOwnership",
-    args: [owner, BigInt(tokenId)],
-  });
-}
-
-// Fetch loans by address
-export async function fetchLoansByAddress(wallet: `0x${string}`): Promise<bigint[] | null> {
-  return await readContract(config, {
-    address: MAGNIFY_WORLD_ADDRESS,
-    abi: magnifyworldabi,
-    functionName: "fetchLoansByAddress",
-    args: [wallet],
-  });
-}
-
-// Fetch loan info
-export async function fetchLoanInfo(tokenId: number): Promise<LoanInfo | null> {
-  const loanInfo = await readContract(config, {
-    address: MAGNIFY_WORLD_ADDRESS,
-    abi: magnifyworldabi,
-    functionName: "fetchLoanInfo",
-    args: [BigInt(tokenId)],
-  });
-  return loanInfo
-    ? {
-        amountBorrowed: loanInfo[0],
-        dueDate: loanInfo[1],
-        totalDue: loanInfo[2],
-      }
-    : null;
+// Helper function to fetch all tiers
+async function fetchAllTiers(tierCount: number): Promise<Record<number, Tier> | null> {
+  const allTiers: Record<number, Tier> = {};
+  for (let i = 0; i < tierCount; i++) {
+    const tierData = await readContract(config, {
+      address: MAGNIFY_WORLD_ADDRESS,
+      abi: magnifyworldabi,
+      functionName: "tiers",
+      args: [BigInt(i)],
+    });
+    if (tierData) {
+      allTiers[i] = {
+        loanAmount: tierData[0],
+        interestRate: tierData[1],
+        loanPeriod: tierData[2],
+      };
+    }
+  }
+  return allTiers;
 }

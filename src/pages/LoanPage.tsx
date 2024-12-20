@@ -10,7 +10,7 @@ import { CheckCircle2, Loader2 } from "lucide-react";
 import { LoanEligibility } from "@/components/verification/LoanEligibility";
 import useInitializeNewLoan from "@/hooks/useRequestLoan";
 import { VerificationLevel, VERIFICATION_TIERS } from "@/types/verification";
-import { checkHasNFT, getNFTTier, getTier } from "@/hooks/useMagnifyWorld";
+import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
 
 const LoanPage = () => {
   // State Management
@@ -21,26 +21,12 @@ const LoanPage = () => {
   // Hooks
   // ============================
   const navigate = useNavigate();
+  const { data } = useMagnifyWorld("0x7745B9B74a0C7637fa5B74d5Fc106118bdBB0eE7");
 
   // Constants
   // =========
   // These would typically come from an authentication context or environment variables
-  const userAddress = "";
-  const checkUserNFT = async () => {
-    if (userAddress) {
-      try {
-        const hasNFTResult = await checkHasNFT(userAddress);
-        const nftTier = await getNFTTier(Number(hasNFTResult));
-        const tierInfo = await getTier(Number(nftTier));
-        console.log("NFT ID", Number(hasNFTResult));
-        console.log("TIER", nftTier);
-        console.log("TIER INFO", tierInfo);
-      } catch (error) {
-        console.error("Error checking NFT:", error);
-      }
-    }
-  };
-  checkUserNFT();
+  console.log(data);
   const verificationLevel: VerificationLevel = "NONE";
   const tier = VERIFICATION_TIERS[verificationLevel];
 
