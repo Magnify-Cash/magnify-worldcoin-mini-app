@@ -1,29 +1,57 @@
 import { CircularProgressbar } from "react-circular-progressbar";
 import { Info } from "lucide-react";
 import "react-circular-progressbar/dist/styles.css";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/ui/tooltip";
 import RepayLoanCard from "@/components/RepayLoanCard";
-import useBorrowerDashboard from "@/hooks/useBorrowerDashboard";
+import { useEffect, useState } from "react";
+import { fetchLoansByAddress, getLoan } from "@/hooks/useMagnifyWorld";
 import { Card } from "@/ui/card";
 
 const LoanDashboardPage = () => {
-  // TODO: fake data
+  const [activeLoans, setActiveLoans] = useState([]);
+  const [userAddress, setUserAddress] = useState("0x123...");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    const fetchUserLoans = async () => {
+      setIsLoading(true);
+      try {
+        const loans = await fetchLoansByAddress("0x7745B9B74a0C7637fa5B74d5Fc106118bdBB0eE7");
+        const loanDetails = await Promise.all(
+          loans.map(async (loanId) => ({
+            id: loanId,
+            ...(await getLoan(Number(loanId.toString()))),
+          })),
+        );
+        setActiveLoans(loanDetails);
+      } catch (error) {
+        console.error("Error fetching user loans:", error);
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserLoans();
+  }, [userAddress]);
+
+  // TODO: These values should be fetched or computed based on loan data
   const totalLoansRepaid = 5;
   const onTimeRepayments = 3;
   const creditScore = 100;
   const creditScorePercentage = 400;
 
-  // loan data
-  const { data, isLoading, isError, error } = useBorrowerDashboard("0x", true);
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error: {error.message}</div>;
+  if (isLoading) return <div className="container mx-auto p-6 text-center">Loading...</div>;
+  if (isError) return <div className="container mx-auto p-6 text-center">Error fetching data.</div>;
+
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold text-center mb-6">Loan Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <Card className="p-4 glass-card">
-          <h4 className="text-sm text-brand-text-secondary mb-1">Total Loans Repaid</h4>
-          <p className="text-2xl font-bold text-brand-text-primary">{totalLoansRepaid}</p>
+          <h4 className="text-sm text-brand-text-secondary mb-1">Active Loans</h4>
+          <p className="text-2xl font-bold text-brand-text-primary">{activeLoans.length}</p>
         </Card>
 
         <Card className="p-4 glass-card">
@@ -74,10 +102,10 @@ const LoanDashboardPage = () => {
         </Card>
       </div>
       <Card className="w-full p-6 bg-white/50 backdrop-blur-sm space-y-6">
-        {data.loans.length > 0 ? (
-          data.loans.map((loan) => <RepayLoanCard key={loan.id} loan={loan} />)
+        {activeLoans.length > 0 ? (
+          activeLoans.map((loan) => <RepayLoanCard key={loan.id} loan={loan} />)
         ) : (
-          <div>no loans</div>
+          <div className="text-center">No active loans.</div>
         )}
       </Card>
     </div>
