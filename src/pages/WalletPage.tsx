@@ -51,10 +51,8 @@ const WalletPage = () => {
 
         const tokenBalancesResult = await tokenBalancesResponse.json();
         const tokenBalances = tokenBalancesResult.result.tokenBalances;
-        console.log("ETH Balance:", ethBalance);
-        console.log("Token Balances:", tokenBalancesResult);
 
-        // Fetch metadata for each token
+        // Fetch metadata for each token and convert balances
         const detailedBalances = await Promise.all(
           tokenBalances.map(async (token) => {
             const metadataResponse = await fetch(url, {
@@ -70,12 +68,16 @@ const WalletPage = () => {
               }),
             });
             const metadata = await metadataResponse.json();
+            const decimals = metadata.result.decimals || 18; // Default to 18 if decimals are missing
+
+            // Convert token balance from hex to decimal, considering decimals
+            const balanceDecimal = parseInt(token.tokenBalance, 16) / Math.pow(10, decimals);
 
             return {
               contractAddress: token.contractAddress,
-              balance: token.tokenBalance,
+              balance: balanceDecimal,
               symbol: metadata.result.symbol,
-              decimals: metadata.result.decimals,
+              decimals: decimals,
               name: metadata.result.name,
             };
           }),
