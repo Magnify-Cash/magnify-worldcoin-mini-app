@@ -35,9 +35,7 @@ const ExamplePage = () => {
       }
     };
 
-    // Mock user address for demonstration
-    setUserAddress("0x123..."); // Replace with actual address fetching method
-
+    setUserAddress("0x7745B9B74a0C7637fa5B74d5Fc106118bdBB0eE7");
     fetchContractInfo();
   }, []);
 

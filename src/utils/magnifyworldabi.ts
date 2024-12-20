@@ -822,9 +822,9 @@ export const magnifyworldabi = [
     name: "hasNFT",
     outputs: [
       {
-        internalType: "bool",
+        internalType: "uint256",
         name: "",
-        type: "bool",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
