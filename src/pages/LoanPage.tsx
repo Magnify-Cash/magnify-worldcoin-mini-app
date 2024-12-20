@@ -7,13 +7,13 @@ import { CheckCircle2, Loader2 } from "lucide-react";
 import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
 import useRequestLoan from "@/hooks/useRequestLoan";
 import { MiniKit } from "@worldcoin/minikit-js";
-import useRepayLoan from "@/hooks/useRepayLoan";
+import { VERIFICATION_TIERS } from "@/hooks/useMagnifyWorld";
 
 const LoanPage = () => {
   // Hooks
   const navigate = useNavigate();
   const user = MiniKit?.user;
-  const { data, isLoading, isError } = useMagnifyWorld(user?.walletAddress);
+  const { data, isLoading, isError } = useMagnifyWorld("0x4d85532e92b03c355172ad7827c41f31330dbe6c");
   const { requestNewLoan, error, transactionId, isConfirming, isConfirmed } = useRequestLoan();
 
   // Handle loan application
@@ -31,46 +31,90 @@ const LoanPage = () => {
     [data, requestNewLoan],
   );
 
+  // Handle claiming verified NFT
+  const handleClaimVerifiedNFT = () => {
+    alert("Please complete the verification process to claim a verified NFT.");
+  };
+
   if (isLoading) return <div className="container mx-auto p-6 text-center">Loading...</div>;
   if (isError) return <div className="container mx-auto p-6 text-center">Error fetching data.</div>;
 
-  return (
-    data && (
-      <div className="container p-6 space-y-6 animate-fade-up">
-        <h1 className="text-2xl font-bold text-center mb-6">Get a Loan</h1>
-        <Card className="p-6 space-y-6 bg-white/50 backdrop-blur-sm">
-          <div className="space-y-2">
-            <h3 className="text-xl font-semibold">Apply for a Loan</h3>
-            <p className="text-sm text-gray-500">{data.nftInfo.tier.verificationStatus.message}</p>
-          </div>
+  // Null or undefined checks for data.nftInfo and tier
+  const nftInfo = data?.nftInfo || { tokenId: null, tier: null };
 
-          <form onSubmit={handleApplyLoan} className="space-y-6">
-            <Card className="p-3 space-y-2 glass-card bg-opacity-50">
-              <h3 className="font-medium text-sm text-brand-text-secondary">Loan Eligibility</h3>
+  const showAllTiers = !nftInfo.tokenId; // If there's no NFT, show all tiers
+
+  return (
+    <div className="container p-6 space-y-6 animate-fade-up">
+      <h1 className="text-2xl font-bold text-center mb-6">Get a Loan</h1>
+      <Card className="p-6 space-y-6 bg-white/50 backdrop-blur-sm">
+        <div className="space-y-2">
+          <h3 className="text-xl font-semibold">Apply for a Loan</h3>
+          {/* If user has no tier (no NFT), show generic message */}
+          <p className="text-sm text-gray-500">
+            {nftInfo.tokenId
+              ? nftInfo.tier?.message
+              : "You don't have a verified NFT yet. Claim your NFT to start."}
+          </p>
+        </div>
+
+        <form onSubmit={handleApplyLoan} className="space-y-6">
+          <Card className="p-3 space-y-2 glass-card bg-opacity-50">
+            <h3 className="font-medium text-sm text-brand-text-secondary">Loan Eligibility</h3>
+
+            {/* Show all tiers if there's no verified NFT */}
+            {showAllTiers ? (
+              <div className="space-y-4">
+                {Object.values(VERIFICATION_TIERS).map((verificationTier) => (
+                  <div key={verificationTier.level} className="space-y-1">
+                    <h4 className={`font-medium text-sm ${verificationTier.color}`}>
+                      {verificationTier.level}
+                    </h4>
+                    <p className="text-sm text-brand-text-secondary">{verificationTier.message}</p>
+                    <p className="text-sm text-brand-text-secondary">
+                      Loan Amount:{" "}
+                      <span className="font-medium">{`$${formatUnits(verificationTier.maxLoanAmount, 6)}`}</span>
+                    </p>
+                    <p className="text-sm text-brand-text-secondary">
+                      Interest Rate:{" "}
+                      <span className="font-medium">{`${verificationTier.maxLoanAmount}%`}</span>
+                    </p>
+                    <p className="text-sm text-brand-text-secondary">
+                      Duration:{" "}
+                      <span className="font-medium">{`${verificationTier.maxLoanAmount} days`}</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
               <div className="space-y-1">
                 <p className="text-sm text-brand-text-secondary">
-                  Loan Amount:
-                  <span className={`ml-2 font-medium ${data.nftInfo.tier.verificationStatus.color}`}>
-                    ${formatUnits(data.nftInfo.tier.loanAmount, 6)}
+                  Loan Amount:{" "}
+                  <span className={`ml-2 font-medium ${nftInfo.tier?.color}`}>
+                    ${formatUnits(nftInfo.tier?.maxLoanAmount || 0, 6)}
                   </span>
                 </p>
                 <p className="text-sm text-brand-text-secondary">
-                  Interest Rate:
-                  <span className={`ml-2 font-medium ${data.nftInfo.tier.verificationStatus.color}`}>
-                    {((data.nftInfo.tier.interestRate || BigInt(0)) / BigInt(100)).toString()}%
+                  Interest Rate:{" "}
+                  <span className={`ml-2 font-medium ${nftInfo.tier?.color}`}>
+                    {((nftInfo.tier?.interestRate || BigInt(0)) / BigInt(100)).toString()}%
                   </span>
                 </p>
                 <p className="text-sm text-brand-text-secondary">
-                  Duration:
-                  <span className={`ml-2 font-medium ${data.nftInfo.tier.verificationStatus.color}`}>
-                    {((data.nftInfo.tier.loanPeriod || BigInt(0)) / BigInt(60 * 24 * 60)).toString()} days
+                  Duration:{" "}
+                  <span className={`ml-2 font-medium ${nftInfo.tier?.color}`}>
+                    {((nftInfo.tier?.loanPeriod || BigInt(0)) / BigInt(60 * 24 * 60)).toString()} days
                   </span>
                 </p>
                 <p className="text-xs text-brand-text-secondary/80 my-10">
-                  Based on your {data.nftInfo.tier.verificationStatus.description} status
+                  Based on your {nftInfo.tier?.description} status
                 </p>
               </div>
-            </Card>
+            )}
+          </Card>
+
+          {/* Change the button based on NFT verification status */}
+          {nftInfo.tokenId ? (
             <Button type="submit" disabled={isConfirming || isConfirmed} className="w-full">
               {isConfirming ? (
                 <>
@@ -86,19 +130,23 @@ const LoanPage = () => {
                 "Apply Now"
               )}
             </Button>
-          </form>
-
-          {error && <p className="text-red-500">{error}</p>}
-          {transactionId && (
-            <div className="mt-4">
-              <p>Transaction ID: {transactionId}</p>
-              {isConfirming && <p>Confirming transaction...</p>}
-              {isConfirmed && <p>Transaction confirmed!</p>}
-            </div>
+          ) : (
+            <Button type="button" onClick={handleClaimVerifiedNFT} className="w-full">
+              Claim Verified NFT
+            </Button>
           )}
-        </Card>
-      </div>
-    )
+        </form>
+
+        {error && <p className="text-red-500">{error}</p>}
+        {transactionId && (
+          <div className="mt-4">
+            <p>Transaction ID: {transactionId}</p>
+            {isConfirming && <p>Confirming transaction...</p>}
+            {isConfirmed && <p>Transaction confirmed!</p>}
+          </div>
+        )}
+      </Card>
+    </div>
   );
 };
 
