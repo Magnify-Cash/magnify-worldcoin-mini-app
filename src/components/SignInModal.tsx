@@ -5,9 +5,6 @@ import { MiniKit } from "@worldcoin/minikit-js";
 import { useWalletAuth } from "@/hooks/useWalletAuth";
 import { Button } from "@/ui/button";
 import { Wallet } from "lucide-react";
-import { TestTube } from "lucide-react";
-import { RadioGroup, RadioGroupItem } from "@/ui/radio-group";
-import { Label } from "@/ui/label";
 
 export interface SignInModalProps {
   isOpen: boolean;
@@ -17,13 +14,9 @@ export interface SignInModalProps {
 
 export const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
   const [rememberMe, setRememberMe] = useState(false);
-  const { isGlowing, setIsGlowing, isMinikitAvailable } = useWalletAuth({ onSignIn, onClose });
+  const { isGlowing, setIsGlowing } = useWalletAuth({ onSignIn, onClose });
 
   const handleSignIn = async () => {
-    if (!isMinikitAvailable) {
-      return;
-    }
-
     try {
       console.log("Initiating wallet authentication...");
       const nonce = crypto.randomUUID().replace(/-/g, "");

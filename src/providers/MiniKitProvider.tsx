@@ -1,6 +1,5 @@
 import { ReactNode, useEffect, useState } from "react";
 import { MiniKit } from "@worldcoin/minikit-js";
-import { toast } from "sonner";
 import { WORLDCOIN_CLIENT_ID } from "@/utils/constants";
 
 export const MiniKitProvider = ({ children }: { children: ReactNode }) => {
