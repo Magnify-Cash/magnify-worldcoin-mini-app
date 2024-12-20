@@ -26,11 +26,6 @@ export const useWalletAuth = ({ onSignIn, onClose }: UseWalletAuthProps) => {
   }, []);
 
   useEffect(() => {
-    if (!isMinikitAvailable) {
-      console.log("MiniKit not available, skipping auth response setup");
-      return;
-    }
-
     const handleAuthResponse = async (payload: any) => {
       console.log("Auth response received:", payload);
       if (payload.status === "error") {
