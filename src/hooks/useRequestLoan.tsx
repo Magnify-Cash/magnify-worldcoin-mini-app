@@ -49,14 +49,14 @@ const useRequestLoan = () => {
       const { commandPayload, finalPayload } = await MiniKit.commandsAsync.sendTransaction({
         transaction: [
           {
-            address: MAGNIFY_PROTOCOL_ADDRESS,
+            address: MAGNIFY_WORLD_ADDRESS,
             abi: [
               {
                 inputs: [
                   {
-                    internalType: "uint256",
-                    name: "tokenId",
-                    type: "uint256",
+                    internalType: "uint256", // Ensure the type matches what's expected by the contract
+                    name: "tokenId", // Ensure the parameter name matches the contract function
+                    type: "uint256", // Matching the contract's input type
                   },
                 ],
                 name: "requestLoan",
@@ -65,15 +65,23 @@ const useRequestLoan = () => {
                 type: "function",
               },
             ],
-            functionName: "requestNewLoan",
-            args: [nftId],
+            functionName: "requestLoan",
+            args: [nftId.toString()], // Ensure you're passing nftId as a string for the ABI compatibility
           },
         ],
       });
 
+      console.log("PAYLOAD,", finalPayload);
+
       if (finalPayload.status === "success") {
         setTransactionId(finalPayload.transaction_id);
         console.log("Loan initialization transaction sent:", finalPayload.transaction_id);
+        // Optional: Fetch loan details if available from the transaction response
+        setLoanDetails({
+          amount: 1000, // Replace with actual logic if amount comes from transaction or another source
+          duration: 30, // Replace with actual logic for duration
+          transactionId: finalPayload.transaction_id,
+        });
       } else {
         console.error("Error sending transaction", finalPayload, commandPayload);
         setError(`Transaction failed`);
