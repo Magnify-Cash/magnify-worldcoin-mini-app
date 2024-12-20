@@ -1,92 +1,29 @@
-export function calculateTimeInfo(startTime, durationInHours) {
-  // Convert the Unix timestamp to milliseconds
-  const startTimeInMillis = startTime * 1000;
+// Utility function to calculate the remaining time (days, hours, minutes) and due date
+export function calculateRemainingTime(
+  startTime: bigint,
+  loanPeriod: bigint,
+): [number, number, number, Date] {
+  // Get the current time as a BigInt in seconds
+  const currentTimeInSeconds = BigInt(Math.floor(Date.now() / 1000));
 
-  // Calculate the end time in milliseconds
-  const endTimeInMillis = startTimeInMillis + durationInHours * 3600 * 1000;
+  // Calculate the end time of the loan in seconds
+  const endTimeInSeconds = startTime + loanPeriod;
 
-  // Create JavaScript date objects
-  const currentDate = new Date();
-  const startDate = new Date(startTimeInMillis);
-  const endDate = new Date(endTimeInMillis);
+  // Calculate the remaining time in seconds
+  const remainingTimeInSeconds = endTimeInSeconds - currentTimeInSeconds;
 
-  // Calculate remaining duration in milliseconds
-  const currentTimeInMillis = currentDate.getTime();
-  let remainingDurationInMillis = endTimeInMillis - currentTimeInMillis;
-
-  // Check if remaining duration is negative and set it to zero if needed
-  if (remainingDurationInMillis < 0) {
-    remainingDurationInMillis = 0;
+  // If the remaining time is less than or equal to zero, the loan is overdue
+  if (remainingTimeInSeconds <= 0n) {
+    return [0, 0, 0, new Date(Number(startTime + loanPeriod) * 1000)]; // No remaining time, but return due date
   }
 
-  // Calculate elapsed duration in milliseconds
-  let elapsedDurationInMillis = currentTimeInMillis - startTimeInMillis;
+  // Convert the remaining time into days, hours, and minutes
+  const daysRemaining = Number(remainingTimeInSeconds / 86400n); // 86400 seconds = 1 day
+  const hoursRemaining = Number((remainingTimeInSeconds % 86400n) / 3600n); // 3600 seconds = 1 hour
+  const minutesRemaining = Number((remainingTimeInSeconds % 3600n) / 60n); // 60 seconds = 1 minute
 
-  // Check if elapsed duration is negative and set it to zero if needed
-  if (elapsedDurationInMillis < 0) {
-    elapsedDurationInMillis = 0;
-  }
+  // Calculate due date
+  const dueDate = new Date(Number(startTime + loanPeriod) * 1000);
 
-  // Calculate total duration in milliseconds
-  const totalDurationInMillis = durationInHours * 3600 * 1000;
-
-  // Calculate progress as a percentage
-  const calculateProgress = (elapsedDurationInMillis / totalDurationInMillis) * 100;
-
-  // Calculate remaining time
-  let remainingTime: string;
-  let remainingDays = Math.floor(remainingDurationInMillis / (24 * 3600 * 1000)); // Calculate remaining days
-  if (remainingDurationInMillis > 7 * 24 * 3600 * 1000) {
-    const remainingWeeks = Math.floor(remainingDurationInMillis / (7 * 24 * 3600 * 1000));
-    const additionalDays = Math.floor(
-      (remainingDurationInMillis % (7 * 24 * 3600 * 1000)) / (24 * 3600 * 1000),
-    );
-    remainingTime = `${remainingWeeks} weeks and ${additionalDays} days`;
-  } else if (remainingDurationInMillis > 24 * 3600 * 1000) {
-    const remainingHours = Math.floor((remainingDurationInMillis % (24 * 3600 * 1000)) / (3600 * 1000));
-    remainingTime = `${remainingDays} days and ${remainingHours} hours`;
-  } else if (remainingDurationInMillis > 3600 * 1000) {
-    const remainingHours = Math.floor(remainingDurationInMillis / (3600 * 1000));
-    const remainingMinutes = Math.floor((remainingDurationInMillis % (3600 * 1000)) / (60 * 1000));
-    remainingTime = `${remainingHours} hours and ${remainingMinutes} minutes`;
-  } else {
-    const remainingMinutes = Math.floor(remainingDurationInMillis / (60 * 1000));
-    const remainingSeconds = Math.floor((remainingDurationInMillis % (60 * 1000)) / 1000);
-    remainingTime = `${remainingMinutes} minutes and ${remainingSeconds} seconds`;
-  }
-
-  // Calculate elapsed time
-  const elapsedDays = Math.floor(elapsedDurationInMillis / (24 * 3600 * 1000));
-  const elapsedHours = Math.floor((elapsedDurationInMillis % (24 * 3600 * 1000)) / (3600 * 1000));
-  const elapsedMinutes = Math.floor((elapsedDurationInMillis % (3600 * 1000)) / (60 * 1000));
-  const elapsedSeconds = Math.floor((elapsedDurationInMillis % (60 * 1000)) / 1000);
-  const elapsedTime = `${elapsedDays}D ${elapsedHours}HR ${elapsedMinutes}MIN ${elapsedSeconds}SEC`;
-  // Check if the loan is active i.e. min 1 hour has passed
-  const isLoanActive = Math.floor(elapsedDurationInMillis / (3600 * 1000)) >= 1;
-  // Check if there is any time left
-  const isTimeLeft = remainingDurationInMillis > 0;
-
-  // Return the values as an object
-  return {
-    startDate,
-    endDate,
-    remainingTime,
-    remainingDays, // New field for remaining days
-    elapsedTime,
-    elapsedHours,
-    isTimeLeft,
-    calculateProgress,
-    isLoanActive,
-  };
-}
-
-export function formatTimeInfo(dateTime) {
-  const options = {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  };
-  return dateTime.toLocaleString(undefined, options);
+  return [daysRemaining, hoursRemaining, minutesRemaining, dueDate];
 }

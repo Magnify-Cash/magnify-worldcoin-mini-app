@@ -3,19 +3,25 @@ import { Button } from "@/ui/button";
 import { toast } from "sonner";
 import { CircularProgressbar } from "react-circular-progressbar";
 import { Coins } from "lucide-react";
-import { Loan } from "@/hooks/useBorrowerDashboard";
-import { calculateTimeInfo, formatTimeInfo } from "@/utils/timeinfo";
+import { calculateRemainingTime } from "@/utils/timeinfo";
 
-interface RepayLoanCardProps {
-  loan: Loan;
+interface LoanType {
+  amount: bigint;
+  startTime: bigint;
+  isActive: boolean;
+  interestRate: bigint;
+  loanPeriod: bigint;
 }
 
-const RepayLoanCard = ({ loan }) => {
+const RepayLoanCard = ({ loan }: { loan: LoanType }) => {
   const handleRepay = () => {
     console.log("Initiating loan repayment");
     toast.success("Loan repayment initiated");
   };
-  const timeInfo = calculateTimeInfo(loan.startTime, loan.duration);
+  const [daysRemaining, hoursRemaining, minutesRemaining] = calculateRemainingTime(
+    loan.startTime,
+    loan.loanPeriod,
+  );
   const progressPercentage = Math.max(0, Math.min(100, (1 / 30) * 100));
   return (
     <Card className="p-6 glass-card space-y-4">
@@ -23,18 +29,20 @@ const RepayLoanCard = ({ loan }) => {
         <div>
           <h3 className="text-xl font-semibold mb-2">Active Loan</h3>
           <div className="space-y-2">
-            <p className="text-sm text-brand-text-secondary">Loan Amount: ${loan.amount}</p>
-            <p className="text-sm text-brand-text-secondary">Due Date: {formatTimeInfo(timeInfo.endDate)}</p>
-            <p className="text-sm text-brand-text-secondary">Interest Rate: {loan.interest / 100}%</p>
-            <p className="text-lg font-semibold text-brand-text-primary">
-              Total Due: ${loan.paymountAmountDue as string}
+            <p className="text-sm text-brand-text-secondary">Loan Amount: ${loan.amount.toString()}</p>
+            <p className="text-sm text-brand-text-secondary">
+              Interest Rate: {(loan.interestRate / BigInt(100)).toString()}%
             </p>
+            <p className="text-sm text-brand-text-secondary">
+              Due In: {daysRemaining} days, {hoursRemaining} hours, {minutesRemaining} minutes
+            </p>
+            <p className="text-lg font-semibold text-brand-text-primary">Total Due: TODO</p>
           </div>
         </div>
         <div className="w-20 h-20">
           <CircularProgressbar
             value={progressPercentage}
-            text={`${timeInfo.remainingDays}d`}
+            text={`${daysRemaining}d`}
             styles={{
               path: {
                 stroke: `rgba(34, 197, 94, ${progressPercentage / 100})`,
