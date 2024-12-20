@@ -22,7 +22,7 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
     mapping(uint256 => uint256) public nftToTier;
     mapping(uint256 => Tier) public tiers;
     mapping(uint256 => Loan) public loans;
-    mapping(address => bool) public hasNFT;
+    mapping(address => uint256) public hasNFT;
 
     /**
      * @dev Tier structure defining loan parameters for each tier
@@ -186,12 +186,12 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
      */
     function mintNFT(address to, uint256 tierId) external onlyOwner {
         if (tierId == 0 || tierId > tierCount) revert InvalidTierParameters();
-        if (hasNFT[to]) revert UserAlreadyHasNFT();
+        if (hasNFT[to] > 0) revert UserAlreadyHasNFT();
 
         _tokenIds++;
         _safeMint(to, _tokenIds);
         nftToTier[_tokenIds] = tierId;
-        hasNFT[to] = true;
+        hasNFT[to] = _tokenIds;
 
         emit NFTMinted(_tokenIds, to, tierId);
     }
@@ -245,17 +245,35 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
 
     /**
      * @dev Allows NFT owner to request a loan based on their tier
-     * @param tokenId ID of the NFT to use as collateral
+     * @notice This function automatically uses the NFT associated with the msg.sender
      */
-    function requestLoan(uint256 tokenId) external nonReentrant {
-        if (!checkOwnership(msg.sender, tokenId)) revert NotNFTOwner();
+    function requestLoan() external nonReentrant {
+        uint256 tokenId = hasNFT[msg.sender];
+        if (tokenId == 0) revert NotNFTOwner();
         if (loans[tokenId].isActive) revert LoanAlreadyActive();
 
         uint256 tId = nftToTier[tokenId];
         if (tId == 0 || tId > tierCount) revert InvalidTierParameters();
 
+        // Check if the tokenId actually exists in the contract
+        if (ownerOf(tokenId) != msg.sender) revert NotNFTOwner();
+
         Tier memory t = tiers[tId];
         if (loanToken.balanceOf(address(this)) < t.loanAmount)
+            revert InsufficientContractBalance();
+
+        // Check for potential overflow in loan amount calculation
+        uint256 maxLoanAmount = type(uint256).max;
+        if (t.loanAmount > maxLoanAmount) revert("Loan amount too high");
+
+        // Check if the contract's balance is sufficient even after accounting for other loans
+        uint256 totalLoanedOut = 0;
+        for (uint256 i = 1; i <= _tokenIds; i++) {
+            if (loans[i].isActive) {
+                totalLoanedOut += loans[i].amount;
+            }
+        }
+        if (totalLoanedOut + t.loanAmount > loanToken.balanceOf(address(this)))
             revert InsufficientContractBalance();
 
         loans[tokenId] = Loan(
