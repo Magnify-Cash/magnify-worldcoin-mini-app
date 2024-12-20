@@ -1,23 +1,17 @@
-import { useNavigate } from "react-router";
-import { CircularProgressbar } from "react-circular-progressbar";
-import { Info } from "lucide-react";
 import "react-circular-progressbar/dist/styles.css";
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/ui/tooltip";
+import { useCallback } from "react";
+import { useNavigate } from "react-router";
 import RepayLoanCard from "@/components/RepayLoanCard";
 import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { MiniKit } from "@worldcoin/minikit-js";
+import useRepayLoan from "@/hooks/useRepayLoan";
 
 const LoanDashboardPage = () => {
   const navigate = useNavigate();
   const user = MiniKit.user;
-  const { data, isLoading, isError } = useMagnifyWorld("0x2f79325b76cd2109cd9cf5320b6d23d7f682d65c");
-
-  // TODO: These values should be fetched or computed based on loan data. Here's a placeholder calculation:
-  const onTimeRepayments = 3; // This should be calculated based on loan history
-  const creditScore = 100; // This should be computed or fetched from another source
-  const creditScorePercentage = 40; // Placeholder, should be calculated or fetched
+  const { data, isLoading, isError } = useMagnifyWorld(user.walletAddress);
 
   if (isLoading) return <div className="container mx-auto p-6 text-center">Loading...</div>;
   if (isError) return <div className="container mx-auto p-6 text-center">Error fetching data.</div>;
@@ -33,7 +27,9 @@ const LoanDashboardPage = () => {
       </div>
       <Card className="w-full p-6 bg-white/50 backdrop-blur-sm space-y-6">
         {data?.loans?.length > 0 ? (
-          data.loans.map((loan) => <RepayLoanCard key={loan.amount.toString()} loan={loan} />)
+          data.loans.map((loan) => (
+            <RepayLoanCard key={loan.amount.toString()} loan={loan} user={user} data={data} />
+          ))
         ) : (
           <div className="text-center">
             No active loans.

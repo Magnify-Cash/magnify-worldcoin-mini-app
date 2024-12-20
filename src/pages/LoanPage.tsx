@@ -7,20 +7,14 @@ import { CheckCircle2, Loader2 } from "lucide-react";
 import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
 import useRequestLoan from "@/hooks/useRequestLoan";
 import { MiniKit } from "@worldcoin/minikit-js";
+import useRepayLoan from "@/hooks/useRepayLoan";
 
 const LoanPage = () => {
   // Hooks
   const navigate = useNavigate();
   const user = MiniKit.user;
   const { data, isLoading, isError } = useMagnifyWorld(user?.walletAddress);
-  const {
-    requestNewLoan,
-    error,
-    transactionId,
-    isConfirming,
-    isConfirmed,
-    loanDetails: newLoanDetails,
-  } = useRequestLoan();
+  const { requestNewLoan, error, transactionId, isConfirming, isConfirmed } = useRequestLoan();
 
   // Handle loan application
   const handleApplyLoan = useCallback(

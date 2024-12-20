@@ -1,10 +1,14 @@
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { toast } from "sonner";
+import { useCallback } from "react";
 import { CircularProgressbar } from "react-circular-progressbar";
 import { Coins } from "lucide-react";
 import { calculateRemainingTime } from "@/utils/timeinfo";
 import { formatUnits } from "viem";
+import useRepayLoan from "@/hooks/useRepayLoan";
+import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
+import { MiniKit } from "@worldcoin/minikit-js";
 
 interface LoanType {
   amount: bigint; // The loan amount in smallest units (e.g., cents or other smallest denomination)
@@ -14,12 +18,23 @@ interface LoanType {
   loanPeriod: bigint; // Loan period in seconds
 }
 
-const RepayLoanCard = ({ loan }: { loan: LoanType }) => {
-  const handleRepay = () => {
-    console.log("Initiating loan repayment");
-    toast.success("Loan repayment initiated");
-  };
+const RepayLoanCard = ({ loan, user, data }: { loan: LoanType; user: any; data: any }) => {
+  const { repayLoan, error, transactionId, isConfirming, isConfirmed } = useRepayLoan();
 
+  // Handle loan repayment
+  const handleApplyLoan = useCallback(
+    async (event: React.FormEvent) => {
+      event.preventDefault(); // Prevent form from submitting traditionally
+
+      if (data?.nftInfo?.tokenId) {
+        await repayLoan(data?.nftInfo?.tokenId);
+      } else {
+        // Handle the case where NFT token ID is not available or user isn't verified
+        toast.error("Unable to pay back loan.");
+      }
+    },
+    [data, repayLoan],
+  );
   const [daysRemaining, hoursRemaining, minutesRemaining] = calculateRemainingTime(
     loan.startTime,
     loan.loanPeriod,
@@ -72,7 +87,7 @@ const RepayLoanCard = ({ loan }: { loan: LoanType }) => {
           />
         </div>
       </div>
-      <Button onClick={handleRepay} className="w-full primary-button">
+      <Button onClick={handleApplyLoan} className="w-full primary-button">
         <Coins className="mr-2 h-4 w-4" />
         Repay Loan
       </Button>
