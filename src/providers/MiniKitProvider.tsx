@@ -11,7 +11,6 @@ export const MiniKitProvider = ({ children }: { children: ReactNode }) => {
       console.log("MiniKit initialized successfully");
     } catch (error) {
       console.error("Failed to initialize MiniKit:", error);
-      toast.error("Please open this app in World App to use wallet features");
     }
   };
   useEffect(() => {

@@ -132,8 +132,11 @@ const WalletPage = () => {
 
           <div className="text-center space-y-6">
             <div className="space-y-2">
-              <h1 className="text-5xl font-bold tracking-tight">$TODO</h1>
-              <h2 className="text-3xl font-bold tracking-tight">{user.walletAddress}</h2>
+              <h2 className="text-3xl font-bold tracking-tight">
+                {user.walletAddress.slice(0, 7)}
+                ...
+                {user.walletAddress.slice(34)}
+              </h2>
             </div>
           </div>
         </div>

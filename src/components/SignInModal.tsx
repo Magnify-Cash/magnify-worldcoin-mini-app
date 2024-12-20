@@ -21,7 +21,6 @@ export const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => 
 
   const handleSignIn = async () => {
     if (!isMinikitAvailable) {
-      toast.error("Please open this app in World App to use wallet features");
       return;
     }
 
@@ -63,19 +62,6 @@ export const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => 
             This app will see your wallet and allow you to manage loans.
           </p>
 
-          {/* Remember me */}
-          <RadioGroup
-            defaultValue={rememberMe ? "remember" : "forget"}
-            onValueChange={(value) => setRememberMe(value === "remember")}
-            className="flex flex-col space-y-2"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="remember" id="remember" />
-              <Label htmlFor="remember">Keep me signed in for future sessions</Label>
-            </div>
-          </RadioGroup>
-          {/* End remember me */}
-
           <div className="flex flex-col gap-2">
             {/* Sign In button */}
             <Button
@@ -91,6 +77,7 @@ export const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => 
             {/* End Sign In button */}
 
             {/* Mock Sign In button */}
+            {/*
             <Button
               onClick={handleMockSignIn}
               variant="outline"
@@ -101,6 +88,7 @@ export const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => 
               <TestTube className="mr-2 h-4 w-4" />
               Mock Sign In
             </Button>
+             */}
             {/* End Mock Sign In button */}
           </div>
         </div>

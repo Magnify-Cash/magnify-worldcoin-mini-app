@@ -14,11 +14,11 @@ export const useWalletAuth = ({ onSignIn, onClose }: UseWalletAuthProps) => {
   useEffect(() => {
     const checkMiniKit = () => {
       const isAvailable = MiniKit.isInstalled();
-      console.log('MiniKit available:', isAvailable);
+      console.log("MiniKit available:", isAvailable);
       setIsMinikitAvailable(isAvailable);
-      
+
       if (!isAvailable) {
-        toast.error('Please open this app in World App to use wallet features');
+        console.error("Please open this app in World App to use wallet features");
       }
     };
 
@@ -27,7 +27,7 @@ export const useWalletAuth = ({ onSignIn, onClose }: UseWalletAuthProps) => {
 
   useEffect(() => {
     if (!isMinikitAvailable) {
-      console.log('MiniKit not available, skipping auth response setup');
+      console.log("MiniKit not available, skipping auth response setup");
       return;
     }
 
@@ -53,11 +53,11 @@ export const useWalletAuth = ({ onSignIn, onClose }: UseWalletAuthProps) => {
       }
     };
 
-    console.log('Setting up MiniKit auth response listener');
+    console.log("Setting up MiniKit auth response listener");
     MiniKit.subscribe(ResponseEvent.MiniAppWalletAuth, handleAuthResponse);
 
     return () => {
-      console.log('Cleaning up MiniKit auth response listener');
+      console.log("Cleaning up MiniKit auth response listener");
       MiniKit.unsubscribe(ResponseEvent.MiniAppWalletAuth);
     };
   }, [onSignIn, onClose, isMinikitAvailable]);

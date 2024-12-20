@@ -62,7 +62,9 @@ const RepayLoanCard = ({ loan, user, data }: { loan: LoanType; user: any; data: 
             <p className="text-sm text-brand-text-secondary">
               Due In: {daysRemaining} days, {hoursRemaining} hours, {minutesRemaining} minutes
             </p>
-            <p className="text-lg font-semibold text-brand-text-primary">Total Amount Due: TODO</p>
+            <p className="text-lg font-semibold text-brand-text-primary">
+              Total Amount Due: ${formatUnits(loan.amount, 6)}
+            </p>
           </div>
         </div>
         <div className="w-20 h-20">
