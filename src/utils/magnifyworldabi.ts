@@ -444,13 +444,7 @@ export const magnifyworldabi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
+    inputs: [],
     name: "requestLoan",
     outputs: [],
     stateMutability: "nonpayable",

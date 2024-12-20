@@ -28,7 +28,7 @@ const LoanPage = () => {
       event.preventDefault(); // Prevent form from submitting traditionally
 
       if (data?.nftInfo?.tokenId) {
-        await requestNewLoan(data.nftInfo.tokenId);
+        await requestNewLoan();
       } else {
         // Handle the case where NFT token ID is not available or user isn't verified
         alert("Unable to apply for loan. Ensure you have a verified NFT.");

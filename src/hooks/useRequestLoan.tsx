@@ -38,7 +38,7 @@ const useRequestLoan = () => {
     setIsConfirmed(isTransactionConfirmed);
   }, [isConfirmingTransaction, isTransactionConfirmed]);
 
-  const requestNewLoan = useCallback(async (nftId: bigint) => {
+  const requestNewLoan = useCallback(async () => {
     setError(null);
     setTransactionId(null);
     setIsConfirming(false);
@@ -52,13 +52,7 @@ const useRequestLoan = () => {
             address: MAGNIFY_WORLD_ADDRESS,
             abi: [
               {
-                inputs: [
-                  {
-                    internalType: "uint256", // Ensure the type matches what's expected by the contract
-                    name: "tokenId", // Ensure the parameter name matches the contract function
-                    type: "uint256", // Matching the contract's input type
-                  },
-                ],
+                inputs: [],
                 name: "requestLoan",
                 outputs: [],
                 stateMutability: "nonpayable",
@@ -66,12 +60,10 @@ const useRequestLoan = () => {
               },
             ],
             functionName: "requestLoan",
-            args: [nftId.toString()], // Ensure you're passing nftId as a string for the ABI compatibility
+            args: [],
           },
         ],
       });
-
-      console.log("PAYLOAD,", finalPayload);
 
       if (finalPayload.status === "success") {
         setTransactionId(finalPayload.transaction_id);
