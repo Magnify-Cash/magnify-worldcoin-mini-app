@@ -2,29 +2,6 @@ export const magnifyworldabi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "loanAmount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "interestRate",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "loanPeriod",
-        type: "uint256",
-      },
-    ],
-    name: "addTier",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "address",
         name: "_loanToken",
         type: "address",
@@ -137,51 +114,6 @@ export const magnifyworldabi = [
     type: "error",
   },
   {
-    inputs: [],
-    name: "InsufficientAllowance",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "InsufficientContractBalance",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "InvalidTierParameters",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "LoanAlreadyActive",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "LoanExpired",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "LoanNotActive",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "NFTDoesNotExist",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "NoContractBalance",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "NotNFTOwner",
-    type: "error",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -201,21 +133,6 @@ export const magnifyworldabi = [
       },
     ],
     name: "OwnableUnauthorizedAccount",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "TierDoesNotExist",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "TransferFailed",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "UserAlreadyHasNFT",
     type: "error",
   },
   {
@@ -269,24 +186,6 @@ export const magnifyworldabi = [
     type: "event",
   },
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "approve",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
     anonymous: false,
     inputs: [
       {
@@ -335,24 +234,6 @@ export const magnifyworldabi = [
     ],
     name: "LoanRequested",
     type: "event",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "tierId",
-        type: "uint256",
-      },
-    ],
-    name: "mintNFT",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
   },
   {
     anonymous: false,
@@ -422,96 +303,6 @@ export const magnifyworldabi = [
     ],
     name: "OwnershipTransferred",
     type: "event",
-  },
-  {
-    inputs: [],
-    name: "renounceOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "repayLoan",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "requestLoan",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "from",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "safeTransferFrom",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "from",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes",
-        name: "data",
-        type: "bytes",
-      },
-    ],
-    name: "safeTransferFrom",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "operator",
-        type: "address",
-      },
-      {
-        internalType: "bool",
-        name: "approved",
-        type: "bool",
-      },
-    ],
-    name: "setApprovalForAll",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
   },
   {
     anonymous: false,
@@ -603,10 +394,28 @@ export const magnifyworldabi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "from",
-        type: "address",
+        internalType: "uint256",
+        name: "loanAmount",
+        type: "uint256",
       },
+      {
+        internalType: "uint256",
+        name: "interestRate",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "loanPeriod",
+        type: "uint256",
+      },
+    ],
+    name: "addTier",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
       {
         internalType: "address",
         name: "to",
@@ -618,73 +427,7 @@ export const magnifyworldabi = [
         type: "uint256",
       },
     ],
-    name: "transferFrom",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "newOwner",
-        type: "address",
-      },
-    ],
-    name: "transferOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tierId",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "newLoanAmount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "newInterestRate",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "newLoanPeriod",
-        type: "uint256",
-      },
-    ],
-    name: "updateTier",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "newTierId",
-        type: "uint256",
-      },
-    ],
-    name: "upgradeNFT",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "withdrawLoanToken",
+    name: "approve",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -824,6 +567,19 @@ export const magnifyworldabi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "loanToken",
+    outputs: [
+      {
+        internalType: "contract IERC20",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "uint256",
@@ -863,16 +619,21 @@ export const magnifyworldabi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "loanToken",
-    outputs: [
+    inputs: [
       {
-        internalType: "contract IERC20",
-        name: "",
+        internalType: "address",
+        name: "to",
         type: "address",
       },
+      {
+        internalType: "uint256",
+        name: "tierId",
+        type: "uint256",
+      },
     ],
-    stateMutability: "view",
+    name: "mintNFT",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -937,6 +698,96 @@ export const magnifyworldabi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "repayLoan",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "requestLoan",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "from",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "safeTransferFrom",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "from",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "safeTransferFrom",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "operator",
+        type: "address",
+      },
+      {
+        internalType: "bool",
+        name: "approved",
+        type: "bool",
+      },
+    ],
+    name: "setApprovalForAll",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -1036,6 +887,88 @@ export const magnifyworldabi = [
     inputs: [
       {
         internalType: "address",
+        name: "from",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "transferFrom",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tierId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "newLoanAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "newInterestRate",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "newLoanPeriod",
+        type: "uint256",
+      },
+    ],
+    name: "updateTier",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "newTierId",
+        type: "uint256",
+      },
+    ],
+    name: "upgradeNFT",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "",
         type: "address",
       },
@@ -1049,6 +982,13 @@ export const magnifyworldabi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "withdrawLoanToken",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];

@@ -82,20 +82,6 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
         address owner
     );
 
-    // Errors
-    error InvalidTierParameters();
-    error TierDoesNotExist();
-    error UserAlreadyHasNFT();
-    error NFTDoesNotExist();
-    error NotNFTOwner();
-    error LoanAlreadyActive();
-    error InsufficientContractBalance();
-    error TransferFailed();
-    error LoanNotActive();
-    error LoanExpired();
-    error InsufficientAllowance();
-    error NoContractBalance();
-
     /**
      * @dev Constructor to initialize the contract and create default tiers
      * @param _loanToken Address of the ERC20 token used for loans
@@ -149,7 +135,7 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
         uint256 loanPeriod
     ) external onlyOwner {
         if (!_checkTier(loanAmount, interestRate, loanPeriod))
-            revert InvalidTierParameters();
+            revert("Invalid tier parameters");
 
         tierCount++;
         tiers[tierCount] = Tier(loanAmount, interestRate, loanPeriod);
@@ -170,9 +156,9 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
         uint256 newInterestRate,
         uint256 newLoanPeriod
     ) external onlyOwner {
-        if (tierId > tierCount) revert TierDoesNotExist();
+        if (tierId > tierCount) revert("Tier does not exist");
         if (!_checkTier(newLoanAmount, newInterestRate, newLoanPeriod))
-            revert InvalidTierParameters();
+            revert("Invalid tier parameters");
 
         tiers[tierId] = Tier(newLoanAmount, newInterestRate, newLoanPeriod);
 
@@ -185,8 +171,9 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
      * @param tierId Tier ID to assign to the NFT
      */
     function mintNFT(address to, uint256 tierId) external onlyOwner {
-        if (tierId == 0 || tierId > tierCount) revert InvalidTierParameters();
-        if (userNFT[to] > 0) revert UserAlreadyHasNFT();
+        if (tierId == 0 || tierId > tierCount)
+            revert("Invalid tier parameters");
+        if (userNFT[to] > 0) revert("User already has an NFT");
 
         _tokenIds++;
         _safeMint(to, _tokenIds);
@@ -205,11 +192,11 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
         try this.ownerOf(tokenId) returns (address) {
             // Token exists, proceed
         } catch {
-            revert NFTDoesNotExist();
+            revert("NFT does not exist");
         }
 
         if (newTierId == 0 || newTierId > tierCount)
-            revert InvalidTierParameters();
+            revert("Invalid tier parameters");
 
         nftToTier[tokenId] = newTierId;
 
@@ -249,18 +236,18 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
      */
     function requestLoan() external nonReentrant {
         uint256 tokenId = userNFT[msg.sender];
-        if (tokenId == 0) revert NotNFTOwner();
-        if (loans[tokenId].isActive) revert LoanAlreadyActive();
+        if (tokenId == 0) revert("Not NFT owner");
+        if (loans[tokenId].isActive) revert("Loan already active");
 
         uint256 tId = nftToTier[tokenId];
-        if (tId == 0 || tId > tierCount) revert InvalidTierParameters();
+        if (tId == 0 || tId > tierCount) revert("Invalid tier parameters");
 
         // Check if the tokenId actually exists in the contract
-        if (ownerOf(tokenId) != msg.sender) revert NotNFTOwner();
+        if (ownerOf(tokenId) != msg.sender) revert("Not NFT owner");
 
         Tier memory t = tiers[tId];
         if (loanToken.balanceOf(address(this)) < t.loanAmount)
-            revert InsufficientContractBalance();
+            revert("Insufficient contract balance");
 
         // Check for potential overflow in loan amount calculation
         uint256 maxLoanAmount = type(uint256).max;
@@ -274,7 +261,7 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
             }
         }
         if (totalLoanedOut + t.loanAmount > loanToken.balanceOf(address(this)))
-            revert InsufficientContractBalance();
+            revert("Insufficient contract balance");
 
         loans[tokenId] = Loan(
             t.loanAmount,
@@ -285,7 +272,7 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
         );
 
         if (!loanToken.transfer(msg.sender, t.loanAmount))
-            revert TransferFailed();
+            revert("Transfer failed");
 
         emit LoanRequested(tokenId, t.loanAmount, msg.sender);
     }
@@ -296,21 +283,21 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
      */
     function repayLoan() external nonReentrant {
         uint256 tokenId = userNFT[msg.sender];
-        if (tokenId == 0) revert NotNFTOwner();
-        if (!loans[tokenId].isActive) revert LoanNotActive();
-        if (msg.sender != ownerOf(tokenId)) revert NotNFTOwner();
+        if (tokenId == 0) revert("Not NFT owner");
+        if (!loans[tokenId].isActive) revert("Loan is not active");
+        if (msg.sender != ownerOf(tokenId)) revert("Not NFT owner");
 
         Loan memory loan = loans[tokenId];
         if (block.timestamp > loan.startTime + loan.loanPeriod)
-            revert LoanExpired();
+            revert("Loan is expired");
 
         uint256 interest = (loan.amount * loan.interestRate) / 10000;
         uint256 total = loan.amount + interest;
 
         if (loanToken.allowance(msg.sender, address(this)) < total)
-            revert InsufficientAllowance();
+            revert("Insufficient allowance");
         if (!loanToken.transferFrom(msg.sender, address(this), total))
-            revert TransferFailed();
+            revert("Transfer failed");
 
         loans[tokenId].isActive = false;
 
@@ -322,9 +309,9 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
      */
     function withdrawLoanToken() external onlyOwner {
         uint256 balance = loanToken.balanceOf(address(this));
-        if (balance == 0) revert NoContractBalance();
+        if (balance == 0) revert("Contract balance is 0");
 
-        if (!loanToken.transfer(msg.sender, balance)) revert TransferFailed();
+        if (!loanToken.transfer(msg.sender, balance)) revert("Transfer failed");
     }
 
     /**
@@ -366,7 +353,7 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
         view
         returns (uint256 amountBorrowed, uint256 dueDate, uint256 totalDue)
     {
-        if (!loans[tokenId].isActive) revert LoanNotActive();
+        if (!loans[tokenId].isActive) revert("Loan is not active");
 
         Loan memory loan = loans[tokenId];
         return (
