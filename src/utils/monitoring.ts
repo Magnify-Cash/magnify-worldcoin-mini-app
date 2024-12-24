@@ -10,8 +10,8 @@ export const initializeMonitoring = () => {
       tracesSampleRate: 1.0,
       environment: import.meta.env.MODE,
     });
-    eruda.init();
   }
+  eruda.init();
 };
 
 // Custom logger with different log levels
