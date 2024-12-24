@@ -110,17 +110,17 @@ export function useMagnifyWorld(walletAddress: `0x${string}`): {
         functionName: "tierCount",
       });
 
-      const hasNFT = (await readContract(config, {
+      const userNFT = (await readContract(config, {
         address: MAGNIFY_WORLD_ADDRESS,
         abi: magnifyworldabi,
-        functionName: "hasNFT",
+        functionName: "userNFT",
         args: [walletAddress],
       })) as bigint;
 
       let tokenId: bigint | null = null;
       let nftTier: Tier | null = null;
-      if (hasNFT !== BigInt(0)) {
-        tokenId = hasNFT;
+      if (userNFT !== BigInt(0)) {
+        tokenId = userNFT;
         const tierData = await readContract(config, {
           address: MAGNIFY_WORLD_ADDRESS,
           abi: magnifyworldabi,

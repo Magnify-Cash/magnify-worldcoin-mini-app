@@ -14,7 +14,7 @@ const ExamplePage = () => {
       <p>Number of Tiers: {data?.tierCount}</p>
 
       <h3>User has NFT?</h3>
-      <p>{data?.nftInfo.hasNFT ? "Yes" : "No"}</p>
+      <p>{data?.nftInfo.userNFT ? "Yes" : "No"}</p>
 
       <h3>User's Active Loans</h3>
       <ul>
