@@ -52,13 +52,7 @@ const useRepayLoan = () => {
             address: MAGNIFY_WORLD_ADDRESS,
             abi: [
               {
-                inputs: [
-                  {
-                    internalType: "uint256",
-                    name: "tokenId",
-                    type: "uint256",
-                  },
-                ],
+                inputs: [],
                 name: "repayLoan",
                 outputs: [],
                 stateMutability: "nonpayable",
