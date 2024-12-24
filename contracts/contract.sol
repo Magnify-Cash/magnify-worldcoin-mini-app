@@ -22,7 +22,7 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
     mapping(uint256 => uint256) public nftToTier;
     mapping(uint256 => Tier) public tiers;
     mapping(uint256 => Loan) public loans;
-    mapping(address => uint256) public hasNFT;
+    mapping(address => uint256) public userNFT;
 
     /**
      * @dev Tier structure defining loan parameters for each tier
@@ -186,12 +186,12 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
      */
     function mintNFT(address to, uint256 tierId) external onlyOwner {
         if (tierId == 0 || tierId > tierCount) revert InvalidTierParameters();
-        if (hasNFT[to] > 0) revert UserAlreadyHasNFT();
+        if (userNFT[to] > 0) revert UserAlreadyHasNFT();
 
         _tokenIds++;
         _safeMint(to, _tokenIds);
         nftToTier[_tokenIds] = tierId;
-        hasNFT[to] = _tokenIds;
+        userNFT[to] = _tokenIds;
 
         emit NFTMinted(_tokenIds, to, tierId);
     }
@@ -248,7 +248,7 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
      * @notice This function automatically uses the NFT associated with the msg.sender
      */
     function requestLoan() external nonReentrant {
-        uint256 tokenId = hasNFT[msg.sender];
+        uint256 tokenId = userNFT[msg.sender];
         if (tokenId == 0) revert NotNFTOwner();
         if (loans[tokenId].isActive) revert LoanAlreadyActive();
 
@@ -292,9 +292,11 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
 
     /**
      * @dev Allows borrower to repay their loan
-     * @param tokenId ID of the NFT used as collateral
+     * @notice This function automatically uses the NFT associated with the msg.sender
      */
-    function repayLoan(uint256 tokenId) external nonReentrant {
+    function repayLoan() external nonReentrant {
+        uint256 tokenId = userNFT[msg.sender];
+        if (tokenId == 0) revert NotNFTOwner();
         if (!loans[tokenId].isActive) revert LoanNotActive();
         if (msg.sender != ownerOf(tokenId)) revert NotNFTOwner();
 
