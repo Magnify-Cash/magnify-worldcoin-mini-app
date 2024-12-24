@@ -65,7 +65,7 @@ const useRepayLoan = () => {
                 type: "function",
               },
             ],
-            functionName: "requestLoan",
+            functionName: "repayLoan",
             args: [],
           },
         ],
