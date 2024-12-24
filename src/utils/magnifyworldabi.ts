@@ -431,13 +431,7 @@ export const magnifyworldabi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
+    inputs: [],
     name: "repayLoan",
     outputs: [],
     stateMutability: "nonpayable",
@@ -809,25 +803,6 @@ export const magnifyworldabi = [
     inputs: [
       {
         internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "hasNFT",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
         name: "owner",
         type: "address",
       },
@@ -1052,6 +1027,25 @@ export const magnifyworldabi = [
         internalType: "string",
         name: "",
         type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "userNFT",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
