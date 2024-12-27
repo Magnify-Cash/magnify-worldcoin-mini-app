@@ -13,18 +13,20 @@ const LoanPage = () => {
   // Hooks
   const navigate = useNavigate();
   const user = MiniKit?.user;
-  const { data, isLoading, isError } = useMagnifyWorld(user?.walletAddress);
+  const { data, isLoading, isError, refetch } = useMagnifyWorld(user?.walletAddress);
   const { requestNewLoan, error, transactionId, isConfirming, isConfirmed } = useRequestLoan();
+
+  // state
+  const nftInfo = data?.nftInfo || { tokenId: null, tier: null };
+  const showAllTiers = !nftInfo.tokenId; // If there's no NFT, show all tiers
 
   // Handle loan application
   const handleApplyLoan = useCallback(
     async (event: React.FormEvent) => {
-      event.preventDefault(); // Prevent form from submitting traditionally
-
+      event.preventDefault();
       if (data?.nftInfo?.tokenId) {
         await requestNewLoan();
       } else {
-        // Handle the case where NFT token ID is not available or user isn't verified
         alert("Unable to apply for loan. Ensure you have a verified NFT.");
       }
     },
@@ -36,14 +38,14 @@ const LoanPage = () => {
     alert("Please complete the verification process to claim a verified NFT.");
   };
 
+  // Handle navigation after claiming loan
+  const handleNavigateAfterTransaction = () => {
+    refetch();
+    setTimeout(() => navigate("/dashboard"), 1000);
+  };
+
   if (isLoading) return <div className="container mx-auto p-6 text-center">Loading...</div>;
   if (isError) return <div className="container mx-auto p-6 text-center">Error fetching data.</div>;
-
-  // Null or undefined checks for data.nftInfo and tier
-  const nftInfo = data?.nftInfo || { tokenId: null, tier: null };
-
-  const showAllTiers = !nftInfo.tokenId; // If there's no NFT, show all tiers
-
   return (
     <div className="container p-6 space-y-6 animate-fade-up">
       <h1 className="text-2xl font-bold text-center mb-6">Get a Loan</h1>
@@ -140,9 +142,21 @@ const LoanPage = () => {
         {error && <p className="text-red-500">{error}</p>}
         {transactionId && (
           <div className="mt-4">
-            <p>Transaction ID: {transactionId}</p>
+            <p className="overflow-hidden text-ellipsis whitespace-nowrap">
+              Transaction ID:{" "}
+              <span title={transactionId}>
+                {transactionId.slice(0, 10)}...{transactionId.slice(-10)}
+              </span>
+            </p>
             {isConfirming && <p>Confirming transaction...</p>}
-            {isConfirmed && <p>Transaction confirmed!</p>}
+            {isConfirmed && (
+              <>
+                <p>Transaction confirmed!</p>
+                <Button type="button" onClick={handleNavigateAfterTransaction} className="mt-2 w-full">
+                  View Transaction Details
+                </Button>
+              </>
+            )}
           </div>
         )}
       </Card>
