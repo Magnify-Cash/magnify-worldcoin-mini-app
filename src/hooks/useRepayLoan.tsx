@@ -1,13 +1,14 @@
 import { useCallback, useState, useEffect } from "react";
 import { MiniKit } from "@worldcoin/minikit-js";
-import { MAGNIFY_WORLD_ADDRESS, WORLDCOIN_CLIENT_ID } from "@/utils/constants";
 import { useWaitForTransactionReceipt } from "@worldcoin/minikit-react";
 import { createPublicClient, http } from "viem";
 import { worldchain } from "wagmi/chains";
+import { MAGNIFY_WORLD_ADDRESS, WORLDCOIN_CLIENT_ID } from "@/utils/constants";
 
 type LoanDetails = {
   amount: number;
-  duration: number;
+  interest: number;
+  totalDue: number;
   transactionId: string;
 };
 
@@ -23,7 +24,6 @@ const useRepayLoan = () => {
     transport: http("https://worldchain-mainnet.g.alchemy.com/public"),
   });
 
-  // Use the hook at the top level of your custom hook
   const { isLoading: isConfirmingTransaction, isSuccess: isTransactionConfirmed } =
     useWaitForTransactionReceipt({
       client: client,
@@ -38,7 +38,7 @@ const useRepayLoan = () => {
     setIsConfirmed(isTransactionConfirmed);
   }, [isConfirmingTransaction, isTransactionConfirmed]);
 
-  const repayLoan = useCallback(async (nftId) => {
+  const repayLoanWithPermit2 = useCallback(async (nftId: number, loanAmount: string, loanToken: string) => {
     setError(null);
     setTransactionId(null);
     setIsConfirming(false);
@@ -46,32 +46,123 @@ const useRepayLoan = () => {
     setLoanDetails(null);
 
     try {
+      const deadline = Math.floor((Date.now() + 30 * 60 * 1000) / 1000).toString();
+
+      // Create Permit2 transfer parameters
+      const permitTransfer = {
+        permitted: {
+          token: loanToken,
+          amount: loanAmount,
+        },
+        nonce: Date.now().toString(),
+        deadline,
+      };
+
+      // Format transfer details
+      const transferDetails = {
+        to: MAGNIFY_WORLD_ADDRESS,
+        requestedAmount: loanAmount,
+      };
+
+      // Format arguments for the contract call
+      const permitTransferArgsForm = [
+        [permitTransfer.permitted.token, permitTransfer.permitted.amount],
+        permitTransfer.nonce,
+        permitTransfer.deadline,
+      ];
+
+      const transferDetailsArgsForm = [transferDetails.to, transferDetails.requestedAmount];
+
       const { commandPayload, finalPayload } = await MiniKit.commandsAsync.sendTransaction({
         transaction: [
           {
             address: MAGNIFY_WORLD_ADDRESS,
             abi: [
               {
-                inputs: [],
-                name: "repayLoan",
+                inputs: [
+                  {
+                    components: [
+                      {
+                        components: [
+                          {
+                            internalType: "address",
+                            name: "token",
+                            type: "address",
+                          },
+                          {
+                            internalType: "uint256",
+                            name: "amount",
+                            type: "uint256",
+                          },
+                        ],
+                        internalType: "struct ISignatureTransfer.TokenPermissions",
+                        name: "permitted",
+                        type: "tuple",
+                      },
+                      {
+                        internalType: "uint256",
+                        name: "nonce",
+                        type: "uint256",
+                      },
+                      {
+                        internalType: "uint256",
+                        name: "deadline",
+                        type: "uint256",
+                      },
+                    ],
+                    internalType: "struct ISignatureTransfer.PermitTransferFrom",
+                    name: "permitTransferFrom",
+                    type: "tuple",
+                  },
+                  {
+                    components: [
+                      {
+                        internalType: "address",
+                        name: "to",
+                        type: "address",
+                      },
+                      {
+                        internalType: "uint256",
+                        name: "requestedAmount",
+                        type: "uint256",
+                      },
+                    ],
+                    internalType: "struct ISignatureTransfer.SignatureTransferDetails",
+                    name: "transferDetails",
+                    type: "tuple",
+                  },
+                  {
+                    internalType: "bytes",
+                    name: "signature",
+                    type: "bytes",
+                  },
+                ],
+                name: "repayLoanWithPermit2",
                 outputs: [],
                 stateMutability: "nonpayable",
                 type: "function",
               },
             ],
-            functionName: "repayLoan",
-            args: [],
+            functionName: "repayLoanWithPermit2",
+            args: [permitTransferArgsForm, transferDetailsArgsForm, "PERMIT2_SIGNATURE_PLACEHOLDER_0"],
+          },
+        ],
+        permit2: [
+          {
+            ...permitTransfer,
+            spender: MAGNIFY_WORLD_ADDRESS,
           },
         ],
       });
 
       if (finalPayload.status === "success") {
         setTransactionId(finalPayload.transaction_id);
-        console.log("Loan initialization transaction sent:", finalPayload.transaction_id);
-        // Optional: Fetch loan details if available from the transaction response
+        console.log("Loan repayment transaction sent:", finalPayload.transaction_id);
+
         setLoanDetails({
-          amount: 1000, // Replace with actual logic if amount comes from transaction or another source
-          duration: 30, // Replace with actual logic for duration
+          amount: parseInt(loanAmount),
+          interest: 0, // Calculate based on contract terms
+          totalDue: parseInt(loanAmount), // Calculate total with interest
           transactionId: finalPayload.transaction_id,
         });
       } else {
@@ -84,7 +175,14 @@ const useRepayLoan = () => {
     }
   }, []);
 
-  return { repayLoan, error, transactionId, isConfirming, isConfirmed, loanDetails };
+  return {
+    repayLoanWithPermit2,
+    error,
+    transactionId,
+    isConfirming,
+    isConfirmed,
+    loanDetails,
+  };
 };
 
 export default useRepayLoan;

@@ -6,6 +6,33 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
+interface ISignatureTransfer {
+    struct TokenPermissions {
+        address token;
+        uint256 amount;
+    }
+
+    struct PermitTransferFrom {
+        TokenPermissions permitted;
+        uint256 nonce;
+        uint256 deadline;
+    }
+
+    struct SignatureTransferDetails {
+        address to;
+        uint256 requestedAmount;
+    }
+}
+
+interface IPermit2 {
+    function permitTransferFrom(
+        ISignatureTransfer.PermitTransferFrom calldata permit,
+        ISignatureTransfer.SignatureTransferDetails calldata transferDetails,
+        address owner,
+        bytes calldata signature
+    ) external;
+}
+
 /**
  * @title MagnifyWorld
  * @dev A contract for managing NFT-backed loans with different tiers
@@ -17,6 +44,7 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
     uint256 private _tokenIds;
     IERC20 public immutable loanToken;
     uint256 public tierCount;
+    IPermit2 public immutable PERMIT2;
 
     // Mappings
     mapping(uint256 => uint256) public nftToTier;
@@ -87,10 +115,13 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
      * @param _loanToken Address of the ERC20 token used for loans
      */
     constructor(
-        address _loanToken
+        address _loanToken,
+        address _permit2
     ) ERC721("MagnifyWorld", "MAGWORLD") Ownable(msg.sender) {
         if (_loanToken == address(0)) revert("Invalid token address");
+        if (_permit2 == address(0)) revert("Invalid Permit2 address");
         loanToken = IERC20(_loanToken);
+        PERMIT2 = IPermit2(_permit2);
 
         // Create default tiers
         // Tier 1: 1 token, 2.5% interest, 30 days
@@ -301,6 +332,50 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
 
         loans[tokenId].isActive = false;
 
+        emit LoanRepaid(tokenId, total, msg.sender);
+    }
+
+    /**
+     * @notice Repays an active loan using Permit2 for token approval
+     * @dev Uses Uniswap's Permit2 for gas-efficient token approvals in a single transaction
+     * @dev The loan must be active and not expired, and the caller must be the NFT owner
+     */
+    function repayLoanWithPermit2(
+        ISignatureTransfer.PermitTransferFrom calldata permitTransferFrom,
+        ISignatureTransfer.SignatureTransferDetails calldata transferDetails,
+        bytes calldata signature
+    ) external nonReentrant {
+        uint256 tokenId = userNFT[msg.sender];
+        if (tokenId == 0) revert("Not NFT owner");
+        if (!loans[tokenId].isActive) revert("Loan is not active");
+        if (msg.sender != ownerOf(tokenId)) revert("Not NFT owner");
+
+        Loan memory loan = loans[tokenId];
+        if (block.timestamp > loan.startTime + loan.loanPeriod)
+            revert("Loan is expired");
+
+        uint256 interest = (loan.amount * loan.interestRate) / 10000;
+        uint256 total = loan.amount + interest;
+
+        // Verify permit parameters
+        if (permitTransferFrom.permitted.token != address(loanToken))
+            revert("Invalid token");
+        if (permitTransferFrom.permitted.amount < total)
+            revert("Insufficient permit amount");
+        if (transferDetails.requestedAmount != total)
+            revert("Invalid requested amount");
+        if (transferDetails.to != address(this))
+            revert("Invalid transfer recipient");
+
+        // Execute the permit and transfer
+        PERMIT2.permitTransferFrom(
+            permitTransferFrom,
+            transferDetails,
+            msg.sender,
+            signature
+        );
+
+        loans[tokenId].isActive = false;
         emit LoanRepaid(tokenId, total, msg.sender);
     }
 
