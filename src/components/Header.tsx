@@ -16,7 +16,11 @@ const Header = () => {
             <DropdownMenuTrigger className="flex items-center px-4 py-2">
               <Menu className="h-5 w-5" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent
+              style={{ zIndex: 9999 }}
+              className="bg-white shadow-lg border rounded-md"
+              align="end"
+            >
               <DropdownMenuItem asChild>
                 <Link
                   to="/wallet"
