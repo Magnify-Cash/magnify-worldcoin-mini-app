@@ -17,7 +17,7 @@ interface LoanType {
   loanPeriod: bigint;
 }
 
-const RepayLoanCard = ({ loan, user, data }: { loan: LoanType; user: any; data: any }) => {
+const RepayLoanCard = ({ loan, data, refetch }: { loan: LoanType; data: any; refetch: any }) => {
   // hooks & state
   const { repayLoanWithPermit2, error, transactionId, isConfirming, isConfirmed } = useRepayLoan();
   const [daysRemaining, hoursRemaining, minutesRemaining] = calculateRemainingTime(
@@ -30,13 +30,16 @@ const RepayLoanCard = ({ loan, user, data }: { loan: LoanType; user: any; data: 
   const progressPercentage = Number(
     Math.max(0, Math.min(100, (Number(elapsedTime) / Number(totalTime)) * 100)),
   );
+  console.log(loan.amount, loan.interestRate);
+  const loanAmountDue = loan.amount + (loan.amount * loan.interestRate) / 10000n;
+  console.log(loanAmountDue);
 
   // Handle loan repayment
   const handleApplyLoan = useCallback(
     async (event: React.FormEvent) => {
       event.preventDefault();
       if (data?.nftInfo?.tokenId) {
-        await repayLoanWithPermit2("1025000");
+        await repayLoanWithPermit2(loanAmountDue.toString());
       } else {
         toast.error("Unable to pay back loan.");
       }
@@ -59,7 +62,7 @@ const RepayLoanCard = ({ loan, user, data }: { loan: LoanType; user: any; data: 
               Due In: {daysRemaining} days, {hoursRemaining} hours, {minutesRemaining} minutes
             </p>
             <p className="text-lg font-semibold text-brand-text-primary">
-              Total Amount Due: ${formatUnits(loan.amount, 6)}
+              Total Amount Due: ${formatUnits(loanAmountDue, 6)}
             </p>
           </div>
         </div>

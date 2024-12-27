@@ -11,7 +11,7 @@ import useRepayLoan from "@/hooks/useRepayLoan";
 const LoanDashboardPage = () => {
   const navigate = useNavigate();
   const user = MiniKit?.user;
-  const { data, isLoading, isError } = useMagnifyWorld(user?.walletAddress);
+  const { data, isLoading, isError, refetch } = useMagnifyWorld(user?.walletAddress);
 
   if (isLoading) return <div className="container mx-auto p-6 text-center">Loading...</div>;
   if (isError) return <div className="container mx-auto p-6 text-center">Error fetching data.</div>;
@@ -19,16 +19,10 @@ const LoanDashboardPage = () => {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold text-center mb-6">Loan Dashboard</h1>
-      <div className="gap-4 mb-8">
-        <Card className="p-4 glass-card">
-          <h4 className="text-sm text-brand-text-secondary mb-1">Active Loans</h4>
-          <p className="text-2xl font-bold text-brand-text-primary">{data?.loans?.length || 0}</p>
-        </Card>
-      </div>
       <Card className="w-full p-6 bg-white/50 backdrop-blur-sm space-y-6">
         {data?.loans?.length > 0 ? (
           data.loans.map((loan) => (
-            <RepayLoanCard key={loan.amount.toString()} loan={loan} user={user} data={data} />
+            <RepayLoanCard key={loan.amount.toString()} loan={loan} data={data} refetch={refetch} />
           ))
         ) : (
           <div className="text-center">
