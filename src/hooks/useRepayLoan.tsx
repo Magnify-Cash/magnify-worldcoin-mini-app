@@ -3,7 +3,7 @@ import { MiniKit } from "@worldcoin/minikit-js";
 import { useWaitForTransactionReceipt } from "@worldcoin/minikit-react";
 import { createPublicClient, http } from "viem";
 import { worldchain } from "wagmi/chains";
-import { MAGNIFY_WORLD_ADDRESS, WORLDCOIN_CLIENT_ID } from "@/utils/constants";
+import { MAGNIFY_WORLD_ADDRESS, WORLDCOIN_CLIENT_ID, WORLDCOIN_TOKEN_COLLATERAL } from "@/utils/constants";
 
 type LoanDetails = {
   amount: number;
@@ -38,7 +38,7 @@ const useRepayLoan = () => {
     setIsConfirmed(isTransactionConfirmed);
   }, [isConfirmingTransaction, isTransactionConfirmed]);
 
-  const repayLoanWithPermit2 = useCallback(async (nftId: number, loanAmount: string, loanToken: string) => {
+  const repayLoanWithPermit2 = useCallback(async (loanAmount: string) => {
     setError(null);
     setTransactionId(null);
     setIsConfirming(false);
@@ -51,7 +51,7 @@ const useRepayLoan = () => {
       // Create Permit2 transfer parameters
       const permitTransfer = {
         permitted: {
-          token: loanToken,
+          token: WORLDCOIN_TOKEN_COLLATERAL,
           amount: loanAmount,
         },
         nonce: Date.now().toString(),

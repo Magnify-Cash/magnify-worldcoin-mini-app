@@ -5,47 +5,43 @@ import { useCallback } from "react";
 import { CircularProgressbar } from "react-circular-progressbar";
 import { Coins } from "lucide-react";
 import { calculateRemainingTime } from "@/utils/timeinfo";
+import { CheckCircle2, Loader2 } from "lucide-react";
 import { formatUnits } from "viem";
 import useRepayLoan from "@/hooks/useRepayLoan";
-import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
-import { MiniKit } from "@worldcoin/minikit-js";
 
 interface LoanType {
-  amount: bigint; // The loan amount in smallest units (e.g., cents or other smallest denomination)
+  amount: bigint;
   startTime: bigint;
   isActive: boolean;
-  interestRate: bigint; // Interest rate in percentage (e.g., 2 for 2%)
-  loanPeriod: bigint; // Loan period in seconds
+  interestRate: bigint;
+  loanPeriod: bigint;
 }
 
 const RepayLoanCard = ({ loan, user, data }: { loan: LoanType; user: any; data: any }) => {
-  const { repayLoan, error, transactionId, isConfirming, isConfirmed } = useRepayLoan();
-
-  // Handle loan repayment
-  const handleApplyLoan = useCallback(
-    async (event: React.FormEvent) => {
-      event.preventDefault(); // Prevent form from submitting traditionally
-
-      if (data?.nftInfo?.tokenId) {
-        await repayLoan(data?.nftInfo?.tokenId);
-      } else {
-        // Handle the case where NFT token ID is not available or user isn't verified
-        toast.error("Unable to pay back loan.");
-      }
-    },
-    [data, repayLoan],
-  );
+  // hooks & state
+  const { repayLoanWithPermit2, error, transactionId, isConfirming, isConfirmed } = useRepayLoan();
   const [daysRemaining, hoursRemaining, minutesRemaining] = calculateRemainingTime(
     loan.startTime,
     loan.loanPeriod,
   );
-
-  // Calculate the progress percentage dynamically
   const currentTime = BigInt(Math.floor(Date.now() / 1000)); // Current time in seconds
   const elapsedTime = currentTime - loan.startTime;
   const totalTime = loan.loanPeriod;
   const progressPercentage = Number(
     Math.max(0, Math.min(100, (Number(elapsedTime) / Number(totalTime)) * 100)),
+  );
+
+  // Handle loan repayment
+  const handleApplyLoan = useCallback(
+    async (event: React.FormEvent) => {
+      event.preventDefault();
+      if (data?.nftInfo?.tokenId) {
+        await repayLoanWithPermit2("1025000");
+      } else {
+        toast.error("Unable to pay back loan.");
+      }
+    },
+    [data, repayLoanWithPermit2],
   );
 
   return (
@@ -89,10 +85,46 @@ const RepayLoanCard = ({ loan, user, data }: { loan: LoanType; user: any; data: 
           />
         </div>
       </div>
-      <Button onClick={handleApplyLoan} className="w-full primary-button">
-        <Coins className="mr-2 h-4 w-4" />
-        Repay Loan
+      {/* Change the button based on NFT verification status */}
+      <Button
+        onClick={handleApplyLoan}
+        className="w-full primary-button"
+        disabled={isConfirming || isConfirmed}
+      >
+        {isConfirming ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Confirming...
+          </>
+        ) : isConfirmed ? (
+          <>
+            <CheckCircle2 className="mr-2 h-4 w-4" />
+            Confirmed
+          </>
+        ) : (
+          <>
+            <Coins className="mr-2 h-4 w-4" />
+            Repay Loan
+          </>
+        )}
       </Button>
+      {error && <p className="text-red-500">{error}</p>}
+      {transactionId && (
+        <div className="mt-4">
+          <p className="overflow-hidden text-ellipsis whitespace-nowrap">
+            Transaction ID:{" "}
+            <span title={transactionId}>
+              {transactionId.slice(0, 10)}...{transactionId.slice(-10)}
+            </span>
+          </p>
+          {isConfirming && <p>Confirming transaction...</p>}
+          {isConfirmed && (
+            <>
+              <p>Transaction confirmed!</p>
+            </>
+          )}
+        </div>
+      )}
     </Card>
   );
 };
