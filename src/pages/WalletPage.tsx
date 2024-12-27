@@ -1,20 +1,17 @@
 import { useEffect, useState } from "react";
-import { Plus, Send, ShieldCheck } from "lucide-react";
-import { Badge } from "@/ui/badge";
+import { Plus, Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Sheet, SheetContent } from "@/ui/sheet";
 import { FundingOptions } from "@/components/FundingOptions";
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { MascotIllustration } from "@/components/MascotIllustration";
-import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
 import { MiniKit } from "@worldcoin/minikit-js";
 
 const WalletPage = () => {
   const navigate = useNavigate();
   const user = MiniKit?.user;
   const [showFundingOptions, setShowFundingOptions] = useState(false);
-  const { data, isLoading, isError } = useMagnifyWorld(user?.walletAddress);
   const [tokens, setBalances] = useState([]);
   useEffect(() => {
     const url = `https://worldchain-mainnet.g.alchemy.com/v2/j-_GFK85PRHN59YaKb8lmVbV0LHmFGBL`;
@@ -116,23 +113,9 @@ const WalletPage = () => {
       <div className="max-w-md mx-auto space-y-8 animate-fade-up">
         {/* Wallet Balance */}
         <div className="space-y-8">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold">Wallet</h2>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <Badge
-                  variant="secondary"
-                  className={`flex items-center gap-1 ${data?.nftInfo?.tier?.verificationStatus?.color}`}
-                >
-                  <ShieldCheck className="w-3 h-3" />
-                  {data?.nftInfo?.tier?.verificationStatus?.description}
-                </Badge>
-              </div>
-            </div>
-          </div>
-
           <div className="text-center space-y-6">
             <div className="space-y-2">
+              <h1 className="text-2xl font-bold text-center mb-6">Wallet</h1>
               <h2 className="text-3xl font-bold tracking-tight">
                 {user?.walletAddress.slice(0, 7)}
                 ...

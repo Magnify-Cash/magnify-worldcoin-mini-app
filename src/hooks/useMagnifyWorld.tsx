@@ -22,9 +22,9 @@ export const VERIFICATION_TIERS = {
     message: "Get ORB verified to unlock $10 loans!",
   },
   NONE: {
-    level: "NONE",
+    level: "UNVERIFIED",
     maxLoanAmount: 1,
-    description: "Not Verified",
+    description: "Not Verified with World ID",
     color: "text-brand-error",
     availableAmounts: ["1"],
     message:
