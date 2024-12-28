@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { formatUnits, zeroAddress } from "viem";
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
@@ -9,16 +9,18 @@ import useRequestLoan from "@/hooks/useRequestLoan";
 import { MiniKit } from "@worldcoin/minikit-js";
 import { ShieldCheck } from "lucide-react";
 import { Badge } from "@/ui/badge";
+import { IDKitWidget, VerificationLevel, ISuccessResult } from "@worldcoin/idkit";
 
 const LoanPage = () => {
   // Hooks
   const navigate = useNavigate();
   const user = MiniKit?.user;
-  const { data, isLoading, isError, refetch } = useMagnifyWorld(user?.walletAddress);
+  const { data, isLoading, isError, refetch } = useMagnifyWorld(zeroAddress);
   const { requestNewLoan, error, transactionId, isConfirming, isConfirmed } = useRequestLoan();
 
   // state
   const nftInfo = data?.nftInfo || { tokenId: null, tier: null };
+  const [activeClaim, setActiveClaim] = useState("device");
   const showAllTiers = !nftInfo.tokenId; // If there's no NFT, show all tiers
 
   // Handle loan application
@@ -35,8 +37,39 @@ const LoanPage = () => {
   );
 
   // Handle claiming verified NFT
-  const handleClaimVerifiedNFT = () => {
-    alert("Please complete the verification process to claim a verified NFT.");
+  const handleClaimDeviceVerifiedNFT = async (proof: ISuccessResult) => {
+    console.log("YOO", proof);
+    const res = await fetch("/api/verify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(proof),
+    });
+    if (!res.ok) {
+      throw new Error("Verification failed.");
+    }
+  };
+
+  // Handle claiming verified NFT
+  const handleClaimOrbVerifiedNFT = async (proof: ISuccessResult) => {
+    console.log("YOO", proof);
+    const res = await fetch("/api/verify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(proof),
+    });
+    if (!res.ok) {
+      throw new Error("Verification failed.");
+    }
+  };
+
+  // Handle post-claim of verified NFT
+  const handleSuccessfulClaim = () => {
+    refetch();
+    setTimeout(() => navigate("/loan"), 1000);
   };
 
   // Handle navigation after claiming loan
@@ -161,9 +194,47 @@ const LoanPage = () => {
               )}
             </Button>
           ) : (
-            <Button type="button" onClick={handleClaimVerifiedNFT} className="w-full">
-              Claim Verified NFT
-            </Button>
+            <div className="flex flex-col items-center space-y-4 sm:flex-row sm:justify-between sm:space-y-0 sm:space-x-4">
+              <div className="flex flex-col items-center space-y-4 sm:flex-row sm:justify-between sm:space-y-0 sm:space-x-4">
+                <IDKitWidget
+                  app_id="app_cfd0a40d70419e3675be53a0aa9b7e10"
+                  action={activeClaim === "device" ? "mint-device-verified-nft" : "mint-orb-verified-nft"}
+                  signal={user?.walletAddress}
+                  onSuccess={handleSuccessfulClaim}
+                  handleVerify={
+                    activeClaim === "device" ? handleClaimDeviceVerifiedNFT : handleClaimOrbVerifiedNFT
+                  }
+                  verification_level={
+                    activeClaim === "device" ? VerificationLevel.Device : VerificationLevel.Orb
+                  }
+                >
+                  {({ open }) => (
+                    <>
+                      <Button
+                        type="button"
+                        onClick={() => {
+                          setActiveClaim("device");
+                          open();
+                        }}
+                        className={`w-full sm:w-auto px-4 py-2 rounded-md ${activeClaim === "device" ? "bg-brand-warning" : ""}`}
+                      >
+                        Claim Device-Verified NFT
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={() => {
+                          setActiveClaim("orb");
+                          open();
+                        }}
+                        className={`w-full sm:w-auto px-4 py-2 rounded-md ${activeClaim === "orb" ? "bg-brand-success" : ""}`}
+                      >
+                        Claim Orb-Verified NFT
+                      </Button>
+                    </>
+                  )}
+                </IDKitWidget>
+              </div>
+            </div>
           )}
         </form>
 

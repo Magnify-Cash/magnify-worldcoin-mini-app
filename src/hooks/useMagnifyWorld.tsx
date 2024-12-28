@@ -18,9 +18,9 @@ export const VERIFICATION_TIERS = {
     message: "Get ORB verified to unlock $10 loans!",
   },
   NONE: {
-    level: "UNVERIFIED",
-    description: "Not Verified with World ID",
-    color: "text-brand-error",
+    level: "DEVICE",
+    description: "Device-Verified with World ID",
+    color: "text-brand-info",
     message:
       "Get World ID verified to unlock higher loan amounts! Verify with Passport for $5 loans or get ORB verified for $10 loans.",
   },
