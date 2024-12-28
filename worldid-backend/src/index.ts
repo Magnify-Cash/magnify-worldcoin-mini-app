@@ -26,10 +26,26 @@ export default {
 			const body = await request.json();
 			const { proof, signal, action } = body;
 
-			if (!proof || !signal || !action) {
-				return new Response(JSON.stringify({ error: 'Missing required parameters' }), { status: 400 });
-			}
+			const missingParams = [];
 
+			if (!proof) missingParams.push('proof');
+			if (!signal) missingParams.push('signal');
+			if (!action) missingParams.push('action');
+
+			if (missingParams.length > 0) {
+				return new Response(
+					JSON.stringify({
+						error: 'Missing required parameters',
+						missing: missingParams,
+					}),
+					{
+						status: 400,
+						headers: {
+							'Content-Type': 'application/json',
+						},
+					},
+				);
+			}
 			// 1. Verify World ID proof
 			const verifyRes = await fetch('https://developer.worldcoin.org/api/v1/verify', {
 				method: 'POST',
