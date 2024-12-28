@@ -36,33 +36,65 @@ const LoanPage = () => {
     [data, requestNewLoan],
   );
 
-  // Handle claiming verified NFT
+  // Handle claiming verified NFT with device
   const handleClaimDeviceVerifiedNFT = async (proof: ISuccessResult) => {
-    console.log("YOO", proof);
-    const res = await fetch("/api/verify", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(proof),
-    });
-    if (!res.ok) {
-      throw new Error("Verification failed.");
+    try {
+      const res = await fetch("https://worldid-backend.kevin8396.workers.dev", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          proof,
+          signal: user?.walletAddress, // User's wallet address from MiniKit
+          action: "mint-device-verified-nft",
+        }),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Verification failed");
+      }
+
+      const data = await res.json();
+      console.log("NFT minted successfully:", data);
+
+      // You might want to show a success message or transaction hash to the user
+      return data;
+    } catch (error) {
+      console.error("Verification error:", error);
+      throw error;
     }
   };
 
-  // Handle claiming verified NFT
+  // Handle claiming verified NFT with orb
   const handleClaimOrbVerifiedNFT = async (proof: ISuccessResult) => {
-    console.log("YOO", proof);
-    const res = await fetch("/api/verify", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(proof),
-    });
-    if (!res.ok) {
-      throw new Error("Verification failed.");
+    try {
+      const res = await fetch("https://worldid-backend.kevin8396.workers.dev", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          proof,
+          signal: user?.walletAddress, // User's wallet address from MiniKit
+          action: "mint-orb-verified-nft",
+        }),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Verification failed");
+      }
+
+      const data = await res.json();
+      console.log("NFT minted successfully:", data);
+
+      // You might want to show a success message or transaction hash to the user
+      return data;
+    } catch (error) {
+      console.error("Verification error:", error);
+      throw error;
     }
   };
 

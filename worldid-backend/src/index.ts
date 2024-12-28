@@ -13,7 +13,7 @@
 
 import { createWalletClient, http, custom } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { optimism } from 'viem/chains';
+import { worldchain } from 'viem/chains';
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
@@ -53,7 +53,7 @@ export default {
 			const account = privateKeyToAccount(env.PRIVATE_KEY);
 			const client = createWalletClient({
 				account,
-				chain: optimism,
+				chain: worldchain,
 				transport: http(env.RPC_URL),
 			});
 
