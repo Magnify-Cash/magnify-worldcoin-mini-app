@@ -1,7 +1,9 @@
-import { createWalletClient, Hex, http } from 'viem';
+import { Buffer } from 'buffer/index.js';
+import { createWalletClient, http } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { worldchain } from 'viem/chains';
-import { type ISuccessResult, type VerificationLevel } from '@worldcoin/idkit';
+import { type ISuccessResult } from '@worldcoin/idkit';
+import { Bytes, Hex, Hash } from 'ox';
 
 interface RequestBody {
 	proof: ISuccessResult;
@@ -11,6 +13,24 @@ interface RequestBody {
 
 interface Env {
 	PRIVATE_KEY: string;
+}
+
+export interface HashFunctionOutput {
+	hash: bigint;
+	digest: `0x${string}`;
+}
+export function hashToField(input: Bytes.Bytes | string): HashFunctionOutput {
+	if (Bytes.validate(input) || Hex.validate(input)) return hashEncodedBytes(input);
+	return hashString(input);
+}
+function hashString(input: string): HashFunctionOutput {
+	const bytesInput = Buffer.from(input);
+	return hashEncodedBytes(bytesInput);
+}
+function hashEncodedBytes(input: Hex.Hex | Bytes.Bytes): HashFunctionOutput {
+	const hash = BigInt(Hash.keccak256(input, { as: 'Hex' })) >> 8n;
+	const rawDigest = hash.toString(16);
+	return { hash, digest: `0x${rawDigest.padStart(64, '0')}` };
 }
 
 export default {
@@ -59,6 +79,7 @@ export default {
 				JSON.stringify({
 					...body.proof,
 					action: body.action,
+					signal: body.signal ?? '',
 				}),
 			);
 			const response = await fetch('https://developer.worldcoin.org/api/v2/verify/app_cfd0a40d70419e3675be53a0aa9b7e10', {
@@ -71,6 +92,7 @@ export default {
 				body: JSON.stringify({
 					...body.proof,
 					action: body.action,
+					signal_hash: hashToField(body.signal ?? '').digest,
 				}),
 			});
 			if (!response.ok) {
