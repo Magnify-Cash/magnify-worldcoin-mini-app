@@ -10,8 +10,8 @@ import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
 const Header = () => {
   const location = useLocation();
   const showNavigation = location.pathname !== "/";
-  const user = MiniKit?.user;
-  const { data, isLoading, isError } = useMagnifyWorld(user?.walletAddress);
+  const ls_wallet = localStorage.getItem("ls_wallet_address");
+  const { data, isLoading, isError } = useMagnifyWorld(ls_wallet);
 
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

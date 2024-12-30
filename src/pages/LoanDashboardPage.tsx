@@ -1,17 +1,14 @@
 import "react-circular-progressbar/dist/styles.css";
-import { useCallback } from "react";
 import { useNavigate } from "react-router";
 import RepayLoanCard from "@/components/RepayLoanCard";
 import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
-import { MiniKit } from "@worldcoin/minikit-js";
-import useRepayLoan from "@/hooks/useRepayLoan";
 
 const LoanDashboardPage = () => {
   const navigate = useNavigate();
-  const user = MiniKit?.user;
-  const { data, isLoading, isError, refetch } = useMagnifyWorld(user?.walletAddress);
+  const ls_wallet = localStorage.getItem("ls_wallet_address");
+  const { data, isLoading, isError, refetch } = useMagnifyWorld(ls_wallet);
 
   if (isLoading) return <div className="container mx-auto p-6 text-center">Loading...</div>;
   if (isError) return <div className="container mx-auto p-6 text-center">Error fetching data.</div>;

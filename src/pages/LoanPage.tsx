@@ -6,7 +6,6 @@ import { Button } from "@/ui/button";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
 import useRequestLoan from "@/hooks/useRequestLoan";
-import { MiniKit } from "@worldcoin/minikit-js";
 import { ShieldCheck } from "lucide-react";
 import { Badge } from "@/ui/badge";
 import { IDKitWidget, VerificationLevel, ISuccessResult } from "@worldcoin/idkit";
@@ -14,7 +13,7 @@ import { IDKitWidget, VerificationLevel, ISuccessResult } from "@worldcoin/idkit
 const LoanPage = () => {
   // Hooks
   const navigate = useNavigate();
-  const user = MiniKit?.user;
+  const ls_wallet = localStorage.getItem("ls_wallet_address");
   const { data, isLoading, isError, refetch } = useMagnifyWorld(zeroAddress);
   const { requestNewLoan, error, transactionId, isConfirming, isConfirmed } = useRequestLoan();
 
@@ -46,7 +45,7 @@ const LoanPage = () => {
         },
         body: JSON.stringify({
           proof,
-          signal: user?.walletAddress, // User's wallet address from MiniKit
+          signal: ls_wallet, // User's wallet address from MiniKit
           action: "mint-device-verified-nft",
         }),
       });
@@ -77,7 +76,7 @@ const LoanPage = () => {
         },
         body: JSON.stringify({
           proof,
-          signal: user?.walletAddress, // User's wallet address from MiniKit
+          signal: ls_wallet, // User's wallet address from MiniKit
           action: "mint-orb-verified-nft",
         }),
       });
@@ -231,7 +230,7 @@ const LoanPage = () => {
                 <IDKitWidget
                   app_id="app_cfd0a40d70419e3675be53a0aa9b7e10"
                   action={activeClaim === "device" ? "mint-device-verified-nft" : "mint-orb-verified-nft"}
-                  signal={user?.walletAddress}
+                  signal={ls_wallet}
                   onSuccess={handleSuccessfulClaim}
                   handleVerify={
                     activeClaim === "device" ? handleClaimDeviceVerifiedNFT : handleClaimOrbVerifiedNFT

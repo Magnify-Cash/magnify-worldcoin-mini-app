@@ -6,11 +6,10 @@ import { FundingOptions } from "@/components/FundingOptions";
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { MascotIllustration } from "@/components/MascotIllustration";
-import { MiniKit } from "@worldcoin/minikit-js";
 
 const WalletPage = () => {
   const navigate = useNavigate();
-  const user = MiniKit?.user;
+  const ls_wallet = localStorage.getItem("ls_wallet_address");
   const [showFundingOptions, setShowFundingOptions] = useState(false);
   const [tokens, setBalances] = useState([]);
   useEffect(() => {
@@ -25,7 +24,7 @@ const WalletPage = () => {
           body: JSON.stringify({
             jsonrpc: "2.0",
             method: "eth_getBalance",
-            params: [user?.walletAddress, "latest"], // "latest" for the latest block
+            params: [ls_wallet, "latest"], // "latest" for the latest block
             id: 1,
           }),
         });
@@ -41,7 +40,7 @@ const WalletPage = () => {
           body: JSON.stringify({
             jsonrpc: "2.0",
             method: "alchemy_getTokenBalances",
-            params: [user?.walletAddress],
+            params: [ls_wallet],
             id: 2,
           }),
         });
@@ -97,10 +96,10 @@ const WalletPage = () => {
       }
     };
 
-    if (user?.walletAddress) {
+    if (ls_wallet) {
       fetchBalances();
     }
-  }, [user?.walletAddress]);
+  }, [ls_wallet]);
   const randomTailwindColor = (char) => {
     const colors = ["red", "green", "blue", "indigo", "purple", "pink"];
     const colorIndex = char.charCodeAt(0) % colors.length;
@@ -117,9 +116,9 @@ const WalletPage = () => {
             <div className="space-y-2">
               <h1 className="text-2xl font-bold text-center mb-6">Wallet</h1>
               <h2 className="text-3xl font-bold tracking-tight">
-                {user?.walletAddress.slice(0, 7)}
+                {ls_wallet.slice(0, 7)}
                 ...
-                {user?.walletAddress.slice(34)}
+                {ls_wallet.slice(34)}
               </h2>
             </div>
           </div>
