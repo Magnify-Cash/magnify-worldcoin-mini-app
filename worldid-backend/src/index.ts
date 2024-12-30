@@ -1,4 +1,4 @@
-import { createWalletClient, http } from 'viem';
+import { createWalletClient, Hex, http } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { worldchain } from 'viem/chains';
 import { type ISuccessResult, type VerificationLevel } from '@worldcoin/idkit';
@@ -55,9 +55,6 @@ export default {
 
 			// Verify World ID proof
 			console.log('Attempting World ID verification...', body.proof, body.action, body.signal);
-			console.log(body.proof);
-			console.log(body.action);
-			console.log(body.signal);
 			console.log(
 				JSON.stringify({
 					...body.proof,
@@ -68,6 +65,8 @@ export default {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
+					'User-Agent':
+						'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
 				},
 				body: JSON.stringify({
 					...body.proof,
@@ -75,14 +74,14 @@ export default {
 				}),
 			});
 			if (!response.ok) {
-				const error = await response.json();
+				const error = await response.text();
 				console.error('World ID verification failed:', error);
 				return new Response(JSON.stringify({ error: 'World ID verification failed', details: error }), { status: 400, headers });
 			}
 			console.log('World ID verification successful');
 
 			// NFT Minting
-			const account = privateKeyToAccount(env.PRIVATE_KEY as `0x${string}`);
+			const account = privateKeyToAccount(env.PRIVATE_KEY as Hex);
 			const client = createWalletClient({
 				account,
 				chain: worldchain,
