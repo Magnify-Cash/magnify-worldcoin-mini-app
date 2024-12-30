@@ -18,12 +18,7 @@ interface RequestBody {
 }
 
 interface Env {
-	WORLD_ACTION_DEVICE: string;
-	WORLD_ACTION_ORB: string;
-	WORLD_APP_ID: string;
 	PRIVATE_KEY: string;
-	RPC_URL: string;
-	CONTRACT_ADDRESS: string;
 }
 
 export default {
@@ -79,7 +74,7 @@ export default {
 			console.log('Attempting World ID verification...');
 			const verifyRes = (await verifyCloudProof(
 				body.proof,
-				env.WORLD_APP_ID as `app_${string}`,
+				'app_cfd0a40d70419e3675be53a0aa9b7e10' as `app_${string}`,
 				body.action,
 				body.action,
 			)) as IVerifyResponse;
@@ -95,12 +90,12 @@ export default {
 			const client = createWalletClient({
 				account,
 				chain: worldchain,
-				transport: http(env.RPC_URL),
+				transport: http('https://worldchain-mainnet.g.alchemy.com/public'),
 			});
 			const tier = body.action === 'mint-device-verified-nft' ? 1 : 3;
 			console.log('Attempting to mint NFT with tier:', tier);
 			const hash = await client.writeContract({
-				address: env.CONTRACT_ADDRESS as `0x${string}`,
+				address: '0x8E8dd09a64D8dd357e749b9574ac5018864D80C7' as `0x${string}`,
 				abi: [
 					{
 						name: 'mintNFT',
