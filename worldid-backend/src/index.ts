@@ -59,23 +59,13 @@ export default {
 			if (!body.proof) missingParams.push('proof');
 			if (!body.signal) missingParams.push('signal');
 			if (!body.action) missingParams.push('action');
-
-			if (missingParams.length > 0) {
-				return new Response(
-					JSON.stringify({
-						error: 'Missing required parameters',
-						missing: missingParams,
-					}),
-					{ status: 400, headers },
-				);
-			}
+			console.log('MISSING PARAMS', missingParams);
 
 			// Verify World ID proof
 			console.log('Attempting World ID verification...');
 			const verifyRes = (await verifyCloudProof(
 				body.proof,
 				'app_cfd0a40d70419e3675be53a0aa9b7e10' as `app_${string}`,
-				body.action,
 				body.action,
 			)) as IVerifyResponse;
 			if (!verifyRes.success) {
