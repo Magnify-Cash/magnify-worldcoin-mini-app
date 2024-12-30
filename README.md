@@ -15,7 +15,7 @@ The Magnify Cash Mini App is a decentralized lending platform that leverages Wor
 
 ## System Architecture
 
-### 1. Smart Contract (`contracts/contract.sol`)
+### 1. Smart Contract ([`./contracts/contract.sol`](./docs/CONTRACT.md))
 
 The backbone of the lending system, handling:
 
@@ -30,7 +30,7 @@ Key components:
 - **NFTs**: Non-transferable tokens representing verification status
 - **Loans**: Tracking active loans, amounts, and durations
 
-### 2. Frontend Application (`src/*`)
+### 2. Frontend Application ([`./src/*`](./docs/FRONTEND.md))
 
 A user-friendly interface allowing users to:
 
@@ -46,7 +46,7 @@ Key pages:
 - Loan Dashboard
 - Repayment Interface
 
-### 3. Backend Service (`worldid-backend/src/index.ts`)
+### 3. Backend Service ([`./worldid-backend/src/index.ts`](./docs/API.md))
 
 Handles:
 
