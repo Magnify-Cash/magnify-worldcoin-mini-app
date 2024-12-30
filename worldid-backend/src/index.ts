@@ -112,7 +112,7 @@ export default {
 			const tier = body.action === 'mint-device-verified-nft' ? 1 : 3;
 			console.log('Attempting to mint NFT with tier:', tier);
 			const hash = await client.writeContract({
-				address: '0x8E8dd09a64D8dd357e749b9574ac5018864D80C7' as `0x${string}`,
+				address: '0x4E52d9e8d2F70aD1805084BA4fa849dC991E7c88' as `0x${string}`,
 				abi: [
 					{
 						name: 'mintNFT',
