@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import { useCallback, useState } from "react";
-import { formatUnits, zeroAddress } from "viem";
+import { formatUnits } from "viem";
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { CheckCircle2, Loader2 } from "lucide-react";
@@ -14,7 +14,7 @@ const LoanPage = () => {
   // Hooks
   const navigate = useNavigate();
   const ls_wallet = localStorage.getItem("ls_wallet_address");
-  const { data, isLoading, isError, refetch } = useMagnifyWorld(zeroAddress);
+  const { data, isLoading, isError, refetch } = useMagnifyWorld(ls_wallet);
   const { requestNewLoan, error, transactionId, isConfirming, isConfirmed } = useRequestLoan();
 
   // state
@@ -247,9 +247,16 @@ const LoanPage = () => {
                           setActiveClaim("device");
                           open();
                         }}
-                        className={`w-full sm:w-auto px-4 py-2 rounded-md ${activeClaim === "device" ? "bg-brand-warning" : ""}`}
+                        className="w-full sm:w-auto px-4 py-2 rounded-md bg-brand-turquoise"
                       >
                         Claim Device-Verified NFT
+                      </Button>
+                      <Button
+                        type="button"
+                        disabled
+                        className="w-full sm:w-auto px-4 py-2 rounded-md bg-opacity-40"
+                      >
+                        Claim Passport-Verified NFT (coming soon)
                       </Button>
                       <Button
                         type="button"
@@ -257,7 +264,7 @@ const LoanPage = () => {
                           setActiveClaim("orb");
                           open();
                         }}
-                        className={`w-full sm:w-auto px-4 py-2 rounded-md ${activeClaim === "orb" ? "bg-brand-success" : ""}`}
+                        className="w-full sm:w-auto px-4 py-2 rounded-md bg-brand-success"
                       >
                         Claim Orb-Verified NFT
                       </Button>
