@@ -11,15 +11,31 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { createWalletClient, http, custom } from 'viem';
+import { createWalletClient, http } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { worldchain } from 'viem/chains';
 
 export default {
-	async fetch(request, env, ctx): Promise<Response> {
+	async fetch(request: Request, env: any, ctx: ExecutionContext): Promise<Response> {
+		// Add CORS headers
+		const headers = {
+			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Methods': 'POST, OPTIONS',
+			'Access-Control-Allow-Headers': 'Content-Type',
+			'Content-Type': 'application/json',
+		};
+
+		// Handle OPTIONS request for CORS preflight
+		if (request.method === 'OPTIONS') {
+			return new Response(null, { headers });
+		}
+
 		// Only allow POST requests
 		if (request.method !== 'POST') {
-			return new Response('Method not allowed', { status: 405 });
+			return new Response('Method not allowed', {
+				status: 405,
+				headers,
+			});
 		}
 
 		try {
@@ -27,7 +43,6 @@ export default {
 			const { proof, signal, action } = body;
 
 			const missingParams = [];
-
 			if (!proof) missingParams.push('proof');
 			if (!signal) missingParams.push('signal');
 			if (!action) missingParams.push('action');
@@ -38,14 +53,10 @@ export default {
 						error: 'Missing required parameters',
 						missing: missingParams,
 					}),
-					{
-						status: 400,
-						headers: {
-							'Content-Type': 'application/json',
-						},
-					},
+					{ status: 400, headers },
 				);
 			}
+
 			// 1. Verify World ID proof
 			const verifyRes = await fetch('https://developer.worldcoin.org/api/v1/verify', {
 				method: 'POST',
@@ -62,7 +73,7 @@ export default {
 
 			if (!verifyRes.ok) {
 				const error = await verifyRes.json();
-				return new Response(JSON.stringify({ error: 'World ID verification failed', details: error }), { status: 400 });
+				return new Response(JSON.stringify({ error: 'World ID verification failed', details: error }), { status: 400, headers });
 			}
 
 			// 2. Set up Viem client
@@ -75,7 +86,6 @@ export default {
 
 			// 3. Mint NFT
 			const tier = action === 'mint-device-verified-nft' ? 1 : 3;
-
 			const hash = await client.writeContract({
 				address: env.CONTRACT_ADDRESS,
 				abi: [
@@ -100,26 +110,16 @@ export default {
 					transaction: hash,
 					tier: tier,
 				}),
-				{
-					status: 200,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				},
+				{ status: 200, headers },
 			);
 		} catch (error) {
-			console.error('Error:', error);
+			console.error('Error YOOO:', error);
 			return new Response(
 				JSON.stringify({
 					error: 'Internal server error',
 					message: error.message,
 				}),
-				{
-					status: 500,
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				},
+				{ status: 500, headers },
 			);
 		}
 	},
