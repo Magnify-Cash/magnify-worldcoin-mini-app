@@ -1,9 +1,10 @@
 import { createWalletClient, http } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { worldchain } from 'viem/chains';
+import { type IVerifyResponse, type VerificationLevel, verifyCloudProof } from '@worldcoin/idkit';
 
 interface WorldIDProof {
-	verification_level: string;
+	verification_level: VerificationLevel;
 	merkle_root: string;
 	nullifier_hash: string;
 	proof: string;
@@ -35,29 +36,18 @@ export default {
 		};
 
 		try {
-			// Debug: Log request method and headers
-			console.log('Request method:', request.method);
-			console.log('Request headers:', Object.fromEntries(request.headers.entries()));
-
+			// Parsing
 			if (request.method === 'OPTIONS') {
 				return new Response(null, { headers });
 			}
-
 			if (request.method !== 'POST') {
 				return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers });
 			}
-
-			// Debug: Log raw request body
 			const rawBody = await request.text();
-			console.log('Raw request body:', rawBody);
-
-			// Try parsing the JSON
 			let body;
 			try {
-				body = JSON.parse(rawBody);
-				console.log('Parsed body:', body);
+				body = JSON.parse(rawBody) as RequestBody;
 			} catch (e) {
-				console.error('JSON parse error:', e);
 				return new Response(
 					JSON.stringify({
 						error: 'Invalid JSON',
@@ -69,7 +59,7 @@ export default {
 				);
 			}
 
-			// Validate required fields
+			// Validation
 			const missingParams = [];
 			if (!body.proof) missingParams.push('proof');
 			if (!body.signal) missingParams.push('signal');
@@ -87,39 +77,28 @@ export default {
 
 			// Verify World ID proof
 			console.log('Attempting World ID verification...');
-			const verifyRes = await fetch('https://developer.worldcoin.org/api/v1/verify', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					action_id: body.action === 'mint-device-verified-nft' ? env.WORLD_ACTION_DEVICE : env.WORLD_ACTION_ORB,
-					signal: body.signal,
-					proof: body.proof,
-					app_id: env.WORLD_APP_ID,
-				}),
-			});
-
-			if (!verifyRes.ok) {
+			const verifyRes = (await verifyCloudProof(
+				body.proof,
+				env.WORLD_APP_ID as `app_${string}`,
+				body.action,
+				body.action,
+			)) as IVerifyResponse;
+			if (!verifyRes.success) {
 				const error = await verifyRes.json();
 				console.error('World ID verification failed:', error);
 				return new Response(JSON.stringify({ error: 'World ID verification failed', details: error }), { status: 400, headers });
 			}
-
 			console.log('World ID verification successful');
 
-			// Set up Viem client
+			// NFT Minting
 			const account = privateKeyToAccount(env.PRIVATE_KEY as `0x${string}`);
 			const client = createWalletClient({
 				account,
 				chain: worldchain,
 				transport: http(env.RPC_URL),
 			});
-
-			// Mint NFT
 			const tier = body.action === 'mint-device-verified-nft' ? 1 : 3;
 			console.log('Attempting to mint NFT with tier:', tier);
-
 			const hash = await client.writeContract({
 				address: env.CONTRACT_ADDRESS as `0x${string}`,
 				abi: [
@@ -137,9 +116,7 @@ export default {
 				functionName: 'mintNFT',
 				args: [body.signal as `0x${string}`, BigInt(tier)],
 			});
-
 			console.log('NFT minted successfully, hash:', hash);
-
 			return new Response(
 				JSON.stringify({
 					success: true,
@@ -149,6 +126,7 @@ export default {
 				{ status: 200, headers },
 			);
 		} catch (error) {
+			// General Error
 			console.error('General error:', error);
 			return new Response(
 				JSON.stringify({
