@@ -1,84 +1,86 @@
 # Magnify Cash Mini App
 
-Magnify Cash is an on-chain micro-lending platform offering gas-free micro-loans to Worldcoin users.
+An on-chain micro-lending platform offering gas-free micro-loans to Worldcoin users.
 
-## Features
+## Overview
+
+The Magnify Cash Mini App is a decentralized lending platform that leverages WorldID verification to provide tiered loans based on a user's identity verification level. The platform offers different loan terms depending on how users verify their identity - whether through device verification, passport verification, or orb verification.
+
+### Key Features
 
 - **World ID Verification**: Multiple verification tiers
 - **Gas-free Transactions**: Using Worldchain
 - **Instant Loans**: Quick approval process
 - **Simple Repayment**: Easy-to-use interface
 
-## Quick Start
+## System Architecture
 
-1. Install dependencies:
+### 1. Smart Contract (`contracts/contract.sol`)
 
-```bash
-npm install
-```
+The backbone of the lending system, handling:
 
-2. Set up environment variables:
+- NFT minting based on verification level
+- Loan issuance and management
+- Repayment processing
+- Tier management for different verification levels
 
-```bash
-cp .env.example .env
-```
+Key components:
 
-3. Run development server:
+- **Tiers**: Different loan parameters based on verification level
+- **NFTs**: Non-transferable tokens representing verification status
+- **Loans**: Tracking active loans, amounts, and durations
 
-```bash
-npm run dev
-```
+### 2. Frontend Application (`src/*`)
 
-## DevOps Setup
+A user-friendly interface allowing users to:
 
-### Monitoring
+- Connect their wallet
+- Verify identity through WorldID
+- Request loans
+- Monitor loan status
+- Process repayments
 
-- Sentry for error tracking and performance monitoring
-- Console logging with different levels (info, warn, error)
-- Performance measurements for critical operations
+Key pages:
 
-### Environment Variables
+- Loan Request Page
+- Loan Dashboard
+- Repayment Interface
 
-Required environment variables:
+### 3. Backend Service (`worldid-backend/src/index.ts`)
 
-- `VITE_SENTRY_DSN`: Sentry project DSN
-- Additional variables as needed for specific features
+Handles:
 
-### Deployment Environments
+- WorldID verification processing
+- NFT minting coordination
 
-- Development: Local development environment
-- Staging: For testing before production
-- Production: Live environment
+## User Flow
 
-### Error Handling
+1. **Initial Access**
 
-- Global error boundary
-- Unhandled promise rejection catching
-- Structured logging
+   - User connects their wallet
+   - Navigates to the loan page
 
-### Performance Monitoring
+2. **Identity Verification**
 
-- Custom performance measurements
-- Sentry performance tracking
-- Console-based performance logging
+   - User chooses verification method:
+     - Device verification (basic tier)
+     - Passport verification (medium tier)
+     - Orb verification (premium tier)
+   - Completes WorldID verification process
 
-## Documentation
+3. **NFT Minting**
 
-- [Backend Integration](./docs/BACKEND_INTEGRATION.md)
-- [API Documentation](./docs/API.md)
-- [Development Guide](./docs/DEVELOPMENT.md)
+   - Upon successful verification, backend API mints a non-transferable NFT
+   - NFT tier corresponds to verification level
+   - NFT serves as collateral for loans
 
-## Architecture
+4. **Loan Process**
 
-- React + Vite frontend
-- World ID verification
-- MiniKit integration
-- Worldchain transactions
+   - User can view available loan terms based on their tier
+   - Request loan through interface
+   - Loan is automatically disbursed upon approval
 
-## Contributing
-
-See [CONTRIBUTING.md](./docs/CONTRIBUTING.md)
-
-## License
-
-MIT
+5. **Loan Management**
+   - Monitor loan status through dashboard
+   - View repayment schedule
+   - Process repayments before due date
