@@ -5,6 +5,7 @@ import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
+import { toast } from "sonner";
 import useRequestLoan from "@/hooks/useRequestLoan";
 import { ShieldCheck } from "lucide-react";
 import { Badge } from "@/ui/badge";
@@ -57,11 +58,16 @@ const LoanPage = () => {
 
       const data = await res.json();
       console.log("NFT minted successfully:", data);
+      toast.success("NFT minted successfully. Reloading...");
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
 
       // You might want to show a success message or transaction hash to the user
       return data;
     } catch (error) {
       console.error("Verification error:", error);
+      toast.error("Verification error");
       throw error;
     }
   };
