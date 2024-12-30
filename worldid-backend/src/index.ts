@@ -1,18 +1,10 @@
 import { createWalletClient, http } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { worldchain } from 'viem/chains';
-import { type IVerifyResponse, type VerificationLevel, verifyCloudProof } from '@worldcoin/idkit';
-
-interface WorldIDProof {
-	verification_level: VerificationLevel;
-	merkle_root: string;
-	nullifier_hash: string;
-	proof: string;
-	credential_type: string;
-}
+import { type ISuccessResult, type VerificationLevel } from '@worldcoin/idkit';
 
 interface RequestBody {
-	proof: WorldIDProof;
+	proof: ISuccessResult;
 	signal: string;
 	action: string;
 }
@@ -62,14 +54,28 @@ export default {
 			console.log('MISSING PARAMS', missingParams);
 
 			// Verify World ID proof
-			console.log('Attempting World ID verification...');
-			const verifyRes = (await verifyCloudProof(
-				body.proof,
-				'app_cfd0a40d70419e3675be53a0aa9b7e10' as `app_${string}`,
-				body.action,
-			)) as IVerifyResponse;
-			if (!verifyRes.success) {
-				const error = await verifyRes.json();
+			console.log('Attempting World ID verification...', body.proof, body.action, body.signal);
+			console.log(body.proof);
+			console.log(body.action);
+			console.log(body.signal);
+			console.log(
+				JSON.stringify({
+					...body.proof,
+					action: body.action,
+				}),
+			);
+			const response = await fetch('https://developer.worldcoin.org/api/v2/verify/app_cfd0a40d70419e3675be53a0aa9b7e10', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					...body.proof,
+					action: body.action,
+				}),
+			});
+			if (!response.ok) {
+				const error = await response.json();
 				console.error('World ID verification failed:', error);
 				return new Response(JSON.stringify({ error: 'World ID verification failed', details: error }), { status: 400, headers });
 			}
