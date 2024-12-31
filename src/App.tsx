@@ -15,6 +15,7 @@ import LoanDashboardPage from "./pages/LoanDashboardPage";
 import WalletPage from "./pages/WalletPage";
 import { ErrorBoundary } from "./utils/monitoring";
 import Example from "./pages/Example";
+import ProtectedRoute from "./pages/ProtectedRoute";
 
 // Initialize QueryClient outside of component
 const queryClient = new QueryClient({
@@ -41,11 +42,46 @@ const App = () => (
                   <main className="flex-1">
                     <Routes>
                       <Route path="/" element={<Index />} />
-                      <Route path="/onboarding" element={<Onboarding />} />
-                      <Route path="/loan" element={<LoanPage />} />
-                      <Route path="/dashboard" element={<LoanDashboardPage />} />
-                      <Route path="/wallet" element={<WalletPage />} />
-                      <Route path="/example" element={<Example />} />
+                      <Route
+                        path="/onboarding"
+                        element={
+                          <ProtectedRoute>
+                            <Onboarding />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/loan"
+                        element={
+                          <ProtectedRoute>
+                            <LoanPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/dashboard"
+                        element={
+                          <ProtectedRoute>
+                            <LoanDashboardPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/wallet"
+                        element={
+                          <ProtectedRoute>
+                            <WalletPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/example"
+                        element={
+                          <ProtectedRoute>
+                            <Example />
+                          </ProtectedRoute>
+                        }
+                      />
                     </Routes>
                   </main>
                 </div>
