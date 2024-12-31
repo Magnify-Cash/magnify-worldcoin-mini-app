@@ -17,7 +17,7 @@ const Index = () => {
   };
 
   const getStarted = () => {
-    if (localStorage.getItem("ls_wallet_address") === "") {
+    if (localStorage.getItem("ls_wallet_address") === null) {
       setShowSignInModal(true);
     } else {
       console.log("User already signed in");
