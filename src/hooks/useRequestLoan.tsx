@@ -4,6 +4,7 @@ import { MAGNIFY_WORLD_ADDRESS, WORLDCOIN_CLIENT_ID } from "@/utils/constants";
 import { useWaitForTransactionReceipt } from "@worldcoin/minikit-react";
 import { createPublicClient, http } from "viem";
 import { worldchain } from "wagmi/chains";
+import
 
 type LoanDetails = {
   amount: number;
@@ -75,8 +76,8 @@ const useRequestLoan = () => {
           transactionId: finalPayload.transaction_id,
         });
       } else {
-        console.error("Error sending transaction", finalPayload, commandPayload);
-        setError(`Transaction failed`);
+        console.error("Error sending transaction", finalPayload.details.simulationError);
+        setError(`Transaction failed: ${finalPayload.details.simulationError.split("string: ")[1]}`);
       }
     } catch (err) {
       console.error("Error sending transaction", err);

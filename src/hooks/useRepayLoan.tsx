@@ -167,7 +167,7 @@ const useRepayLoan = () => {
         });
       } else {
         console.error("Error sending transaction", finalPayload, commandPayload);
-        setError(`Transaction failed`);
+        setError(`Transaction failed: ${finalPayload.details.simulationError.split("string: ")[1]}`);
       }
     } catch (err) {
       console.error("Error sending transaction", err);
