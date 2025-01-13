@@ -22,7 +22,7 @@ const Index = () => {
     } else {
       console.log("User already signed in");
       setShowSignInModal(false);
-      navigate("/onboarding");
+      navigate("/wallet");
     }
   };
 
