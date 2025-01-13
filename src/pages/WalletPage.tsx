@@ -10,6 +10,7 @@ import { MascotIllustration } from "@/components/MascotIllustration";
 const WalletPage = () => {
   const navigate = useNavigate();
   const ls_wallet = localStorage.getItem("ls_wallet_address");
+  const ls_username = localStorage.getItem("ls_username");
   const [showFundingOptions, setShowFundingOptions] = useState(false);
   const [tokens, setBalances] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -136,11 +137,7 @@ const WalletPage = () => {
           <div className="text-center space-y-6">
             <div className="space-y-2">
               <h1 className="text-2xl font-bold text-center mb-6">Wallet</h1>
-              <h2 className="text-3xl font-bold tracking-tight">
-                {ls_wallet.slice(0, 7)}
-                ...
-                {ls_wallet.slice(34)}
-              </h2>
+              <h2 className="text-3xl font-bold tracking-tight">@{ls_username}</h2>
             </div>
           </div>
         </div>

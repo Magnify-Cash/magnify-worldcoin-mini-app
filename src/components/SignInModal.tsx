@@ -22,7 +22,8 @@ export const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => 
         notBefore: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
       });
       if (finalPayload && finalPayload.address) {
-        localStorage.setItem("ls_wallet_address", finalPayload.address);
+        localStorage.setItem("ls_wallet_address", finalPayload?.address);
+        localStorage.setItem("ls_username", MiniKit?.user?.username);
         onSignIn();
       }
     } catch (error) {
