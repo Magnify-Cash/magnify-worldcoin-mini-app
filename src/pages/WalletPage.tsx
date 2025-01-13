@@ -172,7 +172,7 @@ const WalletPage = () => {
         {loading ? (
           <Card className="p-6 glass-card flex items-center justify-center flex-col">
             <p className="text-xl font-semibold text-brand-text-primary">Loading...</p>
-            <MascotIllustration step={1} />
+            <MascotIllustration step={2} />
           </Card>
         ) : (
           <div className="space-y-4">
