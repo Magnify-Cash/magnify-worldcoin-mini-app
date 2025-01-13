@@ -114,19 +114,18 @@ export function useMagnifyWorld(walletAddress: `0x${string}`): {
       let nftTier: Tier | null = null;
       if (userNFT !== BigInt(0)) {
         tokenId = userNFT;
-        const tierData = await readContract(config, {
-          address: MAGNIFY_WORLD_ADDRESS,
-          abi: magnifyworldabi,
-          functionName: "tiers",
-          args: [tokenId],
-        });
         const tierId = await readContract(config, {
           address: MAGNIFY_WORLD_ADDRESS,
           abi: magnifyworldabi,
           functionName: "nftToTier",
           args: [tokenId],
         });
-
+        const tierData = await readContract(config, {
+          address: MAGNIFY_WORLD_ADDRESS,
+          abi: magnifyworldabi,
+          functionName: "tiers",
+          args: [tierId],
+        });
         if (tierData) {
           nftTier = {
             loanAmount: tierData[0],
