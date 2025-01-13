@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/ui/dialog";
 import { toast } from "sonner";
 import { MiniKit } from "@worldcoin/minikit-js";
@@ -11,6 +12,18 @@ export interface SignInModalProps {
 }
 
 export const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => {
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(null);
+
+  // Check if the sign-in conditions are met
+  const isSignInReady = () => {
+    return (
+      MiniKit.user && // Ensure MiniKit.user is available
+      walletAddress &&
+      username
+    );
+  };
+
   const handleSignIn = async () => {
     try {
       console.log("Initiating wallet authentication...");
@@ -21,10 +34,13 @@ export const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => 
         expirationTime: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
         notBefore: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
       });
+
       if (finalPayload && finalPayload.address) {
-        localStorage.setItem("ls_wallet_address", finalPayload?.address);
-        localStorage.setItem("ls_username", MiniKit?.user?.username);
-        onSignIn();
+        setWalletAddress(finalPayload.address); // Store wallet address in state
+        localStorage.setItem("ls_wallet_address", finalPayload.address);
+      } else {
+        toast.error("Failed to retrieve wallet address.");
+        onClose();
       }
     } catch (error) {
       console.error("Authentication failed:", error);
@@ -32,6 +48,22 @@ export const SignInModal = ({ isOpen, onClose, onSignIn }: SignInModalProps) => 
       onClose();
     }
   };
+
+  // Watch for updates to MiniKit.user and handle username assignment
+  useEffect(() => {
+    const user = MiniKit.user;
+    if (user) {
+      setUsername(user.username);
+      localStorage.setItem("ls_username", user.username);
+    }
+  }, [MiniKit.user]); // This will run whenever MiniKit.user is updated
+
+  // UseEffect to trigger onSignIn once the sign-in conditions are met
+  useEffect(() => {
+    if (isSignInReady()) {
+      onSignIn();
+    }
+  }, [walletAddress, username, onSignIn]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
