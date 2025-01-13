@@ -12,10 +12,13 @@ const WalletPage = () => {
   const ls_wallet = localStorage.getItem("ls_wallet_address");
   const [showFundingOptions, setShowFundingOptions] = useState(false);
   const [tokens, setBalances] = useState([]);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const url = `https://worldchain-mainnet.g.alchemy.com/v2/j-_GFK85PRHN59YaKb8lmVbV0LHmFGBL`;
     const fetchBalances = async () => {
       try {
+        setLoading(true); // Set loading to true before starting the fetch operations
+
         const ethBalanceResponse = await fetch(url, {
           method: "POST",
           headers: {
@@ -69,37 +72,55 @@ const WalletPage = () => {
             // Convert token balance from hex to decimal, considering decimals
             const balanceDecimal = parseInt(token.tokenBalance, 16) / Math.pow(10, decimals);
 
-            return {
-              contractAddress: token.contractAddress,
-              balance: balanceDecimal,
-              symbol: metadata.result.symbol,
-              decimals: decimals,
-              name: metadata.result.name,
-            };
+            // Only return token if balance is greater than 0
+            if (balanceDecimal > 0) {
+              return {
+                contractAddress: token.contractAddress,
+                balance: balanceDecimal,
+                symbol: metadata.result.symbol,
+                decimals: decimals,
+                name: metadata.result.name,
+              };
+            } else {
+              return null;
+            }
           }),
         );
 
-        // Combine native token balance with ERC-20 token tokens
-        setBalances([
-          {
+        // Combine native token balance with ERC-20 token tokens, only if ETH balance is greater than 0
+        const balancesToAdd = [];
+
+        // Add ETH if balance is greater than 0
+        if (ethBalance > 0) {
+          balancesToAdd.push({
             symbol: "ETH",
             name: "Ether",
             balance: ethBalance,
             decimals: 18,
             contractAddress: "0x0000000000000000000000000000000000000000", // Native token's pseudo address
-          },
-          ...detailedBalances,
-        ]);
+          });
+        }
+
+        // Add ERC-20 tokens with non-zero balance
+        detailedBalances.forEach((token) => {
+          if (token) {
+            balancesToAdd.push(token);
+          }
+        });
+
+        setBalances(balancesToAdd);
       } catch (error) {
         console.error("Failed to fetch tokens:", error);
         setBalances([]); // Set to empty array on error
+      } finally {
+        setLoading(false);
       }
     };
-
     if (ls_wallet) {
       fetchBalances();
     }
   }, [ls_wallet]);
+
   const randomTailwindColor = (char) => {
     const colors = ["red", "green", "blue", "indigo", "purple", "pink"];
     const colorIndex = char.charCodeAt(0) % colors.length;
@@ -147,38 +168,45 @@ const WalletPage = () => {
         </div>
         {/* Wallet Actions */}
 
-        {/* Token List */}
-        <div className="space-y-4">
-          {tokens.length > 0 ? (
-            tokens.map((token) => (
-              <Card key={token.symbol} className="flex items-center justify-between p-4 glass-card">
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-10 h-10 rounded-full ${randomTailwindColor(token.symbol[0])} flex items-center justify-center`}
-                  >
-                    <span className="text-white text-lg">{token.symbol[0]}</span>
+        {/* Loading State */}
+        {loading ? (
+          <Card className="p-6 glass-card flex items-center justify-center flex-col">
+            <p className="text-xl font-semibold text-brand-text-primary">Loading...</p>
+            <MascotIllustration step={1} />
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {tokens.length > 0 ? (
+              tokens.map((token) => (
+                <Card key={token.symbol} className="flex items-center justify-between p-4 glass-card">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-10 h-10 rounded-full ${randomTailwindColor(token.symbol[0])} flex items-center justify-center`}
+                    >
+                      <span className="text-white text-lg">{token.symbol[0]}</span>
+                    </div>
+                    <div className="text-left">
+                      <h3 className="font-semibold">{token.name}</h3>
+                      <p className="text-sm text-brand-text-secondary">{token.symbol}</p>
+                    </div>
                   </div>
-                  <div className="text-left">
-                    <h3 className="font-semibold">{token.name}</h3>
-                    <p className="text-sm text-brand-text-secondary">{token.symbol}</p>
+                  <div className="text-right">
+                    <p className="font-semibold">{token.balance}</p>
                   </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold">{token.balance}</p>
-                </div>
+                </Card>
+              ))
+            ) : (
+              <Card className="p-6 glass-card flex items-center justify-center flex-col">
+                <MascotIllustration step={1} />
+                <p className="text-xl font-semibold text-brand-text-primary">No Tokens Found</p>
+                <p className="text-sm text-brand-text-secondary mt-1">
+                  Looks like you don't have any tokens yet. <br />
+                  Deposit some to get started!
+                </p>
               </Card>
-            ))
-          ) : (
-            <Card className="p-6 glass-card flex items-center justify-center flex-col">
-              <MascotIllustration step={1} />
-              <p className="text-xl font-semibold text-brand-text-primary">No Tokens Found</p>
-              <p className="text-sm text-brand-text-secondary mt-1">
-                Looks like you don't have any tokens yet. <br />
-                Deposit some to get started!
-              </p>
-            </Card>
-          )}
-        </div>
+            )}
+          </div>
+        )}
         {/* End Token List */}
         <Sheet open={showFundingOptions} onOpenChange={setShowFundingOptions}>
           <SheetContent>
