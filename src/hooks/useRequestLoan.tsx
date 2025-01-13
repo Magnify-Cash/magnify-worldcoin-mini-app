@@ -75,8 +75,12 @@ const useRequestLoan = () => {
           transactionId: finalPayload.transaction_id,
         });
       } else {
-        console.error("Error sending transaction", finalPayload.details.simulationError);
-        setError(`Transaction failed: ${finalPayload.details.simulationError.split("string: ")[1]}`);
+        console.error("Error sending transaction", finalPayload);
+        if (finalPayload.error_code === "user_rejected") {
+          setError(`User rejected transaction`);
+        } else {
+          setError(`Transaction failed: ${finalPayload.details.simulationError.split("string: ")[1]}`);
+        }
       }
     } catch (err) {
       console.error("Error sending transaction", err);
