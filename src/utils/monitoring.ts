@@ -11,7 +11,7 @@ export const initializeMonitoring = () => {
       environment: import.meta.env.MODE,
     });
   }
-  eruda.init();
+  //eruda.init();
 };
 
 // Custom logger with different log levels
