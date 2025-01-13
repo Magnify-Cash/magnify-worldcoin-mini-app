@@ -1,41 +1,14 @@
 import { Button } from "@/ui/button";
 import { Card } from "@/ui/card";
-import { ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router";
+import { useMagnifyWorld } from "@/hooks/useMagnifyWorld";
+import { ShieldCheck } from "lucide-react";
+import { formatUnits } from "viem";
 
 export const Onboarding = () => {
   const navigate = useNavigate();
-  const steps = [
-    {
-      title: "1. Verify Your Identity",
-      description:
-        "Use World ID to verify your identity and access loans tailored to your verification level:",
-      details: [
-        "ORB Verified: Unlock loans up to $10.",
-        "Passport Verified: Eligible for loans up to $3.",
-        "Basic Verification: Start with $1 to build trust.",
-      ],
-      tip: "Verifying with ORB unlocks the highest loan limits and exclusive perks!",
-    },
-    {
-      title: "2. Apply for a Loan",
-      description: "Choose your loan amount and duration based on your verification level:",
-      details: [
-        "Select the loan size available to you: $1, $3, or $10.",
-        "Pick a repayment duration (e.g., 7 days or 14 days).",
-      ],
-      tip: "Start small with a $1 loan if you're new to Magnify Cash, and increase your limits as you verify further.",
-    },
-    {
-      title: "3. Track & Repay",
-      description: "Easily monitor your active loans and make repayments directly through your wallet:",
-      details: [
-        "View your loan details, repayment schedule, and status.",
-        "Make early repayments anytime after 1 hour to close your loan faster.",
-      ],
-      tip: "Repaying early helps build trust and unlocks access to larger loans over time!",
-    },
-  ];
+  const ls_wallet = localStorage.getItem("ls_wallet_address");
+  const { data, isLoading, isError, refetch } = useMagnifyWorld(ls_wallet);
 
   return (
     <div className="container py-4 overflow-y-auto">
@@ -45,21 +18,84 @@ export const Onboarding = () => {
         </div>
 
         <div className="space-y-8">
-          {steps.map((step, index) => (
-            <div key={index} className="space-y-3">
-              <h3 className="text-lg font-semibold">{step.title}</h3>
-              <p className="text-muted-foreground">{step.description}</p>
-              <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
-                {step.details.map((detail, detailIndex) => (
-                  <li key={detailIndex}>{detail}</li>
-                ))}
-              </ul>
-              <div className="bg-accent/50 p-4 rounded-lg">
-                <p className="text-sm font-medium">💡 Tip: {step.tip}</p>
+          {/* Step 1 */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">1. Verify Your Identity</h3>
+            <p className="text-muted-foreground">
+              Use World ID to verify your identity and access loans tailored to your verification level:
+            </p>
+            {Object.entries(data?.allTiers || {}).map(([tierId, tier]) => (
+              <div
+                key={tierId}
+                className="p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow space-y-2"
+              >
+                <div className="flex items-center justify-between">
+                  <h4
+                    className={`text-base font-medium flex items-center space-x-2 ${tier.verificationStatus.color}`}
+                  >
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>{tier.verificationStatus.level}</span>
+                  </h4>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm text-gray-600">
+                    Loan Amount:{" "}
+                    <span className="font-medium text-gray-800">${formatUnits(tier.loanAmount, 6)}</span>
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Interest Rate:{" "}
+                    <span className="font-medium text-gray-800">
+                      {((tier?.interestRate || BigInt(0)) / BigInt(100)).toString()}%
+                    </span>
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Duration:{" "}
+                    <span className="font-medium text-gray-800">
+                      {((tier.loanPeriod || BigInt(0)) / BigInt(60 * 24 * 60)).toString()} days
+                    </span>
+                  </p>
+                </div>
               </div>
-              <hr className="my-4 border-t-[1px] border-gray-300" />
+            ))}
+            <div className="bg-accent/50 p-4 rounded-lg">
+              <p className="text-sm font-medium">
+                💡 Tip: Verifying with ORB unlocks the highest loan limits and exclusive perks!
+              </p>
             </div>
-          ))}
+            <hr className="my-4 border-t-[1px] border-gray-300" />
+          </div>
+
+          {/* Step 2 */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">2. Apply for a Loan</h3>
+            <p className="text-muted-foreground">
+              Choose your loan amount and duration based on your verification level
+            </p>
+            <div className="bg-accent/50 p-4 rounded-lg">
+              <p className="text-sm font-medium">
+                💡 Tip: Start small with a $1 loan if you're new to Magnify Cash, and increase your limits as
+                you verify further.
+              </p>
+            </div>
+            <hr className="my-4 border-t-[1px] border-gray-300" />
+          </div>
+
+          {/* Step 3 */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold">3. Track & Repay</h3>
+            <p className="text-muted-foreground">
+              Easily monitor your active loans and make repayments directly through your wallet:
+            </p>
+            <ul className="list-disc pl-6 space-y-1 text-muted-foreground">
+              <li>View your loan details, repayment schedule, and status.</li>
+            </ul>
+            <div className="bg-accent/50 p-4 rounded-lg">
+              <p className="text-sm font-medium">
+                💡 Tip: Repaying early helps build trust and unlocks access to larger loans over time!
+              </p>
+            </div>
+            <hr className="my-4 border-t-[1px] border-gray-300" />
+          </div>
         </div>
 
         <Button onClick={() => navigate("/wallet")} className="w-full">
