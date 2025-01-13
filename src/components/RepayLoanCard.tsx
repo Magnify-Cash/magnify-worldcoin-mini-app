@@ -1,7 +1,7 @@
 import { Card } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { toast } from "sonner";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { CircularProgressbar } from "react-circular-progressbar";
 import { Coins } from "lucide-react";
 import { calculateRemainingTime } from "@/utils/timeinfo";
@@ -46,6 +46,17 @@ const RepayLoanCard = ({ loan, data, refetch }: { loan: LoanType; data: any; ref
     },
     [data, repayLoanWithPermit2],
   );
+
+  // Call refetch after loan repayment is confirmed
+  useEffect(() => {
+    if (isConfirmed) {
+      const timeout = setTimeout(() => {
+        refetch();
+      }, 1000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [isConfirmed, refetch]);
 
   return (
     <Card className="p-6 glass-card space-y-4">
