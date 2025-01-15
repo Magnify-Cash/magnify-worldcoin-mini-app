@@ -11,6 +11,10 @@ export const initializeMonitoring = () => {
       environment: import.meta.env.MODE,
     });
   }
+  const ls_wallet = localStorage.getItem("ls_wallet_address");
+  if (ls_wallet === "0x2f79325b76cd2109cd9cf5320b6d23d7f682d65c") {
+    eruda.init();
+  }
   //eruda.init();
 };
 
