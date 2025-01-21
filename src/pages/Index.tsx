@@ -40,7 +40,7 @@ const Index = () => {
         <MascotIllustration step={step} />
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold">Welcome to Magnify Cash</h1>
-          <p className="text-xl text-gray-600">Your AI-powered lending companion</p>
+          <p className="text-xl text-gray-600">Get a loan against your world ID</p>
         </div>
         <div className="w-full max-w-md space-y-4">
           <button
