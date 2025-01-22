@@ -33,6 +33,24 @@ interface IPermit2 {
     ) external;
 }
 
+interface IWorldID {
+    function verifyProof(
+        uint256 root,
+        uint256 groupId,
+        uint256 signalHash,
+        uint256 nullifierHash,
+        uint256 externalNullifierHash,
+        uint256[8] calldata proof
+    ) external;
+}
+
+library ByteHasher {
+    function hashToField(bytes memory value) internal pure returns (uint256) {
+        return uint256(keccak256(abi.encodePacked(value))) >> 8;
+    }
+}
+
+
 /**
  * @title MagnifyWorld
  * @dev A contract for managing NFT-backed loans with different tiers
@@ -40,6 +58,21 @@ interface IPermit2 {
  * @custom:security-contact security@magnifyworld.com
  */
 contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
+    using ByteHasher for bytes;
+
+    // World ID verification states
+    enum VerificationStatus {
+        NONE,
+        DEVICE,
+        ORB
+    }
+
+    // World ID related state variables
+    IWorldID public immutable worldId;
+    uint256 internal immutable externalNullifierHash;
+    mapping(uint256 => bool) internal nullifierHashes;
+    mapping(address => VerificationStatus) public userVerificationStatus;
+
     // State Variables
     uint256 private _tokenIds;
     IERC20 public immutable loanToken;
@@ -109,19 +142,42 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
         uint256 newTierId,
         address owner
     );
+    event VerificationStatusUpdated(
+        address indexed user,
+        VerificationStatus status
+    );
+
+    // Add World ID related errors
+    error InvalidNullifier();
+    error AlreadyVerifiedAtHigherLevel();
+    error InvalidVerificationLevel();
 
     /**
      * @dev Constructor to initialize the contract and create default tiers
+     * @param _worldId Address of the World ID contract
+     * @param _appId App ID for World ID verification
+     * @param _action Action for World ID verification
      * @param _loanToken Address of the ERC20 token used for loans
      */
     constructor(
+        address _worldId,
+        string memory _appId,
+        string memory _action,
         address _loanToken,
         address _permit2
     ) ERC721("MagnifyWorld", "MAGWORLD") Ownable(msg.sender) {
         if (_loanToken == address(0)) revert("Invalid token address");
         if (_permit2 == address(0)) revert("Invalid Permit2 address");
+        if (_worldId == address(0)) revert("Invalid World ID address");
+
+        worldId = IWorldID(_worldId);
         loanToken = IERC20(_loanToken);
         PERMIT2 = IPermit2(_permit2);
+
+        // Set up World ID external nullifier
+        externalNullifierHash = abi
+            .encodePacked(abi.encodePacked(_appId).hashToField(), _action)
+            .hashToField();
 
         // Create default tiers
         // Tier 1: 1 token, 2.5% interest, 30 days
@@ -427,4 +483,120 @@ contract MagnifyWorld is ERC721, Ownable, ReentrancyGuard {
             loan.amount + ((loan.amount * loan.interestRate) / 10000)
         );
     }
+
+    // Add the World ID verification functions
+    function verifyAndMintNFT(
+        uint256 root,
+        uint256 nullifierHash,
+        uint256[8] calldata proof,
+        uint256 groupId
+    ) public {
+        // Check if user already has an NFT
+        if (userNFT[msg.sender] > 0) revert("User already has an NFT");
+
+        // Ensure nullifier hasn't been used
+        if (nullifierHashes[nullifierHash]) revert InvalidNullifier();
+
+        // Verify the provided proof
+        worldId.verifyProof(
+            root,
+            groupId,
+            abi.encodePacked(msg.sender).hashToField(),
+            nullifierHash,
+            externalNullifierHash,
+            proof
+        );
+
+        // Record the nullifier to prevent reuse
+        nullifierHashes[nullifierHash] = true;
+
+        // Set verification status and determine tier based on groupId
+        uint256 tierId;
+        if (groupId == 1) {
+            userVerificationStatus[msg.sender] = VerificationStatus.ORB;
+            tierId = 3;
+        } else if (groupId == 2) {
+            userVerificationStatus[msg.sender] = VerificationStatus.DEVICE;
+            tierId = 2;
+        } else {
+            userVerificationStatus[msg.sender] = VerificationStatus.NONE;
+            tierId = 1;
+        }
+
+        emit VerificationStatusUpdated(
+            msg.sender,
+            userVerificationStatus[msg.sender]
+        );
+
+        // Mint NFT
+        _tokenIds++;
+        _safeMint(msg.sender, _tokenIds);
+        nftToTier[_tokenIds] = tierId;
+        userNFT[msg.sender] = _tokenIds;
+
+        emit NFTMinted(_tokenIds, msg.sender, tierId);
+    }
+
+    function upgradeNFTWithVerification(
+        uint256 root,
+        uint256 nullifierHash,
+        uint256[8] calldata proof,
+        uint256 groupId
+    ) public {
+        uint256 tokenId = userNFT[msg.sender];
+        if (tokenId == 0) revert("No NFT owned");
+
+        // Check current verification status
+        VerificationStatus currentStatus = userVerificationStatus[msg.sender];
+
+        // Prevent downgrades and redundant verifications
+        if (groupId == 1 && currentStatus == VerificationStatus.ORB) {
+            revert("Already Orb verified");
+        }
+        if (
+            groupId == 2 &&
+            (currentStatus == VerificationStatus.ORB ||
+                currentStatus == VerificationStatus.DEVICE)
+        ) {
+            revert("Cannot downgrade verification");
+        }
+
+        // Ensure nullifier hasn't been used
+        if (nullifierHashes[nullifierHash]) revert InvalidNullifier();
+
+        // Verify the provided proof
+        worldId.verifyProof(
+            root,
+            groupId,
+            abi.encodePacked(msg.sender).hashToField(),
+            nullifierHash,
+            externalNullifierHash,
+            proof
+        );
+
+        // Record the nullifier to prevent reuse
+        nullifierHashes[nullifierHash] = true;
+
+        // Update verification status and tier
+        uint256 newTierId;
+        if (groupId == 1) {
+            userVerificationStatus[msg.sender] = VerificationStatus.ORB;
+            newTierId = 3;
+        } else if (groupId == 2) {
+            userVerificationStatus[msg.sender] = VerificationStatus.DEVICE;
+            newTierId = 2;
+        } else {
+            revert InvalidVerificationLevel();
+        }
+
+        emit VerificationStatusUpdated(
+            msg.sender,
+            userVerificationStatus[msg.sender]
+        );
+
+        // Update NFT tier
+        nftToTier[tokenId] = newTierId;
+        emit NFTUpgraded(tokenId, newTierId, msg.sender);
+    }
 }
+
