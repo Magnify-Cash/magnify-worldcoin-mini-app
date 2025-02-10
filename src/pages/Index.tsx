@@ -75,7 +75,7 @@ const Index = () => {
         <div className="text-center space-y-4">
         <h1 className="text-2xl font-bold">⚠️ Under Maintenance ⚠️</h1>
         <p className="text-0.5xl text-gray-600">
-          We're fixing some on-going issues. We appreciate your patience as we figure this out!
+          We're fixing some on-going issues with the 'Get a Loan' page. We appreciate your patience as we figure this out! Meanwhile, you can still repay your loans as usual.
         </p>
         <p className="text-0.5xl text-gray-600">
           If you have further questions, please join us over on <a className="text-blue-600 underline" href="https://t.me/MagnifyCommunity">Telegram</a>
