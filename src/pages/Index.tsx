@@ -35,12 +35,51 @@ const Index = () => {
   }, []);
 
   return (
+    //// Original Code
+    // <div className="min-h-screen bg-gradient-to-b from-brand-background to-brand-background-end">
+    //   <div className="flex flex-col items-center justify-center min-h-screen p-6 space-y-6">
+    //     <MascotIllustration step={step} />
+    //     <div className="text-center space-y-4">
+    //       <h1 className="text-4xl font-bold">Welcome to Magnify Cash</h1>
+    //       <p className="text-xl text-gray-600">Get a loan against your world ID</p>
+    //     </div>
+    //     <div className="w-full max-w-md space-y-4">
+    //       <button
+    //         onClick={() => getStarted()}
+    //         className="w-full px-6 py-3 text-white bg-brand-turquoise font-semibold rounded-lg shadow-lg hover:bg-opacity-90 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(45,255,249,0.5)] border-2 border-transparent hover:border-white/20"
+    //       >
+    //         Get Started
+    //       </button>
+    //     </div>
+    //   </div>
+
+    //   {/* Modals */}
+    //   <SignInModal
+    //     isOpen={showSignInModal}
+    //     onClose={() => setShowSignInModal(false)}
+    //     onSignIn={handleSignIn}
+    //   />
+    //   <Sheet open={showFundingOptions} onOpenChange={setShowFundingOptions}>
+    //     <SheetContent>
+    //       <FundingOptions onClose={() => setShowFundingOptions(false)} />
+    //     </SheetContent>
+    //   </Sheet>
+    //   {/* End Modals */}
+    // </div>
+    //// Original Code
+
+    // Maintenance Display Code
     <div className="min-h-screen bg-gradient-to-b from-brand-background to-brand-background-end">
       <div className="flex flex-col items-center justify-center min-h-screen p-6 space-y-6">
         <MascotIllustration step={step} />
         <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold">Welcome to Magnify Cash</h1>
-          <p className="text-xl text-gray-600">Get a loan against your world ID</p>
+        <h1 className="text-2xl font-bold">⚠️ Under Maintenance ⚠️</h1>
+        <p className="text-0.5xl text-gray-600">
+          We're fixing some on-going issues with the 'Get a Loan' page. We appreciate your patience as we figure this out! Meanwhile, you can still repay your loans as usual.
+        </p>
+        <p className="text-0.5xl text-gray-600">
+          If you have further questions, please join us over on <a className="text-blue-600 underline" href="https://t.me/MagnifyCommunity">Telegram</a>
+        </p>
         </div>
         <div className="w-full max-w-md space-y-4">
           <button
@@ -65,6 +104,7 @@ const Index = () => {
       </Sheet>
       {/* End Modals */}
     </div>
+    // Maintenance Display Code
   );
 };
 
