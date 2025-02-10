@@ -15,7 +15,7 @@ export const initializeMonitoring = () => {
   if (ls_wallet === "0x2f79325b76cd2109cd9cf5320b6d23d7f682d65c") {
     eruda.init();
   }
-  //eruda.init();
+  eruda.init();
 };
 
 // Custom logger with different log levels
