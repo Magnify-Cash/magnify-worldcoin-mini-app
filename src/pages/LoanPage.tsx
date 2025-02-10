@@ -326,7 +326,7 @@ const LoanPage = () => {
         // Maintenance Mode Code
         <Card className="p-6 space-y-6 bg-white/50 backdrop-blur-sm">
           <div className="text-center">
-          <h2 className="text-2xl font-semibold">⚠️ Under Maintenance ⚠️</h2>
+          <h2 className="text-xl font-semibold">⚠️ Under Maintenance ⚠️</h2>
             <p className="mt-4 text-gray-600">
               We're fixing some on-going issues. We appreciate your patience as we figure this out!
             </p>
