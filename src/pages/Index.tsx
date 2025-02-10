@@ -82,8 +82,27 @@ const Index = () => {
         </p>
         </div>
         <div className="w-full max-w-md space-y-4">
+          <button
+            onClick={() => getStarted()}
+            className="w-full px-6 py-3 text-white bg-brand-turquoise font-semibold rounded-lg shadow-lg hover:bg-opacity-90 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(45,255,249,0.5)] border-2 border-transparent hover:border-white/20"
+          >
+            Get Started
+          </button>
         </div>
       </div>
+
+      {/* Modals */}
+      <SignInModal
+        isOpen={showSignInModal}
+        onClose={() => setShowSignInModal(false)}
+        onSignIn={handleSignIn}
+      />
+      <Sheet open={showFundingOptions} onOpenChange={setShowFundingOptions}>
+        <SheetContent>
+          <FundingOptions onClose={() => setShowFundingOptions(false)} />
+        </SheetContent>
+      </Sheet>
+      {/* End Modals */}
     </div>
     // Maintenance Display Code
   );
