@@ -68,28 +68,24 @@ const Index = () => {
     // </div>
     //// Original Code
 
+    // Maintenance Display Code
     <div className="min-h-screen bg-gradient-to-b from-brand-background to-brand-background-end">
       <div className="flex flex-col items-center justify-center min-h-screen p-6 space-y-6">
         <MascotIllustration step={step} />
         <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold">Under Maintenance</h1>
-        <p className="text-xl text-gray-600">
-          We are under maintenance! We are fixing some on-going issues. We appreciate your patience as we figure this out!
+        <h1 className="text-2xl font-bold">⚠️ Under Maintenance ⚠️</h1>
+        <p className="text-0.5xl text-gray-600">
+          We're fixing some on-going issues. We appreciate your patience as we figure this out!
+        </p>
+        <p className="text-0.5xl text-gray-600">
+          If you have further questions, please join us over on <a className="text-blue-600 underline" href="https://t.me/MagnifyCommunity">Telegram</a>
         </p>
         </div>
         <div className="w-full max-w-md space-y-4">
         </div>
       </div>
     </div>
-
-    // <div className="min-h-screen bg-gradient-to-b from-brand-background to-brand-background-end flex flex-col items-center justify-center">
-    //   <div className="text-center space-y-4">
-    //     <h1 className="text-4xl font-bold">Under Maintenance</h1>
-    //     <p className="text-xl text-gray-600">
-    //       We are under maintenance! We are fixing some on-going issues. We appreciate your patience as we figure this out!
-    //     </p>
-    //   </div>
-    // </div>
+    // Maintenance Display Code
   );
 };
 
