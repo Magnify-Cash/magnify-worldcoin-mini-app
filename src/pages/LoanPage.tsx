@@ -40,7 +40,7 @@ const LoanPage = () => {
   // Handle claiming verified NFT with device
   const handleClaimDeviceVerifiedNFT = async (proof: ISuccessResult) => {
     try {
-      const res = await fetch("https://jaytest-backend-v1.kevin8396.workers.dev", {
+      const res = await fetch("https://worldid-backend.kevin8396.workers.dev", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -76,7 +76,7 @@ const LoanPage = () => {
   // Handle claiming verified NFT with orb
   const handleClaimOrbVerifiedNFT = async (proof: ISuccessResult) => {
     try {
-      const res = await fetch("https://jaytest-backend-v1.kevin8396.workers.dev", {
+      const res = await fetch("https://worldid-backend.kevin8396.workers.dev", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
